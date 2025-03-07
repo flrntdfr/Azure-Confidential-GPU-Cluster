@@ -1,5 +1,6 @@
 # System
 .DS_Store
+.env
 
 # Terraform files
 .terraform/
@@ -7,6 +8,7 @@
 *.tfstate.*
 *.tfvars
 !example.tfvars
+*.tfplan
 
 # Crash log files
 crash.log
