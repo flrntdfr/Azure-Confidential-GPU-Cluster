@@ -1,0 +1,16 @@
+# System
+.DS_Store
+
+# Terraform files
+.terraform/
+*.tfstate
+*.tfstate.*
+*.tfvars
+!example.tfvars
+
+# Crash log files
+crash.log
+
+# Exclude sensitive files
+*.pem
+*.key
