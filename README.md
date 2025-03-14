@@ -2,7 +2,7 @@
 
 # How-to
 
-A devcontainer is provided for convenience.
+The main commands include:
 
 ```sh
 ~$ make bootstrap
@@ -16,9 +16,11 @@ All commands are documented with:
 ~$ make help
 ```
 
+Note: a devcontainer is provided for convenience.
+
 # Configuration
 
-## cloudcredentials
+## Cloud configuration
 
 - Put your credentials in .env
 
