@@ -1,15 +1,32 @@
 # Florent Dufour
 # 07.03.2025 MUC
 
+RESOURCE_GROUP_NAME := confcluster-rg
+LOCATION            := westeurope
+
 bootstrap: 	## First time setup
-	./scripts/bootstrap.sh
-cluster: ## Create the cluster
+	-source .env
+	-az login
+	-az storage account create \
+		--name "confclustertfstate" \
+		--resource-group $(RESOURCE_GROUP_NAME) \
+		--location $(LOCATION) \
+		--sku "Standard_LRS" \
+		--allow-blob-public-access false \
+		--require-infrastructure-encryption true
+	-az storage container create \
+		--name "tfstate" \
+		--account-name "confclustertfstate" \
+		--auth-mode login \
+		--public-access "off" 
+cluster: ## Create and enter the cluster
 	$(MAKE) -C terraform all
+	$(MAKE) ssh
 ssh: 	## Connect to the cluster
 	$(MAKE) -C terraform ssh
 destroy: 	## Destroy the cluster
 	$(MAKE) -C terraform destroy
-summary: 	## Summary of the cluster ()
+summary: 	## Summary of the cluster
 	az resource list --resource-group confcluster-rg --output table 
 	$(MAKE) -C terraform output
 

@@ -2,14 +2,27 @@
 
 # How-to
 
+A devcontainer is provided for convenience.
+
 ```sh
-~$ git clone https://github.com/flnrtdfr/confidential-computing-slurm.git
-~$ cd confidential-computing-slurm
+~$ make bootstrap
 ~$ make cluster
-~$ make ssh
 ~$ make destroy
 ```
+
+All commands are documented with:
+
+```sh
+~$ make help
+```
+
 # Configuration
+
+## cloudcredentials
+
+- Put your credentials in .env
+
+## Cluster configuration
 
 - Adapt vars.tf
 
@@ -21,5 +34,4 @@
   author={Dufour, Florent},
   journal={arXiv preprint arXiv:2503.07449},
   year={2025}
-}
 }
