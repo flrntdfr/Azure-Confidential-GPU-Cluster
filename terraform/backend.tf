@@ -15,15 +15,15 @@ terraform {
     }
   }
 
-    backend "azurerm" {
-        resource_group_name  = "confcluster-rg"
-        storage_account_name = "confclustertfstate"
-        container_name       = "tfstate"
-        key                  = "terraform.tfstate"
-    }
+  backend "azurerm" {
+    resource_group_name  = "confcluster-rg"
+    storage_account_name = "confclustertfstate"
+    container_name       = "tfstate"
+    key                  = "terraform.tfstate"
+  }
 }
 
 provider "azurerm" {
-  // Credentials are in pulled from .env
+  // Credentials are in pulled with `source .env`
   features {}
 }

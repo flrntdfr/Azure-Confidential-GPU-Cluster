@@ -1,0 +1,42 @@
+{
+  "name": "CCITC Azure Environment",
+  "dockerFile": "Dockerfile",
+  "runArgs": [
+    "--env-file", "../.env"
+  ],
+  "mounts": [
+    "source=${localEnv:HOME}/.ssh,target=/home/vscode/.ssh,type=bind,consistency=cached"
+  ],
+  "remoteUser": "vscode",
+  "customizations": {
+    "vscode": {
+      "settings": {
+        "terminal.integrated.defaultProfile.linux": "bash",
+        "editor.formatOnSave": true,
+        "editor.rulers": [80, 120],
+        "files.trimTrailingWhitespace": true,
+        "files.insertFinalNewline": true,
+        "files.trimFinalNewlines": true
+      },
+      "extensions": [
+        "hashicorp.terraform",
+        "ms-azuretools.vscode-azureterraform",
+        "ms-vscode.azurecli",
+        "redhat.vscode-yaml",
+        "timonwong.shellcheck",
+        "msazurermtools.azurerm-vscode-tools"
+      ]
+    }
+  },
+  "features": {
+    "azure-cli": "latest",
+    "terraform": "latest",
+    "ghcr.io/devcontainers/features/python:1": {
+      "version": "3.10"
+    },
+    "ghcr.io/devcontainers/features/node:1": {},
+    "ghcr.io/devcontainers-contrib/features/ansible:2": {}
+  },
+  "forwardPorts": [],
+  "postCreateCommand": "terraform -version && az --version && ansible --version"
+} 

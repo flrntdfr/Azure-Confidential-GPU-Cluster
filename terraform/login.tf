@@ -1,23 +1,19 @@
-// SLURM LOGIN NODE
-// Resources for the SLURM login/controller node
+/*
+ * SLURM LOGIN NODE
+ */
 
-// Public IP for Login Node
+// The public IP address for the login node
 resource "azurerm_public_ip" "login_pip" {
-  name                = "login-node-pip"
+  name                = "confcluster-login-node-pip"
   location            = var.location
   resource_group_name = var.resource_group_name
   allocation_method   = "Static"
   sku                 = "Standard"
-
-  tags = {
-    environment = "production"
-    role        = "slurm-login"
-  }
 }
 
-// Network Interface for Login Node
+// The network interface for the login node
 resource "azurerm_network_interface" "login_nic" {
-  name                = "login-node-nic"
+  name                = "confcluster-login-node-nic"
   location            = var.location
   resource_group_name = var.resource_group_name
 
@@ -27,54 +23,44 @@ resource "azurerm_network_interface" "login_nic" {
     private_ip_address_allocation = "Dynamic"
     public_ip_address_id          = azurerm_public_ip.login_pip.id
   }
-
-  tags = {
-    environment = "production"
-    role        = "slurm-login"
-  }
 }
 
-// Associate NSG with Network Interface
+// Associate the security group with the NIC
 resource "azurerm_network_interface_security_group_association" "login_nsg_association" {
   network_interface_id      = azurerm_network_interface.login_nic.id
   network_security_group_id = azurerm_network_security_group.login_nsg.id
 }
 
-// Linux VM for Login Node (Budget-friendly B2s size)
+// The login node
 resource "azurerm_linux_virtual_machine" "login_node" {
-  name                = "slurm-login-node"
+  name                = "confcluster-login"
   resource_group_name = var.resource_group_name
   location            = var.location
-  size                = "Standard_B2s"  // 2 vCPUs, 4 GB RAM - budget friendly
+  size                = "Standard_D2s_v3" // 2 vCPUs, 8 GB RAM - consistent performance for management
   admin_username      = var.admin_username
-  
+
   admin_ssh_key {
     username   = var.admin_username
-    public_key = file(var.ssh_public_key_path)
+    public_key = tls_private_key.ssh_key.public_key_openssh
   }
-  
+
   network_interface_ids = [
     azurerm_network_interface.login_nic.id,
   ]
 
   os_disk {
     caching              = "ReadWrite"
-    storage_account_type = "Standard_LRS"  // Using standard storage to save costs
+    storage_account_type = "Standard_LRS" // Using standard storage to save costs
     disk_size_gb         = 30
   }
-
+  # https://documentation.ubuntu.com/azure/en/latest/azure-how-to/instances/find-ubuntu-images/
   source_image_reference {
     publisher = "Canonical"
-    offer     = "0001-com-ubuntu-server-jammy"
-    sku       = "22_04-lts-gen2"
+    offer     = "ubuntu-24_04-lts"
+    sku       = "server"
     version   = "latest"
   }
 
-  tags = {
-    environment = "production"
-    role        = "slurm-login"
-  }
-  
   # Storage account keys must be retrieved after the storage account has been created
   depends_on = [
     azurerm_storage_account.cluster_storage,

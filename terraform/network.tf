@@ -1,30 +1,26 @@
-// NETWORKING RESOURCES
-// Resources for the virtual network, subnets, and related components
+/*
+ * NETWORKING RESOURCES
+ */
 
-// Virtual Network for the Cluster
+// The cluster virtual network
 resource "azurerm_virtual_network" "cluster_vnet" {
-  name                = "slurm-cluster-vnet"
+  name                = "confcluster-net-vnet"
   address_space       = ["10.0.0.0/16"]
   location            = var.location
   resource_group_name = var.resource_group_name
-
-  tags = {
-    environment = "production"
-    role        = "slurm-cluster"
-  }
 }
 
-// Subnet for Login and Compute Nodes
+// The cluster subnet
 resource "azurerm_subnet" "cluster_subnet" {
-  name                 = "slurm-cluster-subnet"
+  name                 = "confcluster-net-subnet"
   resource_group_name  = var.resource_group_name
   virtual_network_name = azurerm_virtual_network.cluster_vnet.name
   address_prefixes     = ["10.0.1.0/24"]
 }
 
-// Network Security Group for Login Node
+// The network security group for the login node
 resource "azurerm_network_security_group" "login_nsg" {
-  name                = "login-node-nsg"
+  name                = "confcluster-login-node-nsg"
   location            = var.location
   resource_group_name = var.resource_group_name
 
@@ -36,12 +32,7 @@ resource "azurerm_network_security_group" "login_nsg" {
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "22"
-    source_address_prefix      = "*"  // Consider restricting this in production
+    source_address_prefix      = var.whitelist_ip_prefix
     destination_address_prefix = "*"
-  }
-
-  tags = {
-    environment = "production"
-    role        = "slurm-login"
   }
 } 

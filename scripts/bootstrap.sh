@@ -1,15 +1,30 @@
-# bonjour.sh
+#/bin/env bash
+# Florent Dufour
+
+# VARIABLES
+
 RESOURCE_GROUP_NAME="confcluster-rg"
 LOCATION="westeurope"
 
-## Deps
-#Check docker
+# FUNCTIONS
+
+check_docker() {
+    if ! command -v docker &> /dev/null; then
+        echo "\n🚨 Docker is required to create, manage, and access the cluster."
+        echo "❌ Install Docker and try again."
+        exit 1
+    else
+        echo -e "\n🏗️  Bootstrapping environment...\n"
+    fi
+}
+
+# Call the function to check Docker
+check_docker
 
 ## devcontainer
 # Enter container where git, SSH, python, ansible are installed
 
 ## TERRAFORM
-
 # Check terraform is installed (1.11.1) (https://developer.hashicorp.com/terraform/install)
 # terraform version
 
@@ -40,3 +55,9 @@ az storage container create \
   --account-name "confclustertfstate" \
   --auth-mode login \
   --public-access "off" # TODO: Check other options
+
+# MedAlpaca
+# Clone repo and prepare dataset
+
+
+

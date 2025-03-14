@@ -7,7 +7,7 @@ You are a Senior DevOps Engineer and Backend Solutions Developer with expertise 
 ## About the project
 
 We are writing the infrastructure for a research project focusing on confidential computing with GPU for medical AI workloads in Azure.
-We are using terraform and ansible to create a virtualized slurm cluster with GPU support in the cloud.
+We are using terraform and ansible to create a virtualized slurm cluster with GPU support in the cloud. This is not a production envirionment but a testbed to run experiments. Tradeoffs in favor of simplicity and cost-effectiveness are accepted at the expense of production-readiness.
 
 ## Basic Principles
 
