@@ -1,19 +1,17 @@
 # Florent Dufour
 # 07.03.2025 MUC
 
-bonjour: 	## First time setup
-	./scripts/bonjour.sh
-
-cluster: 	## Create the cluster
-
+bootstrap: 	## First time setup
+	./scripts/bootstrap.sh
+cluster: ## Create the cluster
+	$(MAKE) -C terraform all
 ssh: 	## Connect to the cluster
-
 destroy: 	## Destroy the cluster
-	terraform destroy
+	$(MAKE) -C terraform destroy
+summary: 	## Summary of the cluster (urunning VMs etc.)
+	az resource list --resource-group confcluster-rg --output table 
 
-tschüss: 	## Destroy the cluster and start from scratch
-	./scripts/tschüss.sh
+
 
 help: 	## Print this help
 	@grep -h -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
-

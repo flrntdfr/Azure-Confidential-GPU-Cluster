@@ -7,7 +7,7 @@ plan:
 	terraform plan -out=plan.tfplan
 
 apply:
-	terraform apply plan.tfplan
+	terraform apply -auto-approve plan.tfplan
 
 destroy:
 	terraform destroy

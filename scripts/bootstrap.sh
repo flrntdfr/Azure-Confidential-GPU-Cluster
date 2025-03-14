@@ -1,11 +1,12 @@
 # bonjour.sh
-
 RESOURCE_GROUP_NAME="confcluster-rg"
 LOCATION="westeurope"
 
 ## Deps
+#Check docker
 
-Check git, SSH, are installed
+## devcontainer
+# Enter container where git, SSH, python, ansible are installed
 
 ## TERRAFORM
 
