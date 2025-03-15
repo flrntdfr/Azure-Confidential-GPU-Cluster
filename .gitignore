@@ -6,7 +6,7 @@
 .terraform/
 *.tfstate
 *.tfstate.*
-*.tfvars
+#*.tfvars # TODO: Uncomment?
 !example.tfvars
 *.tfplan
 

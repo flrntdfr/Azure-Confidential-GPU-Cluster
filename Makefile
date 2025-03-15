@@ -1,20 +1,21 @@
 # Florent Dufour
-# 07.03.2025 MUC
+# 03.2025 MUC
 
-RESOURCE_GROUP_NAME := confcluster-rg
-LOCATION            := westeurope
+SHELL                  := /bin/env bash
+AZ_RESOURCE_GROUP := confcluster-rg
+AZ_LOCATION            := westeurope
 
 bootstrap: 	## First time setup
-	-source .env
-	-az login
-	-az storage account create \
+	source .env
+	az login
+	az storage account create \
 		--name "confclustertfstate" \
-		--resource-group $(RESOURCE_GROUP_NAME) \
-		--location $(LOCATION) \
+		--resource-group $(AZ_RESOURCE_GROUP) \
+		--location $(AZ_LOCATION) \
 		--sku "Standard_LRS" \
 		--allow-blob-public-access false \
 		--require-infrastructure-encryption true
-	-az storage container create \
+	az storage container create \
 		--name "tfstate" \
 		--account-name "confclustertfstate" \
 		--auth-mode login \

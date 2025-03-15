@@ -1,11 +1,8 @@
-/*
- * VARIABLES
- */
+/* -------------- *
+ * CLUSTER CONFIG *
+ * -------------- */
 
-// TODO: Make sure vars stay in sync with bootstrap.sh
-
-// -----------
-// USER
+// The cloud availability zone
 
 variable "location" {
   description = "Azure region where resources will be created"
@@ -13,20 +10,48 @@ variable "location" {
   default     = "westeurope"
 }
 
-variable "partitions" {
-  description = "List of partitions to create"
-  type        = list(string)
-  default     = ["TEE-ON", "TEE-OFF"]
+// The cluster partitions configuration
+
+variable "tee_on_partition_config" {
+  description = "Configuration for TEE ON partition"
+  type = object({
+    name       = string
+    node_count = number
+    node_size  = string
+  })
+  default = {
+    name       = "tee-on"
+    node_count = 10
+    node_size  = "Standard_DC2s_v3" # FIXME
+  }
 }
 
+variable "tee_off_partition_config" {
+  description = "Configuration for TEE OFF partition"
+  type = object({
+    name       = string
+    node_count = number
+    node_size  = string
+  })
+  default = {
+    name       = "tee-off"
+    node_count = 10
+    node_size  = "Standard_D2s_v3" # FIXME
+  }
+}
+
+// SECURITY
+
+// The source address prefix to whitelist
 variable "whitelist_ip_prefix" {
   description = "source address prefix to whitelist"
   type        = string
   default     = "*" // No security
 }
 
-// -----------
-// SYSTEM
+/* --------------- *
+ * ADVANCED CONFIG *
+ * --------------- */
 
 variable "resource_group_name" {
   description = "Name of the resource group"

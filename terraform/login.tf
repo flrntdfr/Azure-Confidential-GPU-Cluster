@@ -36,7 +36,7 @@ resource "azurerm_linux_virtual_machine" "login_node" {
   name                = "confcluster-login"
   resource_group_name = var.resource_group_name
   location            = var.location
-  size                = "Standard_D2s_v3" // 2 vCPUs, 8 GB RAM - consistent performance for management
+  size                = "Standard_D2s_v3" // 2 vCPUs, 8 GB RAM non burstable
   admin_username      = var.admin_username
 
   admin_ssh_key {
@@ -50,7 +50,7 @@ resource "azurerm_linux_virtual_machine" "login_node" {
 
   os_disk {
     caching              = "ReadWrite"
-    storage_account_type = "Standard_LRS" // Using standard storage to save costs
+    storage_account_type = "Standard_LRS"
     disk_size_gb         = 30
   }
   # https://documentation.ubuntu.com/azure/en/latest/azure-how-to/instances/find-ubuntu-images/

@@ -1,5 +1,7 @@
-For convenience, this repo provides a devcontainer[^1] to create create, manage, and work with a confidential cluster in the cloud.
+This repo provides a Dev Container[^1] to effortlessly create, manage, and work with a confidential cluster, in the cloud, from your local environment.
 
-→ In Visual Studio Code, choose "build and open in container" from the command palette.
+Work with dependencies:
+- Step 1: In Visual Studio Code, choose "build and open in container" from the command palette.
+- Step 2: There is no step 2.
 
 [^1]: https://aka.ms/devcontainer.json.
