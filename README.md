@@ -7,10 +7,11 @@ Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin vel leo hendrerit
 The main commands include:
 
 ```sh
-~$ make bootstrap
-~$ make cluster
+~$ make login     # Login to Azure
+~$ make bootstrap # First time setup
+~$ make cluster   # Create the cluster
 # ... work in the cluster: sinfo, srun, sbatch, etc. ...
-~$ make destroy
+~$ make destroy   # Destroy the cluster
 ```
 
 All commands are documented with:

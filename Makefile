@@ -2,12 +2,16 @@
 # 03.2025 MUC
 
 SHELL                  := /bin/env bash
-AZ_RESOURCE_GROUP := confcluster-rg
+AZ_RESOURCE_GROUP      := confcluster-rg
 AZ_LOCATION            := westeurope
 
-bootstrap: 	## First time setup
-	source .env
+login: ## Login to Azure
 	az login
+	echo "# Use \`make login\` will populate this file after authentication on Azure portal" > .env
+	echo "export ARM_SUBSCRIPTION_ID=\"$(shell az account show --query id --output tsv)\"" >> .env
+	echo "export ARM_TENANT_ID=\"$(shell az account show --query tenantId --output tsv)\"" >> .env
+	source .env # FIXME
+bootstrap: login source ## First time setup
 	az storage account create \
 		--name "confclustertfstate" \
 		--resource-group $(AZ_RESOURCE_GROUP) \
@@ -23,15 +27,17 @@ bootstrap: 	## First time setup
 cluster: ## Create and enter the cluster
 	$(MAKE) -C terraform all
 	$(MAKE) ssh
-ssh: 	## Connect to the cluster
-	$(MAKE) -C terraform ssh
 destroy: 	## Destroy the cluster
 	$(MAKE) -C terraform destroy
-summary: 	## Summary of the cluster
+
+# ------- #
+# UTILITY #
+# ------- #
+
+ssh: 	## Connect to the running cluster
+	$(MAKE) -C terraform ssh
+summary: 	## Get summary resources running in the cloud
 	az resource list --resource-group confcluster-rg --output table 
 	$(MAKE) -C terraform output
-
-
-
 help: 	## Print this help
 	@grep -h -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
