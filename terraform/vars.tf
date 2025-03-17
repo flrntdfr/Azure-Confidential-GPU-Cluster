@@ -15,60 +15,60 @@ variable "location" {
 variable "tee_off_config" {
   description = "Configuration for the TEE OFF SLURM partition"
   type = object({
-    name                = string
-    node_count          = number
-    node_size           = string
+    name                 = string
+    node_count           = number
+    node_size            = string
     storage_account_type = string
-    disk_size_gb        = number
-    use_ephemeral_disk  = bool
-    image_publisher     = string
-    image_offer         = string
-    image_sku           = string
-    image_version       = string
-    custom_data         = string
+    disk_size_gb         = number
+    use_ephemeral_disk   = bool
+    image_publisher      = string
+    image_offer          = string
+    image_sku            = string
+    image_version        = string
+    custom_data          = string
   })
   default = {
-    name                = "tee-off"
-    node_count          = 2
-    node_size           = "Standard_D2s_v3"
+    name                 = "tee-off"
+    node_count           = 2
+    node_size            = "Standard_D2s_v3"
     storage_account_type = "Standard_LRS"
-    disk_size_gb        = 30
-    use_ephemeral_disk  = false
-    image_publisher     = "Canonical"
-    image_offer         = "ubuntu-24_04-lts"
-    image_sku           = "server"
-    image_version       = "latest"
-    custom_data         = ""
+    disk_size_gb         = 30
+    use_ephemeral_disk   = false
+    image_publisher      = "Canonical"
+    image_offer          = "ubuntu-24_04-lts"
+    image_sku            = "server"
+    image_version        = "latest"
+    custom_data          = ""
   }
 }
 
 variable "tee_on_config" {
   description = "Configuration for the TEE ON SLURM partition"
   type = object({
-    name                = string
-    node_count          = number
-    node_size           = string
+    name                 = string
+    node_count           = number
+    node_size            = string
     storage_account_type = string
-    disk_size_gb        = number
-    use_ephemeral_disk  = bool
-    image_publisher     = string
-    image_offer         = string
-    image_sku           = string
-    image_version       = string
-    custom_data         = string
+    disk_size_gb         = number
+    use_ephemeral_disk   = bool
+    image_publisher      = string
+    image_offer          = string
+    image_sku            = string
+    image_version        = string
+    custom_data          = string
   })
   default = {
-    name                = "tee-on"
-    node_count          = 2
-    node_size           = "Standard_D4s_v3"
+    name                 = "tee-on"
+    node_count           = 2
+    node_size            = "Standard_D4s_v3"
     storage_account_type = "Standard_LRS"
-    disk_size_gb        = 30
-    use_ephemeral_disk  = false
-    image_publisher     = "Canonical"
-    image_offer         = "ubuntu-24_04-lts"
-    image_sku           = "server"
-    image_version       = "latest"
-    custom_data         = ""
+    disk_size_gb         = 30
+    use_ephemeral_disk   = false
+    image_publisher      = "Canonical"
+    image_offer          = "ubuntu-24_04-lts"
+    image_sku            = "server"
+    image_version        = "latest"
+    custom_data          = ""
   }
 }
 

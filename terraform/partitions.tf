@@ -13,7 +13,7 @@ module "tee_off" {
   ssh_public_key      = tls_private_key.ssh_key.public_key_openssh
   subnet_id           = azurerm_subnet.cluster_subnet.id
   common_tags         = var.common_tags
-  
+
   partition_config = var.tee_off_config
 
   depends_on = [
@@ -32,7 +32,7 @@ module "tee_on" {
   ssh_public_key      = tls_private_key.ssh_key.public_key_openssh
   subnet_id           = azurerm_subnet.cluster_subnet.id
   common_tags         = var.common_tags
-  
+
   partition_config = var.tee_on_config
 
   depends_on = [

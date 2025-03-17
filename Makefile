@@ -32,7 +32,6 @@ destroy: 	## Destroy the cluster
 # UTILITY #
 # ------- #
 
-
 ssh: 	## Connect to the running cluster
 	-$(MAKE) -C terraform ssh
 summary: 	## Get summary resources running in the cloud

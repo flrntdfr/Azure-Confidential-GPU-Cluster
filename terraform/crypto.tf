@@ -24,5 +24,5 @@ output "ssh_private_key" {
 resource "local_file" "private_key_pem" {
   content         = tls_private_key.ssh_key.private_key_pem
   filename        = "${path.module}/../private_key.pem"
-  file_permission = "0600"  # Secure permissions for private key
+  file_permission = "0600" # Secure permissions for private key
 }
