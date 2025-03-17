@@ -1,7 +1,7 @@
 # Florent Dufour
 # 03.2025 MUC
 
-SHELL                  := /bin/env bash
+SHELL                  := /bin/bash
 AZ_RESOURCE_GROUP      := confcluster-rg
 AZ_LOCATION            := westeurope
 
