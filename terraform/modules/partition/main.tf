@@ -21,8 +21,14 @@ resource "azurerm_network_interface" "partition_nic" {
   ip_configuration {
     name                          = "internal"
     subnet_id                     = var.subnet_id
-    private_ip_address_allocation = "Dynamic"
+    private_ip_address_allocation = "Static"
+    private_ip_address            = local.ip_base == "10.0.2" ? "10.0.2.${count.index + 1}" : "10.0.3.${count.index + 1}"
   }
+}
+
+// Local variables for IP addressing
+locals {
+  ip_base = var.partition_config.name == "tee-off" ? "10.0.2" : "10.0.3"
 }
 
 // Associate the security group with the NICs
@@ -55,14 +61,14 @@ resource "azurerm_linux_virtual_machine" "partition_node" {
     storage_account_type = var.partition_config.storage_account_type
     disk_size_gb         = var.partition_config.disk_size_gb
     
-    // Enable ephemeral OS disk if specified
-    dynamic "diff_disk_settings" {
-      for_each = var.partition_config.use_ephemeral_disk ? [1] : []
-      content {
-        option = "Local"
-      }
-    }
-  }
+#     // Enable ephemeral OS disk if specified
+#     dynamic "diff_disk_settings" {
+#       for_each = var.partition_config.use_ephemeral_disk ? [1] : []
+#       content {
+#         option = "Local"
+#       }
+#     }
+   }
 
   source_image_reference {
     publisher = var.partition_config.image_publisher

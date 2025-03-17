@@ -1,4 +1,4 @@
-location = "westeurope"
+admin_username = "slurmadmin"
 
 // SLURM partition configurations
 tee_off_config = {
@@ -29,7 +29,7 @@ tee_on_config = {
   custom_data         = ""
 }
 
-// Common tags
+// Common tags # TODO
 common_tags = {
   Environment = "Production"
   Project     = "SLURM Cluster"
@@ -38,5 +38,5 @@ common_tags = {
 
 whitelist_ip_prefix = "*"
 
+location = "westeurope"
 resource_group_name = "confcluster-rg"
-admin_username = "slurmadmin"

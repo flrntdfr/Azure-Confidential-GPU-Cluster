@@ -10,12 +10,12 @@ resource "azurerm_virtual_network" "cluster_vnet" {
   resource_group_name = var.resource_group_name
 }
 
-// The cluster subnet
+// The cluster subnet (shared by all nodes)
 resource "azurerm_subnet" "cluster_subnet" {
   name                 = "confcluster-net-subnet"
   resource_group_name  = var.resource_group_name
   virtual_network_name = azurerm_virtual_network.cluster_vnet.name
-  address_prefixes     = ["10.0.1.0/24"]
+  address_prefixes     = ["10.0.0.0/16"]
 }
 
 // The network security group for the login node
