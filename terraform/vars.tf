@@ -21,6 +21,8 @@ variable "tee_off_config" {
     storage_account_type = string
     disk_size_gb         = number
     use_ephemeral_disk   = bool
+    secure_boot_enabled  = bool
+    vtpm_enabled         = bool
     image_publisher      = string
     image_offer          = string
     image_sku            = string
@@ -34,6 +36,8 @@ variable "tee_off_config" {
     storage_account_type = "Standard_LRS"
     disk_size_gb         = 30
     use_ephemeral_disk   = false
+    secure_boot_enabled  = true
+    vtpm_enabled         = true
     image_publisher      = "Canonical"
     image_offer          = "ubuntu-24_04-lts"
     image_sku            = "server"
@@ -51,6 +55,8 @@ variable "tee_on_config" {
     storage_account_type = string
     disk_size_gb         = number
     use_ephemeral_disk   = bool
+    secure_boot_enabled  = bool
+    vtpm_enabled         = bool
     image_publisher      = string
     image_offer          = string
     image_sku            = string
@@ -64,6 +70,8 @@ variable "tee_on_config" {
     storage_account_type = "Standard_LRS"
     disk_size_gb         = 30
     use_ephemeral_disk   = false
+    secure_boot_enabled  = true
+    vtpm_enabled         = true
     image_publisher      = "Canonical"
     image_offer          = "ubuntu-24_04-lts"
     image_sku            = "server"

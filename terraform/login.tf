@@ -26,6 +26,25 @@ resource "azurerm_network_interface" "login_nic" {
   }
 }
 
+// The network security group for the login node
+resource "azurerm_network_security_group" "login_nsg" {
+  name                = "confcluster-login-node-nsg"
+  location            = var.location
+  resource_group_name = var.resource_group_name
+
+  security_rule {
+    name                       = "SSH"
+    priority                   = 1001
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "22"
+    source_address_prefix      = var.whitelist_ip_prefix
+    destination_address_prefix = "*"
+  }
+} 
+
 // Associate the security group with the NIC
 resource "azurerm_network_interface_security_group_association" "login_nsg_association" {
   network_interface_id      = azurerm_network_interface.login_nic.id
@@ -54,6 +73,7 @@ resource "azurerm_linux_virtual_machine" "login_node" {
     storage_account_type = "Standard_LRS"
     disk_size_gb         = 30
   }
+
   # https://documentation.ubuntu.com/azure/en/latest/azure-how-to/instances/find-ubuntu-images/
   source_image_reference {
     publisher = "Canonical"

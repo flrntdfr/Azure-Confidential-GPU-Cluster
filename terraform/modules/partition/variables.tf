@@ -42,6 +42,8 @@ variable "partition_config" {
     storage_account_type = string
     disk_size_gb        = number
     use_ephemeral_disk  = bool
+    secure_boot_enabled = bool
+    vtpm_enabled        = bool
     image_publisher     = string
     image_offer         = string
     image_sku           = string

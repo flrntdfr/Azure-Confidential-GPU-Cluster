@@ -17,22 +17,3 @@ resource "azurerm_subnet" "cluster_subnet" {
   virtual_network_name = azurerm_virtual_network.cluster_vnet.name
   address_prefixes     = ["10.0.0.0/16"]
 }
-
-// The network security group for the login node
-resource "azurerm_network_security_group" "login_nsg" {
-  name                = "confcluster-login-node-nsg"
-  location            = var.location
-  resource_group_name = var.resource_group_name
-
-  security_rule {
-    name                       = "SSH"
-    priority                   = 1001
-    direction                  = "Inbound"
-    access                     = "Allow"
-    protocol                   = "Tcp"
-    source_port_range          = "*"
-    destination_port_range     = "22"
-    source_address_prefix      = var.whitelist_ip_prefix
-    destination_address_prefix = "*"
-  }
-} 

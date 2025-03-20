@@ -15,6 +15,6 @@ output: ## Print the Terraform output
 ssh: ## Connect to the cluster
 	ssh $(shell terraform output login_node_public_ip) -l slurmadmin -i ../private_key.pem
 destroy: ## Destroy the Terraform cloud resources
-	terraform destroy
+	terraform apply -auto-approve -destroy
 help: 	## Print this help
 	@grep -h -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
