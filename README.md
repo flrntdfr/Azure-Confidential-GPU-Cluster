@@ -22,6 +22,12 @@ All commands are documented with:
 
 Note: a [Dev Container](.devcontainer) is provided for convenience.
 
+# Requirements
+
+- Azure subscription and a contributor or administrator role to the subscription
+- Quota for the NCC H100 v5 VM SKU
+- Install Azure CLI
+
 # Configuration
 
 ## Cloud configuration

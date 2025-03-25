@@ -3,7 +3,7 @@
 TF   := terraform # terraform, tofu
 PLAN := plan.tfplan
 
-all: init plan apply ## Create the cluster with Terraform
+all: init plan apply output ## Create the cluster with Terraform
 init: ## Initialize the Terraform configuration
 	$(TF) init
 plan: ## Create a Terraform plan

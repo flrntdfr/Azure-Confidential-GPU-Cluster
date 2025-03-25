@@ -22,15 +22,18 @@ tee_off_config = {
 tee_on_config = {
   name                 = "tee-on"
   node_count           = 1 # Set to 0 to disable partition
-  node_size            = "Standard_DC4as_v5" #"Standard_NCC40ads_H100_v5"
+  node_size            = "Standard_NCC40ads_H100_v5" #"Standard_DC4as_v5", "Standard_NCC40ads_H100_v5"
   storage_account_type = "Standard_LRS"
   disk_size_gb         = 30
   use_ephemeral_disk   = false
   secure_boot_enabled  = true
   vtpm_enabled         = true
+  # Canonical:0001-com-ubuntu-confidential-vm-focal:20_04-lts-cvm
+  # Canonical:0001-com-ubuntu-confidential-vm-jammy:22_04-lts-cvm
+  # Canonical:ubuntu-24_04-lts:cvm
   image_publisher      = "Canonical"
-  image_offer          = "0001-com-ubuntu-confidential-vm-focal"
-  image_sku            = "20_04-lts-cvm"
+  image_offer          = "ubuntu-24_04-lts"
+  image_sku            = "cvm"
   image_version        = "latest"
   custom_data          = ""
 }

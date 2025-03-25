@@ -113,7 +113,7 @@ resource "azurerm_linux_virtual_machine" "partition_node" {
     caching              = "ReadWrite"
     storage_account_type = var.partition_config.storage_account_type
     disk_size_gb         = var.partition_config.disk_size_gb
-    security_encryption_type         = "DiskWithVMGuestState"
+    security_encryption_type         = "DiskWithVMGuestState" # TODO VMGuestStateOnly ?
     # secure_vm_disk_encryption_set_id = # TODO ?
    }
 
@@ -123,7 +123,9 @@ resource "azurerm_linux_virtual_machine" "partition_node" {
     sku       = var.partition_config.image_sku
     version   = var.partition_config.image_version
   }
-
+  
+  // Confidential computing stuff
+  # az vm create ... --security-type ConfidentialVM ?
   vtpm_enabled        = var.partition_config.vtpm_enabled
   secure_boot_enabled = var.partition_config.secure_boot_enabled
 
