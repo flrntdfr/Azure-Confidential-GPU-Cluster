@@ -1,0 +1,20 @@
+---
+# Configure users for SLURM cluster
+
+- name: Create slurm group
+  ansible.builtin.group:
+    name: slurm
+    gid: 2001
+    state: present
+  become: true
+
+- name: Create slurm user
+  ansible.builtin.user:
+    name: slurm
+    comment: "SLURM Workload Manager"
+    uid: 2001
+    group: slurm
+    home: /var/lib/slurm
+    shell: /bin/bash
+    system: true
+  become: true

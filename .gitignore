@@ -2,15 +2,15 @@
 .DS_Store
 .env
 
-# Terraform files
+# Terraform
 .terraform/
 *.tfstate
 *.tfstate.*
-#*.tfvars # TODO: Uncomment?
 !example.tfvars
 *.tfplan
 
-# Ansible files
+# Ansible
+.ansible/
 inventory.yml
 
 # Crash log files

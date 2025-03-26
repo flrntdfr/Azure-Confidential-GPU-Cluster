@@ -1,0 +1,11 @@
+---
+- name: Apply common configuration
+  hosts: all
+  roles:
+    - common
+    - slurm
+
+# - name: Configure shared storage # TODO
+#   hosts: controller
+#   roles:
+#     - storage

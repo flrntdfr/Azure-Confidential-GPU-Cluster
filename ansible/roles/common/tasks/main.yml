@@ -1,0 +1,8 @@
+---
+# Main tasks file for common role
+
+- name: Import package installation tasks
+  ansible.builtin.import_tasks: packages.yml
+
+- name: Import network configuration tasks
+  ansible.builtin.import_tasks: network.yml

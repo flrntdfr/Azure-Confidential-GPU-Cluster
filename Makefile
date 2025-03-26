@@ -42,7 +42,7 @@ summary: 	## Get summary resources running in the cloud
 terraform: ## (Only terraform the cluster)
 	$(MAKE) -C terraform all
 ansible: ## (Only configure the cluster)
-	@echo "TODO"
+	$(MAKE) -C ansible all
 help: 	## Print this help
 	@grep -h -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
 

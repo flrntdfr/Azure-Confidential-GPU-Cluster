@@ -1,0 +1,19 @@
+---
+# Default variables for common role
+
+# NTP servers
+slurm_ntp_servers:
+  - 0.pool.ntp.org
+  - 1.pool.ntp.org
+  - 2.pool.ntp.org
+
+# Additional software packages to install
+slurm_additional_packages: []
+
+# Default users
+slurm_cluster_users:
+  - name: "researcher"
+    comment: "General Research User"
+    shell: "/bin/bash"
+    groups: "users"
+    uid: 3000

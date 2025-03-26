@@ -1,0 +1,14 @@
+---
+# Handlers for common role
+
+- name: Restart munge
+  ansible.builtin.service:
+    name: munge
+    state: restarted
+  become: true
+
+- name: Restart ntp
+  ansible.builtin.service:
+    name: "{{ 'ntp' if ansible_os_family == 'Debian' else 'chronyd' }}"
+    state: restarted
+  become: true

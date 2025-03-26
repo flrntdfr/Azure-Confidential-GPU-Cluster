@@ -1,0 +1,11 @@
+---
+# Main tasks file for common role
+
+- name: Import user management tasks
+  ansible.builtin.import_tasks: users.yml
+
+- name: Import munge configuration tasks
+  ansible.builtin.import_tasks: munge.yml
+
+- name: Import slurm configuration tasks
+  ansible.builtin.import_tasks: slurm.yml
