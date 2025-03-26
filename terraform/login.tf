@@ -89,12 +89,3 @@ resource "azurerm_linux_virtual_machine" "login_node" {
   ]
 }
 
-// Output the public IP address for easy access
-output "login_node_public_ip" {
-  value = azurerm_public_ip.login_pip.ip_address
-}
-
-// Output the login node's private IP address
-output "login_node_private_ip" {
-  value = azurerm_network_interface.login_nic.private_ip_address
-}

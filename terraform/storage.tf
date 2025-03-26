@@ -22,19 +22,3 @@ resource "azurerm_storage_share" "cluster_share" {
   storage_account_id = azurerm_storage_account.cluster_storage.id
   quota              = 100 // GB
 }
-
-// Output the storage account name for compute nodes
-output "storage_account_name" {
-  value = azurerm_storage_account.cluster_storage.name
-}
-
-// Output the file share name for compute nodes
-output "file_share_name" {
-  value = azurerm_storage_share.cluster_share.name
-}
-
-// Output the storage account primary access key (sensitive)
-output "storage_account_key" {
-  value     = azurerm_storage_account.cluster_storage.primary_access_key
-  sensitive = true
-} 

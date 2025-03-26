@@ -24,7 +24,7 @@ module "tee_off" {
 
 // Create the TEE ON SLURM partition
 module "tee_on" {
-  source = "./modules//partition"
+  source = "./modules/partition"
 
   location            = var.location
   resource_group_name = var.resource_group_name

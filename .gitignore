@@ -10,6 +10,9 @@
 !example.tfvars
 *.tfplan
 
+# Ansible files
+inventory.yml
+
 # Crash log files
 crash.log
 
