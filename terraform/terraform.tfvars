@@ -5,7 +5,7 @@ admin_username = "slurmadmin"
 
 tee_off_config = {
   name                     = "tee-off"
-  node_count               = 1                 # Set to 0 to disable partition
+  node_count               = 3                 # Set to 0 to disable partition
   node_size                = "Standard_D2s_v3" // CPU: Standard_D4ads_v5, GPU: Standard_NC40ads_H100_v5
   storage_account_type     = "Standard_LRS"
   disk_size_gb             = 30

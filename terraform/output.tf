@@ -41,8 +41,9 @@ resource "local_file" "ansible_inventory" {
   content  = yamlencode({
     all = {
       vars = {
-        ansible_user                 = var.admin_username
-        ansible_ssh_private_key_file = "~/.ssh/id_rsa"
+        public_login_ip                = azurerm_public_ip.login_pip.ip_address
+        admin_username                 = var.admin_username
+        ansible_ssh_private_key_file   = local_file.private_key_pem.filename
       }
       children = {
         login = {
@@ -57,8 +58,8 @@ resource "local_file" "ansible_inventory" {
           hosts = {
             for idx, ip in module.tee_off.node_private_ips : "tee_off_${idx + 1}" => {
               ansible_host            = ip
-              ansible_ssh_common_args = "-o ProxyCommand=\"ssh -W %h:%p -i ~/.ssh/id_rsa ${var.admin_username}@${azurerm_public_ip.login_pip.ip_address}\""
-              ansible_user            = var.admin_username
+              ansible_ssh_common_args = "-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ProxyCommand='ssh -i {{ ansible_ssh_private_key_file }} -W %h:%p {{ admin_username }}@{{ public_login_ip }}'"
+              ansible_user            = "{{ admin_username }}"
             }
           }
         }
@@ -66,8 +67,8 @@ resource "local_file" "ansible_inventory" {
           hosts = {
             for idx, ip in module.tee_on.node_private_ips : "tee_on_${idx + 1}" => {
               ansible_host            = ip
-              ansible_ssh_common_args = "-o ProxyCommand=\"ssh -W %h:%p -i ~/.ssh/id_rsa ${var.admin_username}@${azurerm_public_ip.login_pip.ip_address}\""
-              ansible_user            = var.admin_username
+              ansible_ssh_common_args = "-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ProxyCommand='ssh -i {{ ansible_ssh_private_key_file }} -W %h:%p {{ admin_username }}@{{ public_login_ip }}'"
+              ansible_user            = "{{ admin_username }}"
             }
           }
         }
