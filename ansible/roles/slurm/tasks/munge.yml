@@ -1,6 +1,14 @@
 ---
 # Configure MUNGE authentication for SLURM
 
+- name: Install common packages for Debian/Ubuntu
+  ansible.builtin.apt:
+    name:
+      - munge
+      - libmunge-dev
+    state: present
+  become: true
+
 - name: Create munge key directory
   ansible.builtin.file:
     path: /etc/munge
@@ -17,11 +25,17 @@
   become: true
   
 - name: Generate munge key on control node
-  shell: /usr/sbin/create-munge-key -f
+  shell: /usr/bin/mungekey -c -f
   become: true
-  when: inventory_hostname in groups['control'] and not munge_key_stat.stat.exists
+  when: inventory_hostname in groups['login'] and not munge_key_stat.stat.exists
 
-
+- name: Fetch munge key from control node
+  ansible.builtin.fetch:
+    src: /etc/munge/munge.key
+    dest: /tmp/munge.key
+    flat: yes
+  become: true
+  when: inventory_hostname in groups['login']
 
 - name: Copy munge key to all nodes
   ansible.builtin.copy:
@@ -33,7 +47,7 @@
   become: true
   when: inventory_hostname not in groups['control']
   notify:
-    - restart munge
+    - Restart munge
 
 - name: Ensure munge service is enabled and running
   ansible.builtin.service:
