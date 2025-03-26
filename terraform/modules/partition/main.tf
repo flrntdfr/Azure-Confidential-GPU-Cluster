@@ -113,7 +113,9 @@ resource "azurerm_linux_virtual_machine" "partition_node" {
     caching              = "ReadWrite"
     storage_account_type = var.partition_config.storage_account_type
     disk_size_gb         = var.partition_config.disk_size_gb
-    security_encryption_type         = "DiskWithVMGuestState" # TODO VMGuestStateOnly ?
+    security_encryption_type         = var.partition_config.security_encryption_type != "" ? var.partition_config.security_encryption_type : null
+    
+    # TODO VMGuestStateOnly ?
     # secure_vm_disk_encryption_set_id = # TODO ?
    }
 

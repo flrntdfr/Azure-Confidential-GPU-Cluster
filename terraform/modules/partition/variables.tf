@@ -5,6 +5,11 @@
 variable "location" {
   description = "Azure region where resources will be created"
   type        = string
+  default     = "westeurope"
+  validation {
+    condition     = contains(["westeurope", "eastus2"], var.location)
+    error_message = "Invalid Azure region. Please use 'westeurope' or 'eastus2'."
+  }
 }
 
 variable "resource_group_name" {
@@ -44,6 +49,7 @@ variable "partition_config" {
     use_ephemeral_disk  = bool
     secure_boot_enabled = bool
     vtpm_enabled        = bool
+    security_encryption_type = string
     image_publisher     = string
     image_offer         = string
     image_sku           = string

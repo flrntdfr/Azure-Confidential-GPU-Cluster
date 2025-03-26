@@ -1,5 +1,5 @@
 # Florent Dufour
-# 03.2025 MUC
+# MUC 03.2025
 
 SHELL                  := /bin/bash
 AZ_RESOURCE_GROUP      := confcluster-rg
@@ -7,10 +7,11 @@ AZ_LOCATION            := westeurope
 
 login: ## Login to Azure
 	az login
-	echo "# Use \`make login\` will populate this file after authentication on Azure portal" > .env
-	echo "export ARM_SUBSCRIPTION_ID=\"$(shell az account show --query id --output tsv)\"" >> .env
-	echo "export ARM_TENANT_ID=\"$(shell az account show --query tenantId --output tsv)\"" >> .env
-	source .env # FIXME
+	-@echo "# Use \`make login\` will populate this file after authentication on Azure portal" > .env
+	-@echo "export ARM_SUBSCRIPTION_ID=\"$(shell az account show --query id --output tsv)\"" >> .env
+	-@echo "export ARM_TENANT_ID=\"$(shell az account show --query tenantId --output tsv)\"" >> .env
+	-@source .env # FIXME
+	@echo "You can now \`source .env\` then \`make bootstrap\` to bootstrap environment"
 bootstrap: login source ## First time setup Azure backend
 	az storage account create \
 		--name "confclustertfstate" \
@@ -24,6 +25,7 @@ bootstrap: login source ## First time setup Azure backend
 		--account-name "confclustertfstate" \
 		--auth-mode login \
 		--public-access "off" 
+	@echo "You can now \`make cluster\` to create the cluster"
 cluster: terraform ansible ssh ## Create and connect to the cluster
 destroy: 	## Destroy the cluster
 	$(MAKE) -C terraform destroy

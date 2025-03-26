@@ -8,6 +8,10 @@ variable "location" {
   description = "Azure region where resources will be created"
   type        = string
   default     = "westeurope"
+  validation {
+    condition     = contains(["westeurope", "eastus2"], var.location)
+    error_message = "Invalid Azure region. Must be one of: westeurope, eastus2."
+  }
 }
 
 // The cluster partitions configuration

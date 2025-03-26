@@ -43,7 +43,7 @@ resource "azurerm_network_security_group" "login_nsg" {
     source_address_prefix      = var.whitelist_ip_prefix
     destination_address_prefix = "*"
   }
-} 
+}
 
 // Associate the security group with the NIC
 resource "azurerm_network_interface_security_group_association" "login_nsg_association" {
