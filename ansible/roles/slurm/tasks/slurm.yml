@@ -1,0 +1,58 @@
+---
+# Configure SLURM controller
+- name: Install SLURM controller packages
+  ansible.builtin.package:
+    name:
+      - slurmctld
+      - slurm-devel
+      - slurm-libpmi
+      - slurm-perlapi
+    state: present
+
+- name: Create SLURM configuration directory
+  ansible.builtin.file:
+    path: /etc/slurm
+    state: directory
+    mode: '0755'
+
+- name: Configure SLURM control node
+  ansible.builtin.template:
+    src: slurm.conf.j2
+    dest: /etc/slurm/slurm.conf
+    mode: '0644'
+  notify: restart slurmctld
+
+- name: Enable and start SLURM controller service
+  ansible.builtin.systemd:
+    name: slurmctld
+    state: started
+    enabled: yes
+    daemon_reload: yes 
+
+# Configure SLURM compute node
+- name: Install SLURM compute node packages
+  ansible.builtin.package:
+    name:
+      - slurm
+      - slurm-libpmi
+    state: present
+
+- name: Create SLURM configuration directory
+  ansible.builtin.file:
+    path: /etc/slurm
+    state: directory
+    mode: '0755'
+
+- name: Configure SLURM compute node
+  ansible.builtin.template:
+    src: slurm.conf.j2
+    dest: /etc/slurm/slurm.conf
+    mode: '0644'
+  notify: restart slurmd
+
+- name: Enable and start SLURM compute node service
+  ansible.builtin.systemd:
+    name: slurmd
+    state: started
+    enabled: yes
+    daemon_reload: yes 

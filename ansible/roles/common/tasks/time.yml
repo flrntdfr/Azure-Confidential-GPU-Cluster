@@ -1,0 +1,26 @@
+---
+- name: Set timezone to Europe/Berlin
+  ansible.builtin.timezone:
+    name: Europe/Berlin
+  become: true
+
+- name: Install chrony
+  ansible.builtin.package:
+    name: chrony
+    state: present
+  become: true
+
+- name: Configure chrony server
+  ansible.builtin.template:
+    src: chrony.conf.j2
+    dest: /etc/chrony/chrony.conf
+    mode: '0644'
+  become: true
+  notify: Restart chronyd
+
+- name: Enable and start chronyd service
+  ansible.builtin.service:
+    name: chronyd
+    state: started
+    enabled: yes
+  become: true

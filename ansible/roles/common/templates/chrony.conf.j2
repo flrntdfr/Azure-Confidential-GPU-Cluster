@@ -1,0 +1,25 @@
+# Default chrony configuration
+driftfile /var/lib/chrony/drift
+
+# Use LRZ servers as time sources
+server ntp1.lrz.de iburst
+server ntp2.lrz.de iburst
+pool ntp.lrz.de iburst
+
+# Allow the system clock to be stepped in the first three updates
+makestep 1.0 3
+
+# Enable kernel synchronization of the real-time clock (RTC)
+rtcsync
+
+# Log files location
+logdir /var/log/chrony
+
+# Access control configuration
+# Allow access from localhost only
+allow 127.0.0.1
+allow ::1
+deny all
+
+# Serve time even if not synchronized to a time source
+local stratum 10 

@@ -1,6 +1,9 @@
 ---
 # Main tasks file for common role
 
+- name: Import time configuration tasks
+  ansible.builtin.import_tasks: time.yml
+
 - name: Import package installation tasks
   ansible.builtin.import_tasks: packages.yml
 

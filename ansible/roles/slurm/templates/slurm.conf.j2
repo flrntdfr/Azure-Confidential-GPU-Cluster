@@ -1,0 +1,33 @@
+# SLURM configuration file
+ClusterName=cloud-slurm
+
+# Control Machine
+SlurmctldHost={{ groups['login'][0] }}
+
+# Authentication
+AuthAltTypes=auth/munge
+AuthAltParameters=/var/run/munge/munge.socket.2
+
+# Node definitions
+{% for host in groups['compute'] %}
+NodeName={{ host }} State=UNKNOWN
+{% endfor %}
+
+# Partition definitions
+PartitionName=TEE-OFF Nodes=ALL Default=YES MaxTime=INFINITE State=UP
+PartitionName=TEE-ON  Nodes=ALL Default=YES MaxTime=INFINITE State=UP
+
+# General configuration
+SelectType=select/linear
+FastSchedule=1
+MaxJobCount=10000
+MinJobAge=300
+SlurmctldTimeout=120
+SlurmdTimeout=120
+InactiveLimit=0
+KillOnBadExit=1
+JobRequeue=1
+ReturnToService=1
+SlurmctldLogFile=/var/log/slurm/slurmctld.log
+SlurmdLogFile=/var/log/slurm/slurmd.log
+JobCompType=jobcomp/none 

@@ -4,7 +4,8 @@
 	"image": "mcr.microsoft.com/devcontainers/base:noble",
 	"features": {
 		"ghcr.io/devcontainers-extra/features/ansible:2.1.0": {
-			"version": "2.18.3"
+			"version": "2.18.3",
+			"ansible-lint": true
 		},
 		"ghcr.io/devcontainers-extra/features/terraform-asdf:2.0.15": {
 			"version": "1.11.2"
@@ -31,7 +32,7 @@
 	// "forwardPorts": [],
 
 	// Use 'postCreateCommand' to run commands after the container is created.
-	// "postCreateCommand": "uname -a",
+	//"postCreateCommand": "pipx install ansible-lint"
 
 	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
 	//"remoteUser": "root"

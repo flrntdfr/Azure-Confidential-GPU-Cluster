@@ -10,8 +10,8 @@ login: ## Login to Azure
 	-@echo "# Use \`make login\` will populate this file after authentication on Azure portal" > .env
 	-@echo "export ARM_SUBSCRIPTION_ID=\"$(shell az account show --query id --output tsv)\"" >> .env
 	-@echo "export ARM_TENANT_ID=\"$(shell az account show --query tenantId --output tsv)\"" >> .env
-	-@source .env # FIXME
-	@echo "You can now \`source .env\` then \`make bootstrap\` to bootstrap environment"
+	-@source terraform/.env # FIXME
+	@echo "You can now \`source terraform/.env\` then \`make bootstrap\` to bootstrap environment"
 bootstrap: login source ## First time setup Azure backend
 	az storage account create \
 		--name "confclustertfstate" \
@@ -29,6 +29,8 @@ bootstrap: login source ## First time setup Azure backend
 cluster: terraform ansible ssh ## Create and connect to the cluster
 destroy: 	## Destroy the cluster
 	$(MAKE) -C terraform destroy
+make unbootstrap: destroy ## Destroy the cluster and bootstrap resources
+	# TODO: Implement unbootstrap
 
 # ------- #
 # UTILITY #
