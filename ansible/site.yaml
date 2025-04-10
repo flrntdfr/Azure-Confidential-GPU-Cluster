@@ -1,11 +1,8 @@
 ---
-- name: Apply common configuration
+- name: Configure the cluster
   hosts: all
+  become: true
   roles:
     - common
+#    - tee # Nvidia drivers need to be installed before slurm
     - slurm
-
-# - name: Configure shared storage # TODO
-#   hosts: controller
-#   roles:
-#     - storage

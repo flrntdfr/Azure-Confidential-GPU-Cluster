@@ -48,7 +48,7 @@ resource "local_file" "ansible_inventory" {
       children = {
         login = {
           hosts = {
-            "login_0" = {
+            (azurerm_linux_virtual_machine.login_node.name) = {
               ansible_host = azurerm_network_interface.login_nic.private_ip_address
               ansible_user = var.admin_username
               ansible_ssh_common_args = "-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ProxyCommand='ssh -i {{ ansible_ssh_private_key_file }} -W %h:%p {{ admin_username }}@{{ public_login_ip }}'"
@@ -60,7 +60,7 @@ resource "local_file" "ansible_inventory" {
         }
         tee_off = {
           hosts = {
-            for idx, ip in module.tee_off.node_private_ips : "tee_off_${idx + 1}" => {
+            for idx, ip in module.tee_off.node_private_ips : "confcluster-tee-off-${idx + 1}" => {
               ansible_host            = ip
               ansible_user            = "{{ admin_username }}"
               ansible_ssh_common_args = "-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ProxyCommand='ssh -i {{ ansible_ssh_private_key_file }} -W %h:%p {{ admin_username }}@{{ public_login_ip }}'"
@@ -69,7 +69,7 @@ resource "local_file" "ansible_inventory" {
         }
         tee_on = {
           hosts = {
-            for idx, ip in module.tee_on.node_private_ips : "tee_on_${idx + 1}" => {
+            for idx, ip in module.tee_on.node_private_ips : "confcluster-tee-on-${idx + 1}" => {
               ansible_host            = ip
               ansible_user            = "{{ admin_username }}"
               ansible_ssh_common_args = "-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ProxyCommand='ssh -i {{ ansible_ssh_private_key_file }} -W %h:%p {{ admin_username }}@{{ public_login_ip }}'"

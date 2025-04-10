@@ -8,7 +8,7 @@
     owner: root
     group: root
     mode: '0644'
-  become: true
+  
 
 - name: Ensure hostname resolution works
   ansible.builtin.command: hostname -f

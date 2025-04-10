@@ -2,6 +2,7 @@
  * SLURM PARTITION MODULE
  * This module creates defines node configuration for a homogeneous SLURM partition
  * https://github.com/Azure/terraform/blob/master/quickstart/201-confidential-vm/main.tf
+ * FIXME hardcoded variables
  */
 
 // Create network security group for partition compute nodes
@@ -24,10 +25,22 @@ resource "azurerm_network_security_group" "partition_nsg" {
     destination_address_prefix = "*"
   }
 
+    security_rule {
+    name                       = "Incoming-to-slurmd"
+    priority                   = 1002
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "6818"
+    source_address_prefix      = "10.0.0.0/16"  // All nodes in the cluster
+    destination_address_prefix = "*"
+  }
+
   // Allow SLURM communication between nodes (all ports)
   security_rule {
     name                       = "SLURM-internal"
-    priority                   = 1002
+    priority                   = 1003
     direction                  = "Inbound"
     access                     = "Allow"
     protocol                   = "*"
@@ -40,7 +53,7 @@ resource "azurerm_network_security_group" "partition_nsg" {
   // Allow outbound communication to all cluster nodes
   security_rule {
     name                       = "SLURM-outbound"
-    priority                   = 1003
+    priority                   = 1004
     direction                  = "Outbound"
     access                     = "Allow"
     protocol                   = "*"
@@ -50,17 +63,21 @@ resource "azurerm_network_security_group" "partition_nsg" {
     destination_address_prefix = "10.0.0.0/16"  // All nodes in the cluster
   }
 
-  // Allow outbound internet access for package updates
-  security_rule {
-    name                       = "Internet-outbound"
-    priority                   = 1004
-    direction                  = "Outbound"
-    access                     = "Allow"
-    protocol                   = "*"
-    source_port_range          = "*"
-    destination_port_range     = "*"
-    source_address_prefix      = "*"
-    destination_address_prefix = "Internet"
+#   // Allow outbound internet access for package updates
+#   security_rule {
+#     name                       = "Internet-outbound"
+#     priority                   = 1005
+#     direction                  = "Outbound"
+#     access                     = "Allow"
+#     protocol                   = "*"
+#     source_port_range          = "*"
+#     destination_port_range     = "*"
+#     source_address_prefix      = "*"
+#     destination_address_prefix = "Internet"
+#   }
+
+  lifecycle {
+    create_before_destroy = true
   }
 }
 
@@ -89,12 +106,17 @@ resource "azurerm_network_interface_security_group_association" "partition_nsg_a
   count                     = var.partition_config.node_count
   network_interface_id      = azurerm_network_interface.partition_nic[count.index].id
   network_security_group_id = azurerm_network_security_group.partition_nsg[0].id
+  depends_on                = [azurerm_network_interface.partition_nic]
+
+  lifecycle {
+    create_before_destroy = false
+  }
 }
 
 // Create the compute nodes
 resource "azurerm_linux_virtual_machine" "partition_node" {
   count               = var.partition_config.node_count
-  name                = "confcluster-${var.partition_config.name}-node-${count.index + 1}"
+  name                = "confcluster-${var.partition_config.name}-${count.index + 1}"
   resource_group_name = var.resource_group_name
   location            = var.location
   size                = var.partition_config.node_size

@@ -9,11 +9,3 @@
 
 - name: Import slurm configuration tasks
   ansible.builtin.import_tasks: slurm.yml
-
-- name: Include control node tasks
-  ansible.builtin.include_tasks: control.yml
-  when: inventory_hostname in groups['login']
-
-- name: Include compute node tasks
-  ansible.builtin.include_tasks: compute.yml
-  when: inventory_hostname in groups['compute']

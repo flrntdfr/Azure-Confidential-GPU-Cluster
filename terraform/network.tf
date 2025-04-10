@@ -17,3 +17,4 @@ resource "azurerm_subnet" "cluster_subnet" {
   virtual_network_name = azurerm_virtual_network.cluster_vnet.name
   address_prefixes     = ["10.0.0.0/16"]
 }
+

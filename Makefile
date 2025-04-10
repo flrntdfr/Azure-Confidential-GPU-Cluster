@@ -1,9 +1,12 @@
+
 # Florent Dufour
 # MUC 03.2025
 
 SHELL                  := /bin/bash
 AZ_RESOURCE_GROUP      := confcluster-rg
 AZ_LOCATION            := westeurope
+
+.PHONY: login bootstrap cluster destroy unbootstrap ssh summary terraform ansible
 
 login: ## Login to Azure
 	az login
@@ -26,7 +29,8 @@ bootstrap: login source ## First time setup Azure backend
 		--auth-mode login \
 		--public-access "off" 
 	@echo "You can now \`make cluster\` to create the cluster"
-cluster: terraform ansible ssh ## Create and connect to the cluster
+
+cluster: terraform ansible ## Create and connect to the cluster
 destroy: 	## Destroy the cluster
 	$(MAKE) -C terraform destroy
 make unbootstrap: destroy ## Destroy the cluster and bootstrap resources

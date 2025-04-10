@@ -1,0 +1,4 @@
+Host confcluster-*
+  User slurmadmin
+  StrictHostKeyChecking no
+  IdentityFile ~/.ssh/slurmadmin.pem

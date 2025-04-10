@@ -43,6 +43,18 @@ resource "azurerm_network_security_group" "login_nsg" {
     source_address_prefix      = var.whitelist_ip_prefix
     destination_address_prefix = "*"
   }
+
+  security_rule {
+    name                       = "Incoming-to-slurmctld"
+    priority                   = 1002
+    direction                  = "Inbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "6817"
+    source_address_prefix      = var.whitelist_ip_prefix
+    destination_address_prefix = "*"
+  }
 }
 
 // Associate the security group with the NIC

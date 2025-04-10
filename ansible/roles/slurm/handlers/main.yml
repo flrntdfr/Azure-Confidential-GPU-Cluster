@@ -5,7 +5,7 @@
   ansible.builtin.service:
     name: munge
     state: restarted
-  become: true
+    daemon_reload: true
 
 - name: Restart slurmctld
   ansible.builtin.systemd:

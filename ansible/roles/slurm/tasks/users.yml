@@ -6,7 +6,6 @@
     name: slurm
     gid: 2001
     state: present
-  become: true
 
 - name: Create slurm user
   ansible.builtin.user:
@@ -17,4 +16,29 @@
     home: /var/lib/slurm
     shell: /bin/bash
     system: true
-  become: true
+
+# Provision shared SSH key for slurmadmin
+
+- name: Ensure .ssh directory exists for slurmadmin
+  ansible.builtin.file:
+    path: /home/slurmadmin/.ssh
+    state: directory
+    owner: slurmadmin
+    group: slurmadmin
+    mode: '0700'
+
+- name: Copy private SSH key to all nodes
+  ansible.builtin.copy:
+    src: ../../../slurmadmin.pem
+    dest: /home/slurmadmin/.ssh/slurmadmin.pem
+    owner: slurmadmin
+    group: slurmadmin
+    mode: '0600'
+
+- name: Copy SSH config
+  ansible.builtin.copy:
+    src: files/ssh_config
+    dest: /home/slurmadmin/.ssh/config
+    owner: slurmadmin
+    group: slurmadmin
+    mode: '0600'

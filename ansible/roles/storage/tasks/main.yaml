@@ -9,5 +9,5 @@
     - /shared/home
     - /shared/apps
     - /shared/data
-  become: true
+  
   when: inventory_hostname in groups['control'] 

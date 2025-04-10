@@ -1,33 +1,57 @@
 # SLURM configuration file
-ClusterName=cloud-slurm
+# {{ now(utc=True, fmt='%Y-%m-%d %H:%M:%S') }}
+ClusterName=confidential-cluster
 
 # Control Machine
-SlurmctldHost={{ groups['login'][0] }}
+SlurmctldHost={{ hostvars[groups['login'][0]]['inventory_hostname'] }}
 
 # Authentication
 AuthAltTypes=auth/munge
-AuthAltParameters=/var/run/munge/munge.socket.2
+AuthAltParameters=/var/run/munge/munge.socket
+
+# Mail Program
+MailProg=/usr/bin/mail
+
+# Slurm
+StateSaveLocation=/var/spool/slurmctld
+SchedulerType=sched/backfill
+SelectType=select/cons_tres
+SelectTypeParameters=CR_Core_Memory
+MpiDefault=pmix_v5
+
+SlurmctldPort=6817
+SlurmdPort=6818
+MpiParams=ports=12000-12999
+
+AccountingStorageType=accounting_storage/none
+JobAcctGatherType=jobacct_gather/none
+
+GresTypes=gpu
 
 # Node definitions
-{% for host in groups['compute'] %}
-NodeName={{ host }} State=UNKNOWN
+# TEE-ON specific node definitions
+{% for host in groups['tee_on'] %}
+NodeName={{ host }} State=UNKNOWN # Gres=gpu:1 
+{% endfor %}
+
+# TEE-OFF specific node definitions
+{% for host in groups['tee_off'] %}
+NodeName={{ host }} State=UNKNOWN # Gres=gpu:1
 {% endfor %}
 
 # Partition definitions
-PartitionName=TEE-OFF Nodes=ALL Default=YES MaxTime=INFINITE State=UP
-PartitionName=TEE-ON  Nodes=ALL Default=YES MaxTime=INFINITE State=UP
 
-# General configuration
-SelectType=select/linear
-FastSchedule=1
-MaxJobCount=10000
-MinJobAge=300
-SlurmctldTimeout=120
-SlurmdTimeout=120
-InactiveLimit=0
-KillOnBadExit=1
-JobRequeue=1
-ReturnToService=1
-SlurmctldLogFile=/var/log/slurm/slurmctld.log
-SlurmdLogFile=/var/log/slurm/slurmd.log
-JobCompType=jobcomp/none 
+{% set tee_on_count = groups['tee_on'] | length %}
+{% if tee_on_count == 1 %}
+PartitionName=TEE-ON  Nodes=confcluster-tee-on-1 Default=YES MaxTime=INFINITE State=UP
+{% elif tee_on_count > 1 %}
+PartitionName=TEE-ON  Nodes=confcluster-tee-on-[1-{{ tee_on_count }}] Default=YES MaxTime=INFINITE State=UP
+{% endif %}
+
+{% set tee_off_count = groups['tee_off'] | length %}
+{% if tee_off_count == 1 %}
+PartitionName=TEE-OFF Nodes=confcluster-tee-off-1 Default=NO MaxTime=INFINITE State=UP
+{% elif tee_off_count > 1 %}
+PartitionName=TEE-OFF Nodes=confcluster-tee-off-[1-{{ tee_off_count }}] Default=NO MaxTime=INFINITE State=UP
+{% endif %}
+

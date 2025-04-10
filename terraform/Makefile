@@ -14,7 +14,7 @@ apply: ## Apply the Terraform plan
 output: ## Print the Terraform output
 	$(TF) output
 ssh: ## Connect to the cluster
-	ssh $(shell terraform output login_node_public_ip) -l slurmadmin -i ../private_key.pem
+	ssh $(shell terraform output login_node_public_ip) -l slurmadmin -i ../slurmadmin.pem
 destroy: ## Destroy the Terraform cloud resources
 	terraform apply -auto-approve -destroy
 help: 	## Print this help

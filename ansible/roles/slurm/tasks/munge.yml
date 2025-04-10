@@ -7,7 +7,6 @@
       - munge
       - libmunge-dev
     state: present
-  become: true
 
 - name: Create munge key directory
   ansible.builtin.file:
@@ -16,25 +15,35 @@
     mode: '0700'
     owner: munge
     group: munge
-  become: true
 
 - name: Check if munge key exists on control node
   ansible.builtin.stat:
     path: /etc/munge/munge.key
   register: munge_key_stat
-  become: true
-  
+
 - name: Generate munge key on control node
-  shell: /usr/bin/mungekey -c -f
-  become: true
-  when: inventory_hostname in groups['login'] and not munge_key_stat.stat.exists
+  ansible.builtin.shell: /usr/sbin/mungekey -c -f
+  args:
+    creates: /etc/munge/munge.key
+  when: inventory_hostname in groups['login']
+
+- name: Debug - Calculate SHA1 sum of munge key
+  ansible.builtin.shell: sha1sum /etc/munge/munge.key
+  register: munge_key_sha1sum_result
+  when: inventory_hostname in groups['login']
+  changed_when: false
+  check_mode: no
+
+- name: Debug - Print SHA1 sum
+  ansible.builtin.debug:
+    msg: "SHA1sum of /etc/munge/munge.key on {{ inventory_hostname }}: {{ munge_key_sha1sum_result.stdout }}"
+  when: inventory_hostname in groups['login']
 
 - name: Fetch munge key from control node
   ansible.builtin.fetch:
     src: /etc/munge/munge.key
     dest: /tmp/munge.key
-    flat: yes
-  become: true
+    flat: true
   when: inventory_hostname in groups['login']
 
 - name: Copy munge key to all nodes
@@ -44,7 +53,6 @@
     owner: munge
     group: munge
     mode: '0400'
-  become: true
   when: inventory_hostname not in groups['control']
   notify:
     - Restart munge
@@ -53,5 +61,4 @@
   ansible.builtin.service:
     name: munge
     state: started
-    enabled: yes
-  become: true 
+    enabled: true

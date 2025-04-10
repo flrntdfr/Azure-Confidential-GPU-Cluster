@@ -2,9 +2,9 @@
 driftfile /var/lib/chrony/drift
 
 # Use LRZ servers as time sources
+server ntp.lrz.de iburst
 server ntp1.lrz.de iburst
 server ntp2.lrz.de iburst
-pool ntp.lrz.de iburst
 
 # Allow the system clock to be stepped in the first three updates
 makestep 1.0 3

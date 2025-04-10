@@ -1,13 +1,15 @@
 ---
-# Configure SLURM controller
-- name: Install SLURM controller packages
+- name: Install SLURM base packages
   ansible.builtin.package:
     name:
-      - slurmctld
-      - slurm-devel
-      - slurm-libpmi
-      - slurm-perlapi
+      - slurm-wlm={{ slurm_version_string }}
+      - slurm-wlm-basic-plugins={{ slurm_version_string }}
+      - mailutils
+      - libpmix-dev
+    update_cache: true
     state: present
+  vars:
+    slurm_version_string: "23.11.4-1.2ubuntu5"
 
 - name: Create SLURM configuration directory
   ansible.builtin.file:
@@ -15,44 +17,44 @@
     state: directory
     mode: '0755'
 
-- name: Configure SLURM control node
+- name: Create SLURM configuration file
   ansible.builtin.template:
     src: slurm.conf.j2
     dest: /etc/slurm/slurm.conf
     mode: '0644'
-  notify: restart slurmctld
+
+- name: Create SLURM state directory
+  ansible.builtin.file:
+    path: /var/spool/slurmctld
+    state: directory
+    mode: '0755'
+    owner: slurm
+    group: slurm
+
+# Control Node tasks
 
 - name: Enable and start SLURM controller service
   ansible.builtin.systemd:
     name: slurmctld
     state: started
-    enabled: yes
-    daemon_reload: yes 
+    enabled: true
+    daemon_reload: true
+  when: inventory_hostname in groups['login']
+  notify: Restart slurmctld
 
-# Configure SLURM compute node
-- name: Install SLURM compute node packages
-  ansible.builtin.package:
-    name:
-      - slurm
-      - slurm-libpmi
-    state: present
+# Compute node tasks
 
-- name: Create SLURM configuration directory
-  ansible.builtin.file:
-    path: /etc/slurm
-    state: directory
-    mode: '0755'
-
-- name: Configure SLURM compute node
-  ansible.builtin.template:
-    src: slurm.conf.j2
-    dest: /etc/slurm/slurm.conf
+- name: Copy GRES configuration file to compute nodes
+  ansible.builtin.copy:
+    src: gres.conf
+    dest: /etc/slurm/gres.conf
     mode: '0644'
-  notify: restart slurmd
+  when: inventory_hostname in groups['compute']
 
 - name: Enable and start SLURM compute node service
   ansible.builtin.systemd:
     name: slurmd
     state: started
-    enabled: yes
-    daemon_reload: yes 
+    enabled: true
+    daemon_reload: true
+  when: inventory_hostname in groups['compute']
