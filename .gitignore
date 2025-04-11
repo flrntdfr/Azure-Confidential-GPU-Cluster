@@ -12,6 +12,7 @@
 # Ansible
 .ansible/
 inventory.yml
+facts_cache/
 
 # Crash log files
 crash.log

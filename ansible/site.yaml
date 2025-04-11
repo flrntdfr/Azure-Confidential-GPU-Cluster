@@ -1,7 +1,6 @@
 ---
 - name: Configure the cluster
   hosts: all
-  become: true
   roles:
     - common
 #    - tee # Nvidia drivers need to be installed before slurm

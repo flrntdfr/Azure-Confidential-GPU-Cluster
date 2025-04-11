@@ -5,11 +5,14 @@
       - slurm-wlm={{ slurm_version_string }}
       - slurm-wlm-basic-plugins={{ slurm_version_string }}
       - mailutils
-      - libpmix-dev
+      - libpmix2 
+      - libpmix-bin
     update_cache: true
     state: present
   vars:
     slurm_version_string: "23.11.4-1.2ubuntu5"
+
+# Slurm configuration tasks
 
 - name: Create SLURM configuration directory
   ansible.builtin.file:
@@ -31,7 +34,21 @@
     owner: slurm
     group: slurm
 
-# Control Node tasks
+# PMIx configuration tasks
+
+- name: Create custom ld.so.conf file for PMIx
+  ansible.builtin.copy:
+    dest: /etc/ld.so.conf.d/pmix.conf
+    content: /usr/lib/x86_64-linux-gnu
+    owner: root
+    group: root
+    mode: '0644'
+
+- name: Run ldconfig to update shared library cache
+  ansible.builtin.command: ldconfig
+  changed_when: true
+
+# Control node tasks
 
 - name: Enable and start SLURM controller service
   ansible.builtin.systemd:
@@ -42,7 +59,7 @@
   when: inventory_hostname in groups['login']
   notify: Restart slurmctld
 
-# Compute node tasks
+# Compute nodes tasks
 
 - name: Copy GRES configuration file to compute nodes
   ansible.builtin.copy:

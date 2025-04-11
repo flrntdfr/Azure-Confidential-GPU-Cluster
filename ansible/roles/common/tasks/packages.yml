@@ -7,10 +7,18 @@
     upgrade: true
     cache_valid_time: 3600
 
-- name: Install common packages for Debian/Ubuntu
+- name: Install common packages
   ansible.builtin.apt:
     name:
       - build-essential
       - git
       - chrony
     state: present
+
+- name: Reboot the server - System restart required
+  ansible.builtin.reboot:
+    reboot_timeout: 600  # 10 minutes
+    pre_reboot_delay: 0  # Seconds to wait before rebooting
+    post_reboot_delay: 30  # Wait after reboot before continuing
+    test_command: whoami  # Command to verify system is back up
+    msg: "Rebooting by Ansible"  # Message to display to users

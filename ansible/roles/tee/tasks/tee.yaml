@@ -1,4 +1,4 @@
-- name: Reboot the server
+- name: Reboot the server - System restart required
   ansible.builtin.reboot:
     reboot_timeout: 600  # 10 minutes
     pre_reboot_delay: 0  # Seconds to wait before rebooting

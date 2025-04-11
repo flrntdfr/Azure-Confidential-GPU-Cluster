@@ -8,7 +8,6 @@
     owner: root
     group: root
     mode: '0644'
-  
 
 - name: Ensure hostname resolution works
   ansible.builtin.command: hostname -f
@@ -18,3 +17,29 @@
 - name: Display hostname resolution result
   ansible.builtin.debug:
     var: hostname_result.stdout
+
+# Provision shared SSH key for slurmadmin
+
+- name: Ensure .ssh directory exists for slurmadmin
+  ansible.builtin.file:
+    path: /home/slurmadmin/.ssh
+    state: directory
+    owner: slurmadmin
+    group: slurmadmin
+    mode: '0700'
+
+- name: Copy private SSH key to all nodes
+  ansible.builtin.copy:
+    src: ../../../slurmadmin.pem
+    dest: /home/slurmadmin/.ssh/slurmadmin.pem
+    owner: slurmadmin
+    group: slurmadmin
+    mode: '0600'
+
+- name: Copy SSH config
+  ansible.builtin.copy:
+    src: files/ssh_config
+    dest: /home/slurmadmin/.ssh/config
+    owner: slurmadmin
+    group: slurmadmin
+    mode: '0600'

@@ -49,7 +49,7 @@ resource "local_file" "ansible_inventory" {
         login = {
           hosts = {
             (azurerm_linux_virtual_machine.login_node.name) = {
-              ansible_host = azurerm_network_interface.login_nic.private_ip_address
+              ansible_host = "{{ public_login_ip }}"
               ansible_user = var.admin_username
               ansible_ssh_common_args = "-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ProxyCommand='ssh -i {{ ansible_ssh_private_key_file }} -W %h:%p {{ admin_username }}@{{ public_login_ip }}'"
             }

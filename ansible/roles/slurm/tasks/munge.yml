@@ -1,7 +1,7 @@
 ---
 # Configure MUNGE authentication for SLURM
 
-- name: Install common packages for Debian/Ubuntu
+- name: Install munge common packages
   ansible.builtin.apt:
     name:
       - munge
@@ -32,7 +32,7 @@
   register: munge_key_sha1sum_result
   when: inventory_hostname in groups['login']
   changed_when: false
-  check_mode: no
+  check_mode: false
 
 - name: Debug - Print SHA1 sum
   ansible.builtin.debug:

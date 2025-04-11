@@ -63,22 +63,13 @@ resource "azurerm_network_security_group" "partition_nsg" {
     destination_address_prefix = "10.0.0.0/16"  // All nodes in the cluster
   }
 
-#   // Allow outbound internet access for package updates
-#   security_rule {
-#     name                       = "Internet-outbound"
-#     priority                   = 1005
-#     direction                  = "Outbound"
-#     access                     = "Allow"
-#     protocol                   = "*"
-#     source_port_range          = "*"
-#     destination_port_range     = "*"
-#     source_address_prefix      = "*"
-#     destination_address_prefix = "Internet"
-#   }
-
   lifecycle {
     create_before_destroy = true
   }
+
+  depends_on = [
+    azurerm_network_interface.partition_nic,
+  ]
 }
 
 // Create network interfaces for each compute node
