@@ -10,6 +10,7 @@ The main commands include:
 ~$ make login     # Login to Azure
 ~$ make bootstrap # First time setup
 ~$ make cluster   # Create the cluster
+~$ make ssh       # SSH into the login node
 # ... work in the cluster: sinfo, srun, sbatch, etc. ...
 ~$ make destroy   # Destroy the cluster
 ```
@@ -20,7 +21,7 @@ All commands are documented with:
 ~$ make help
 ```
 
-Note: a [Dev Container](.devcontainer) is provided for convenience.
+**Note**: a [Dev Container](.devcontainer) is provided for convenience.
 
 # Requirements
 
