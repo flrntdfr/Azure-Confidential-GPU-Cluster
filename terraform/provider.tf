@@ -4,17 +4,17 @@ terraform {
     // https://registry.terraform.io/providers/hashicorp/azurerm
     azurerm = {
       source  = "hashicorp/azurerm"
-      version = "4.26.0"
+      version = "4.32.0"
     }
     // https://registry.terraform.io/providers/hashicorp/local
     local = {
       source  = "hashicorp/local"
-      version = "2.5.2"
+      version = "2.5.3"
     }
     // https://registry.terraform.io/providers/hashicorp/tls
     tls = {
       source  = "hashicorp/tls"
-      version = "4.0.6"
+      version = "4.1.0"
     }
   }
 

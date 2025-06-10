@@ -9,7 +9,7 @@ variable "location" {
   type        = string
   default     = "westeurope"
   validation {
-    condition     = contains(["westeurope", "eastus2"], var.location)
+    condition     = contains(["westeurope", "eastus2"], var.location) # As of mid-2025
     error_message = "Invalid Azure region. Must be one of: westeurope, eastus2."
   }
 }
