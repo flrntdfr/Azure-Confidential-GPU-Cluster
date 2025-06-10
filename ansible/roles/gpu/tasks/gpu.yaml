@@ -1,0 +1,41 @@
+- name: Push cGPU onboarding package
+  ansible.builtin.copy:
+    src: "files/cgpu-onboarding-package/{{ cgpu_version }}"
+    dest: "/opt/cgpu-onboarding-package"
+    mode: "0755"
+
+- name: Prepare kernel (cGPU onboarding)
+  ansible.builtin.command:
+    cmd: "bash step-0-prepare-kernel.sh --enable-proposed"
+    chdir: "/opt/cgpu-onboarding-package/{{ cgpu_version }}"
+  args:
+    creates: "/var/lib/cgpu/step_0.ok"  # Add a flag file to make the task idempotent
+  register: step_0
+  failed_when: step_0.rc != 0
+  #notify: Reboot
+
+- name: Install GPU driver (cGPU onboarding)
+  ansible.builtin.command:
+    cmd: "bash step-1-install-gpu-driver.sh"
+    chdir: "/opt/cgpu-onboarding-package/{{ cgpu_version }}"
+  args:
+    creates: "/var/lib/cgpu/step_1.ok"  # Add a flag file to make the task idempotent
+  register: step_1
+  failed_when: step_1.rc != 0
+
+- name: Attestation (cGPU onboarding)
+  ansible.builtin.command:
+    cmd: "bash step-2-attestation.sh"
+    chdir: "/opt/cgpu-onboarding-package/{{ cgpu_version }}"
+  args:
+    creates: "/var/lib/cgpu/step_2.ok"  # Add a flag file to make the task idempotent
+  register: step_2
+  failed_when: step_2.rc != 0
+
+- name: Display log file contents
+  ansible.builtin.shell: cat /opt/cgpu-onboarding-package/{{ cgpu_version }}/logs/all-operation.log
+  register: log_contents
+
+- name: Show log contents
+  ansible.builtin.debug:
+    var: log_contents.stdout_lines

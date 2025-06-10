@@ -1,0 +1,8 @@
+---
+- name: Reboot
+  ansible.builtin.reboot:
+    reboot_timeout: 600         # 10 minutes
+    pre_reboot_delay: 0         # 0 seconds
+    post_reboot_delay: 30       # 30 seconds
+    test_command: whoami        # Command to verify system is back up
+    msg: "Rebooting as required by cGPU onboarding"

@@ -62,5 +62,5 @@ sudo apt -o DPkg::Lock::Timeout=300 update
 sudo sed -i 's/#$nrconf{restart} = '"'"'i'"'"';/$nrconf{restart} = '"'"'a'"'"';/g' /etc/needrestart/needrestart.conf
 echo Y | sudo apt -o DPkg::Lock::Timeout=300 upgrade
 
-echo "Rebooting system to apply kernel updates..."
-sudo reboot
+# echo "Rebooting system to apply kernel updates..."
+# sudo reboot

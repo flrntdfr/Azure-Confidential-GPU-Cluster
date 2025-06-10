@@ -1,0 +1,3 @@
+---
+# Default version of cGPU package to use
+cgpu_version: "V3.3.2"

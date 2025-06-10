@@ -2,9 +2,9 @@
 # Florent Dufour
 # MUC 03.2025
 
-SHELL                  := /bin/bash
-AZ_RESOURCE_GROUP      := confcluster-rg
-AZ_LOCATION            := westeurope
+SHELL             := /bin/bash
+AZ_RESOURCE_GROUP := confcluster-rg
+AZ_LOCATION       := westeurope
 
 .PHONY: login bootstrap cluster destroy unbootstrap ssh summary terraform ansible
 

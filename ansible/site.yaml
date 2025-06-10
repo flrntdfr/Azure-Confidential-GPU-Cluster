@@ -2,6 +2,6 @@
 - name: Configure the cluster
   hosts: all
   roles:
-    - common
-#    - tee # Nvidia drivers need to be installed before slurm
-    - slurm
+    - role: common
+    - role: gpu # Nvidia drivers need to be installed before slurm
+#    - role: slurm
