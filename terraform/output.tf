@@ -51,7 +51,7 @@ resource "local_file" "ansible_inventory" {
             (azurerm_linux_virtual_machine.login_node.name) = {
               ansible_host = "{{ public_login_ip }}"
               ansible_user = var.admin_username
-              ansible_ssh_common_args = "-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ProxyCommand='ssh -i {{ ansible_ssh_private_key_file }} -W %h:%p {{ admin_username }}@{{ public_login_ip }}'"
+              ansible_ssh_common_args = "-o ProxyCommand='ssh -i {{ ansible_ssh_private_key_file }} -W %h:%p {{ admin_username }}@{{ public_login_ip }}'"
             }
           }
           children = {
@@ -63,7 +63,7 @@ resource "local_file" "ansible_inventory" {
             for idx, ip in module.tee_off.node_private_ips : "confcluster-tee-off-${idx + 1}" => {
               ansible_host            = ip
               ansible_user            = "{{ admin_username }}"
-              ansible_ssh_common_args = "-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ProxyCommand='ssh -i {{ ansible_ssh_private_key_file }} -W %h:%p {{ admin_username }}@{{ public_login_ip }}'"
+              ansible_ssh_common_args = "-o ProxyCommand='ssh -i {{ ansible_ssh_private_key_file }} -W %h:%p {{ admin_username }}@{{ public_login_ip }}'"
             }
           }
         }
@@ -72,7 +72,7 @@ resource "local_file" "ansible_inventory" {
             for idx, ip in module.tee_on.node_private_ips : "confcluster-tee-on-${idx + 1}" => {
               ansible_host            = ip
               ansible_user            = "{{ admin_username }}"
-              ansible_ssh_common_args = "-o StrictHostKeyChecking=no -o UserKnownHostsFile=/dev/null -o ProxyCommand='ssh -i {{ ansible_ssh_private_key_file }} -W %h:%p {{ admin_username }}@{{ public_login_ip }}'"
+              ansible_ssh_common_args = "-o ProxyCommand='ssh -i {{ ansible_ssh_private_key_file }} -W %h:%p {{ admin_username }}@{{ public_login_ip }}'"
             }
           }
         }
