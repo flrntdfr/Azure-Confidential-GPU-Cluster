@@ -1,6 +1,7 @@
 // https://aka.ms/devcontainer.json
 {
 	"name": "Confidential Cluster",
+	// https://mcr.microsoft.com/en-us/artifact/mar/devcontainers/base/tags
 	"image": "mcr.microsoft.com/devcontainers/base:noble",
 	//https://containers.dev/features
 	"features": {
@@ -37,11 +38,11 @@
 	// Use 'postCreateCommand' to run commands after the container is created.
 	"postCreateCommand": "",
 
-	// Mount GPG directory from host
+	// Mount GPG directory from host to sign git commits
 	"mounts": [
 		"source=${localEnv:HOME}/.gnupg,target=/home/vscode/.gnupg,type=bind,consistency=cached"
 	]
 
 	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
-	//"remoteUser": "root"
+	//"remoteUser": ""
 }

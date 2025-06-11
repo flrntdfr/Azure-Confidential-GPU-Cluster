@@ -10,7 +10,7 @@ AZ_LOCATION       := westeurope
 
 login: ## Login to Azure
 	az login
-	-@echo "# Use \`make login\` will populate this file after authentication on Azure portal" > .env
+	-@echo "# Use \`make login\` to populate this file" > .env
 	-@echo "export ARM_SUBSCRIPTION_ID=\"$(shell az account show --query id --output tsv)\"" >> .env
 	-@echo "export ARM_TENANT_ID=\"$(shell az account show --query tenantId --output tsv)\"" >> .env
 	-@source terraform/.env # FIXME
