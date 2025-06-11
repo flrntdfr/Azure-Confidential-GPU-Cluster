@@ -1,3 +1,4 @@
 ---
 # Default version of cGPU package to use
+# https://github.com/Azure/az-cgpu-onboarding/releases
 cgpu_version: "V3.3.2"
