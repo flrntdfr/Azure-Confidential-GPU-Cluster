@@ -24,10 +24,6 @@ resource "azurerm_network_interface" "login_nic" {
     private_ip_address            = "10.0.1.1"
     public_ip_address_id          = azurerm_public_ip.login_pip.id
   }
-
-  # depends_on = [
-  #   azurerm_linux_virtual_machine.login_node
-  # ]
 }
 
 // The network security group for the login node
@@ -97,11 +93,5 @@ resource "azurerm_linux_virtual_machine" "login_node" {
     sku       = "server"
     version   = "latest"
   }
-
-  # Storage account keys must be retrieved after the storage account has been created
-  depends_on = [
-    azurerm_storage_account.cluster_storage,
-    azurerm_storage_share.cluster_share
-  ]
 }
 

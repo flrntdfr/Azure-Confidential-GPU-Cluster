@@ -15,11 +15,6 @@ module "tee_off" {
   common_tags         = var.common_tags
 
   partition_config = var.tee_off_config
-
-  depends_on = [
-    azurerm_storage_account.cluster_storage,
-    azurerm_storage_share.cluster_share
-  ]
 }
 
 // Create the TEE ON SLURM partition
@@ -34,11 +29,6 @@ module "tee_on" {
   common_tags         = var.common_tags
 
   partition_config = var.tee_on_config
-
-  depends_on = [
-    azurerm_storage_account.cluster_storage,
-    azurerm_storage_share.cluster_share
-  ]
 }
 
 // Output the private IP addresses for both partitions

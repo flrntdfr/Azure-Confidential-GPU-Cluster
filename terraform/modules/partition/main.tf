@@ -66,10 +66,6 @@ resource "azurerm_network_security_group" "partition_nsg" {
   lifecycle {
     create_before_destroy = true
   }
-
-  depends_on = [
-    azurerm_network_interface.partition_nic,
-  ]
 }
 
 // Create network interfaces for each compute node
@@ -97,7 +93,6 @@ resource "azurerm_network_interface_security_group_association" "partition_nsg_a
   count                     = var.partition_config.node_count
   network_interface_id      = azurerm_network_interface.partition_nic[count.index].id
   network_security_group_id = azurerm_network_security_group.partition_nsg[0].id
-  depends_on                = [azurerm_network_interface.partition_nic]
 
   lifecycle {
     create_before_destroy = false
