@@ -1,8 +1,23 @@
-- name: Push cGPU onboarding package
-  ansible.builtin.copy:
-    src: "files/cgpu-onboarding-package/{{ cgpu_version }}"
-    dest: "/opt/cgpu-onboarding-package"
-    mode: "0755"
+- name: Download cGPU onboarding package
+  ansible.builtin.get_url:
+    url: "https://github.com/Azure/az-cgpu-onboarding/releases/download/{{ cgpu_version }}/cgpu-onboarding-package.tar.gz"
+    dest: "/opt/cgpu-onboarding-package.tar.gz"
+    mode: "0644"
+
+- name: Extract cGPU onboarding package
+  ansible.builtin.unarchive:
+    src: "/opt/cgpu-onboarding-package.tar.gz"
+    dest: "/opt"
+    remote_src: yes
+    creates: "/opt/cgpu-onboarding-package"
+
+# ----- BEGIN HACK -----
+
+- name: Prevent unmanaged reboot by commenting the last line of step-0-prepare-kernel.sh
+  ansible.builtin.shell: |
+    sed -i '$ s/^/# /' "/opt/cgpu-onboarding-package/{{ cgpu_version }}/step-0-prepare-kernel.sh"
+
+# ----- END HACK -----
 
 - name: Prepare kernel (cGPU onboarding)
   ansible.builtin.command:
@@ -12,7 +27,7 @@
     creates: "/var/lib/cgpu/step_0.ok"  # Add a flag file to make the task idempotent
   register: step_0
   failed_when: step_0.rc != 0
-  #notify: Reboot
+  notify: Reboot
 
 - name: Install GPU driver (cGPU onboarding)
   ansible.builtin.command:
