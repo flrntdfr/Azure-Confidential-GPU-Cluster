@@ -4,4 +4,4 @@
   roles:
     - role: common
     - role: gpu # Nvidia drivers need to be installed before slurm
-#    - role: slurm
+    - role: slurm

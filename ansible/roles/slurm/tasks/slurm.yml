@@ -1,18 +1,19 @@
 ---
+
+# Slurm dependencies
+
 - name: Install SLURM base packages
   ansible.builtin.package:
     name:
       - slurm-wlm={{ slurm_version_string }}
       - slurm-wlm-basic-plugins={{ slurm_version_string }}
       - mailutils
-      - libpmix2 
+      - libpmix2
       - libpmix-bin
     update_cache: true
     state: present
-  vars:
-    slurm_version_string: "23.11.4-1.2ubuntu5"
 
-# Slurm configuration tasks
+# Slurm configuration
 
 - name: Create SLURM configuration directory
   ansible.builtin.file:
@@ -34,7 +35,7 @@
     owner: slurm
     group: slurm
 
-# PMIx configuration tasks
+# PMIx configuration
 
 - name: Create custom ld.so.conf file for PMIx
   ansible.builtin.copy:

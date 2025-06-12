@@ -16,4 +16,3 @@
     home: /var/lib/slurm
     shell: /bin/bash
     system: true
-

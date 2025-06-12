@@ -1,5 +1,5 @@
 ---
-# Main tasks file for common role
+# Main tasks file for the common role
 
 - name: Import package installation tasks
   ansible.builtin.import_tasks: packages.yml

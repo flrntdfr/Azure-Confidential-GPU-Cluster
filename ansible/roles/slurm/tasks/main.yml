@@ -1,5 +1,5 @@
 ---
-# Main tasks file for common role
+# Main tasks file for slurm role
 
 - name: Import user management tasks
   ansible.builtin.import_tasks: users.yml

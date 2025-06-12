@@ -1,5 +1,5 @@
 ---
-# Main tasks file for common role
+# Main tasks file for the gpu role
 
 - name: Include GPU tasks for tee_on nodes
   ansible.builtin.import_tasks: gpu.yaml
