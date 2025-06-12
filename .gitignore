@@ -2,6 +2,8 @@
 .DS_Store
 .env
 .vscode/
+*.pem
+*.key
 
 # Terraform
 .terraform/
@@ -17,7 +19,3 @@ facts_cache/
 
 # Crash log files
 crash.log
-
-# Exclude sensitive files
-*.pem
-*.key
