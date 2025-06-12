@@ -33,12 +33,12 @@ GresTypes=gpu
 # Node definitions
 # TEE-ON specific node definitions
 {% for host in groups['tee_on'] %}
-NodeName={{ host }} State=UNKNOWN # Gres=gpu:1 
+NodeName={{ host }} State=UNKNOWN CPUs=40 CoresPerSocket=40 Sockets=1 ThreadsPerCore=1 Gres=gpu:1 
 {% endfor %}
 
 # TEE-OFF specific node definitions
 {% for host in groups['tee_off'] %}
-NodeName={{ host }} State=UNKNOWN # Gres=gpu:1
+NodeName={{ host }} State=UNKNOWN CPUs=40 CoresPerSocket=40 Sockets=1 ThreadsPerCore=1 Gres=gpu:1
 {% endfor %}
 
 # Partition definitions

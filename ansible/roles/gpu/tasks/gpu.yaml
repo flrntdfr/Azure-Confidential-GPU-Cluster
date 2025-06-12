@@ -1,15 +1,29 @@
+- name: Create remote_tmp directory
+  ansible.builtin.file:
+    path: /root/.ansible/tmp
+    state: directory
+    mode: '0755'
+    owner: root
+    group: root
+
 - name: Download cGPU onboarding package
   ansible.builtin.get_url:
     url: "https://github.com/Azure/az-cgpu-onboarding/releases/download/{{ cgpu_version }}/cgpu-onboarding-package.tar.gz"
     dest: "/opt/cgpu-onboarding-package.tar.gz"
     mode: "0644"
 
-- name: Extract cGPU onboarding package
+- name: Create parent directory for cGPU package
+  ansible.builtin.file:
+    path: "/opt/cgpu-onboarding-package/{{ cgpu_version }}"
+    state: directory
+    mode: "0755"
+
+- name: Extract cGPU onboarding package to parent directory
   ansible.builtin.unarchive:
     src: "/opt/cgpu-onboarding-package.tar.gz"
-    dest: "/opt"
-    remote_src: yes
-    creates: "/opt/cgpu-onboarding-package"
+    dest: "/opt/cgpu-onboarding-package/{{ cgpu_version }}"
+    remote_src: true
+    extra_opts: "--strip-components=1"
 
 # ----- BEGIN HACK -----
 
@@ -28,6 +42,10 @@
   register: step_0
   failed_when: step_0.rc != 0
   notify: Reboot
+
+- name: Flush handlers to trigger reboot now
+  meta: flush_handlers
+  when: inventory_hostname in groups['tee_on']
 
 - name: Install GPU driver (cGPU onboarding)
   ansible.builtin.command:
