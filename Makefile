@@ -1,12 +1,15 @@
-
 # Florent Dufour
-# MUC 03.2025
+# 2025 - MUC
 
 SHELL             := /bin/bash
 AZ_RESOURCE_GROUP := confcluster-rg
 AZ_LOCATION       := westeurope
 
-.PHONY: login bootstrap cluster destroy unbootstrap ssh summary terraform ansible
+.PHONY: login bootstrap unbootstrap cluster-dev-cpu cluster-dev-gpu ssh summary ansible destroy help
+
+# ----- #
+# AZURE #
+# ----- #
 
 login: ## Login to Azure
 	az login
@@ -30,28 +33,32 @@ bootstrap: login source ## First time setup Azure backend
 		--public-access "off" 
 	@echo "You can now \`make cluster\` to create the cluster"
 
-cluster: terraform ansible ## Create and connect to the cluster
-destroy: 	## Destroy the cluster
-	$(MAKE) -C terraform destroy
 make unbootstrap: destroy ## Destroy the cluster and bootstrap resources
 	# TODO: Implement unbootstrap
 
+
 # ------- #
-# UTILITY #
+# CLUSTER #
 # ------- #
+
+cluster-dev-cpu:
+	$(MAKE) -C terraform VAR_FILE=environments/dev-cpu.tfvars all
+cluster-dev-gpu:
+	$(MAKE) -C terraform VAR_FILE=environments/dev-gpu.tfvars all
 
 ssh: 	## Connect to the running cluster
 	-$(MAKE) -C terraform ssh
 summary: 	## Get summary resources running in the cloud
 	az resource list --resource-group confcluster-rg --output table 
 	$(MAKE) -C terraform output
-terraform: ## (Only terraform the cluster)
-	$(MAKE) -C terraform all
 ansible: ## (Only configure the cluster)
 	$(MAKE) -C ansible all
+destroy: 	## Destroy the cluster
+	$(MAKE) -C terraform destroy
+
+# ------- #
+# UTILITY #
+# ------- #
+
 help: 	## Print this help
 	@grep -h -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'
-
-
-test:
-	@export PROUT=ROUTPTUFGSDFG

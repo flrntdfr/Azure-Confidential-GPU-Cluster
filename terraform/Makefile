@@ -3,12 +3,15 @@
 
 TF   := terraform # terraform, tofu
 PLAN := plan.tfplan
+VAR_FILE ?=
+TF_VAR_FILE := $(if $(VAR_FILE),-var-file=$(VAR_FILE),)
 
 all: init plan apply output ## Create the cluster with Terraform
+
 init: ## Initialize the Terraform configuration
 	$(TF) init
 plan: ## Create a Terraform plan
-	$(TF) plan -out=$(PLAN)
+	$(TF) plan -out=$(PLAN) $(TF_VAR_FILE)
 apply: ## Apply the Terraform plan
 	$(TF) apply -auto-approve $(PLAN)
 output: ## Print the Terraform output

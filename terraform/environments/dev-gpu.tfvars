@@ -1,6 +1,6 @@
 tee_off_config = {
   name                     = "tee-off"
-  node_count               = 1
+  node_count               = 0 # FIXME
   node_size                = "Standard_NC40ads_H100_v5"
   storage_account_type     = "Standard_LRS"
   disk_size_gb             = 30
