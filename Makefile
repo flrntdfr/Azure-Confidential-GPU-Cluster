@@ -36,14 +36,14 @@ bootstrap: login source ## First time setup Azure backend
 make unbootstrap: destroy ## Destroy the cluster and bootstrap resources
 	# TODO: Implement unbootstrap
 
-
 # ------- #
 # CLUSTER #
 # ------- #
 
-cluster-dev-cpu:
+cluster: cluster-dev-gpu ## Create default cluster with GPU
+cluster-dev-cpu: ## Create dev cluster with CPU
 	$(MAKE) -C terraform VAR_FILE=environments/dev-cpu.tfvars all
-cluster-dev-gpu:
+cluster-dev-gpu: ## Create dev cluster with GPU
 	$(MAKE) -C terraform VAR_FILE=environments/dev-gpu.tfvars all
 
 ssh: 	## Connect to the running cluster
