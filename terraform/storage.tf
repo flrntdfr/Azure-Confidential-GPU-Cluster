@@ -8,11 +8,10 @@ resource "azurerm_storage_account" "cluster_storage" {
   account_kind             = "FileStorage"
   account_replication_type = "LRS"
   min_tls_version          = "TLS1_2"
-
-  network_rules {
-    default_action             = "Allow"
-    ip_rules                   = []
-    virtual_network_subnet_ids = [] // TODO ?
+  https_traffic_only_enabled = false # https://learn.microsoft.com/en-us/azure/storage/common/storage-require-secure-transfer
+  public_network_access_enabled = false
+  lifecycle {
+    prevent_destroy = false # FIXME
   }
 }
 
@@ -20,5 +19,9 @@ resource "azurerm_storage_account" "cluster_storage" {
 resource "azurerm_storage_share" "cluster_share" {
   name               = "confcluster-shared-storage-volume"
   storage_account_id = azurerm_storage_account.cluster_storage.id
-  quota              = 100 // GB
+  quota              = var.storage_quota_gb
+  enabled_protocol   = "NFS"
+  lifecycle {
+    prevent_destroy = false # FIXME
+  }
 }

@@ -1,13 +1,27 @@
 ---
-- name: Create shared directories
+
+- name: Install NFS client
+  ansible.builtin.package:
+    name: nfs-common
+    state: present
+  become: true
+
+- name: Create shared directory
   ansible.builtin.file:
-    path: "{{ item }}"
+    path: "/shared"
     state: directory
     mode: '0755'
-  loop:
-    - /shared
-    - /shared/home
-    - /shared/apps
-    - /shared/data
-  
-  when: inventory_hostname in groups['control'] 
+
+- name: Mount /shared
+  ansible.posix.mount:
+    path: /shared
+    src: "{{ storage_account_name }}.file.core.windows.net:/{{ storage_account_name }}/{{ storage_share_name }}"
+    fstype: nfs
+    opts: vers=4,minorversion=1,sec=sys,defaults
+    state: mounted
+
+- name: Add shared storage to fstab for persistent mount
+  ansible.builtin.lineinfile:
+    path: /etc/fstab
+    line: "{{ lookup('template', 'fstab.j2') }}"
+    state: present

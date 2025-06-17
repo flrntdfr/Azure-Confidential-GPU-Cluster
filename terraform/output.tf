@@ -32,6 +32,11 @@ output "storage_account_key" {
   sensitive = true
 } 
 
+// Output the storage account private IP address
+output "storage_account_private_ip" {
+  value = azurerm_private_endpoint.storage_private_endpoint.private_service_connection[0].private_ip_address
+}
+
 // ----------------- //
 // ANSIBLE INVENTORY //
 // ----------------- //

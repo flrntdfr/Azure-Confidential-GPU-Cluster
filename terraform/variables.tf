@@ -88,7 +88,16 @@ variable "tee_on_config" {
   }
 }
 
+// The storage
+
+variable "storage_quota_gb" {
+  description = "Storage quota for the cluster"
+  type        = number
+  default     = 50
+}
+
 // Common tags to apply to all resources
+
 variable "common_tags" {
   description = "Common tags to apply to all resources"
   type        = map(string)

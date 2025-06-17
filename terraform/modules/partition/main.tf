@@ -63,6 +63,18 @@ resource "azurerm_network_security_group" "partition_nsg" {
     destination_address_prefix = "10.0.0.0/16"  // All nodes in the cluster
   }
 
+  security_rule {
+    name                       = "Allow-NFS-Storage"
+    priority                   = 1010
+    direction                  = "Outbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "2049"
+    source_address_prefix      = "*"
+    destination_address_prefix = "Storage" # FIXME OK?
+  }
+
   lifecycle {
     create_before_destroy = true
   }

@@ -55,6 +55,18 @@ resource "azurerm_network_security_group" "login_nsg" {
     source_address_prefix      = var.whitelist_ip_prefix
     destination_address_prefix = "*"
   }
+
+  security_rule {
+    name                       = "Allow-NFS-Storage"
+    priority                   = 1010
+    direction                  = "Outbound"
+    access                     = "Allow"
+    protocol                   = "Tcp"
+    source_port_range          = "*"
+    destination_port_range     = "2049"
+    source_address_prefix      = "*"
+    destination_address_prefix = "Storage"
+  }
 }
 
 // Associate the security group with the NIC
