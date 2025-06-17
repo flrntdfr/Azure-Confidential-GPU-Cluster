@@ -4,5 +4,5 @@
   roles:
     - role: common
     - role: storage
-#    - role: slurm
-#    - role: gpu # Nvidia drivers need to be installed before slurm
+    - role: gpu # Nvidia drivers need to be installed before slurm
+    - role: slurm

@@ -1,6 +1,6 @@
 ---
 - name: Set timezone to Europe/Berlin
-  community.general.timezone:
+  ansible.builtin.timezone:
     name: Europe/Berlin
 
 - name: Configure chrony server

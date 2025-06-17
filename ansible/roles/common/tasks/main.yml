@@ -1,6 +1,14 @@
 ---
 # Main tasks file for the common role
 
+- name: Create remote_tmp directory
+  ansible.builtin.file:
+    path: /root/.ansible/tmp
+    state: directory
+    mode: '0755'
+    owner: root
+    group: root
+
 - name: Import package installation tasks
   ansible.builtin.import_tasks: packages.yml
 
