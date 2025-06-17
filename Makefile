@@ -13,9 +13,9 @@ AZ_LOCATION       := westeurope
 
 login: ## Login to Azure
 	az login
-	-@echo "# Use \`make login\` to populate this file" > .env
-	-@echo "export ARM_SUBSCRIPTION_ID=\"$(shell az account show --query id --output tsv)\"" >> .env
-	-@echo "export ARM_TENANT_ID=\"$(shell az account show --query tenantId --output tsv)\"" >> .env
+	-@echo "# Use \`make login\` to populate this file" > terraform/.env
+	-@echo "export ARM_SUBSCRIPTION_ID=\"$(shell az account show --query id --output tsv)\"" >> terraform/.env
+	-@echo "export ARM_TENANT_ID=\"$(shell az account show --query tenantId --output tsv)\"" >> terraform/.env
 	-@source terraform/.env # FIXME
 	@echo "You can now \`source terraform/.env\` then \`make bootstrap\` to bootstrap environment"
 bootstrap: login source ## First time setup Azure backend
