@@ -45,7 +45,8 @@ cluster-dev-cpu: ## Create dev cluster with CPU
 	$(MAKE) -C terraform VAR_FILE=environments/dev-cpu.tfvars all
 cluster-dev-gpu: ## Create dev cluster with GPU
 	$(MAKE) -C terraform VAR_FILE=environments/dev-gpu.tfvars all
-
+cluster-prod-gpu: ## Create prod cluster with GPU
+	$(MAKE) -C terraform VAR_FILE=environments/prod-gpu.tfvars all
 ssh: 	## Connect to the running cluster
 	-$(MAKE) -C terraform ssh
 summary: 	## Get summary resources running in the cloud
@@ -55,6 +56,8 @@ ansible: ## (Only configure the cluster)
 	$(MAKE) -C ansible all
 destroy: 	## Destroy the cluster
 	$(MAKE) -C terraform destroy
+destroy-prod: ## Destroy the cluser (including in prod)
+	$(MAKE) -C terraform -var="persistent_storage=false" destroy # FIXME?
 
 # ------- #
 # UTILITY #

@@ -22,7 +22,7 @@
   register: munge_key_stat
 
 - name: Generate munge key on control node
-  ansible.builtin.shell: /usr/sbin/mungekey -c -f
+  ansible.builtin.command: /usr/sbin/mungekey -c -f
   args:
     creates: /etc/munge/munge.key
   when: inventory_hostname in groups['login']

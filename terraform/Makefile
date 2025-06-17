@@ -6,6 +6,8 @@ PLAN := plan.tfplan
 VAR_FILE ?=
 TF_VAR_FILE := $(if $(VAR_FILE),-var-file=$(VAR_FILE),)
 
+.PHONY: all init plan apply output ssh destroy help
+
 all: init plan apply output ## Create the cluster with Terraform
 
 init: ## Initialize the Terraform configuration

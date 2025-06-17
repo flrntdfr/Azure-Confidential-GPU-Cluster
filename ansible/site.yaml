@@ -3,5 +3,6 @@
   hosts: all
   roles:
     - role: common
-    - role: gpu # Nvidia drivers need to be installed before slurm
-    - role: slurm
+    - role: storage
+#    - role: slurm
+#    - role: gpu # Nvidia drivers need to be installed before slurm

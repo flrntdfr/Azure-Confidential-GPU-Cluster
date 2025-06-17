@@ -23,6 +23,7 @@
 		"vscode": {
 		  "settings": {},
 		  "extensions": [
+			"anysphere.remote-containers",
 			"redhat.ansible",
 			"hashicorp.hcl",
 			"hashicorp.terraform",

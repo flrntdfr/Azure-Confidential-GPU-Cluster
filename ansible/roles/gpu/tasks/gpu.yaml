@@ -56,7 +56,7 @@
   register: step_1
   failed_when: step_1.rc != 0
 
-- name: Attestation (cGPU onboarding)
+- name: Perform GPU attestation (cGPU onboarding)
   ansible.builtin.command:
     cmd: "bash step-2-attestation.sh"
     chdir: "/opt/cgpu-onboarding-package/{{ cgpu_version }}"

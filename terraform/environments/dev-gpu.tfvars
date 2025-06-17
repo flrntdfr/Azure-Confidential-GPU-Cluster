@@ -32,6 +32,8 @@ tee_on_config = {
   custom_data     = ""
 }
 
+storage_quota_gb = 100
+
 // Common tags # TODO
 common_tags = {
   Environment = "gpu-dev"

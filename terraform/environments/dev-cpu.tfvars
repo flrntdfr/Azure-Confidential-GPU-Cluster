@@ -17,7 +17,7 @@ tee_off_config = {
 
 tee_on_config = {
   name                     = "tee-on"
-  node_count               = 1
+  node_count               = 0
   node_size                = "Standard_DC2ads_v5"
   storage_account_type     = "Standard_LRS"
   disk_size_gb             = 30
@@ -31,6 +31,8 @@ tee_on_config = {
   image_version   = "latest"
   custom_data     = ""
 }
+
+storage_quota_gb = 100
 
 // Common tags # TODO
 common_tags = {
