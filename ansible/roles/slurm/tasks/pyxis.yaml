@@ -1,7 +1,7 @@
 ---
 # Enroot for pyxis
 
-- name: Install enroot dependencies packages.
+- name: Install enroot dependencies
   ansible.builtin.apt:
     name:
       - gcc
@@ -21,8 +21,7 @@
     state: present
     lock_timeout: 300
 
-
-- name: Clone enroot repository.
+- name: Clone enroot repository
   ansible.builtin.git:
     repo: "https://github.com/NVIDIA/enroot"
     version: "v3.5.0" # https://github.com/NVIDIA/enroot/releases/
@@ -30,28 +29,28 @@
     depth: 1
     force: true
 
-- name:  Compile and install enroot.
+- name: Compile and install enroot
   ansible.builtin.make:
     chdir: /opt/enroot
     target: install
 
-- name: Set capabilities for enroot.
+- name: Set capabilities for enroot
   ansible.builtin.make:
     chdir: /opt/enroot
     target: setcap
 
-- name: create enroot config folder
-  ansible.builtin.file: 
+- name: Create enroot config folder
+  ansible.builtin.file:
     path: "/etc/enroot"
     state: directory
 
-- name: create temporary enroot run folder
-  ansible.builtin.file: 
+- name: Create temporary enroot run folder
+  ansible.builtin.file:
     path: "/run/enroot"
     state: directory
     mode: "0755"
 
-- name: Create enroot config file from template.
+- name: Create enroot config file from template
   ansible.builtin.template:
     src: ./templates/etc/enroot/enroot.conf.j2
     dest: /etc/enroot/enroot.conf
@@ -72,7 +71,7 @@
 
 # Pyxis
 
-- name: Install pyxis dependency packages
+- name: Install pyxis dependencies
   ansible.builtin.package:
     name: "{{ item }}"
     state: present
@@ -97,5 +96,4 @@
     src: /usr/local/share/pyxis/pyxis.conf
     dest: /etc/slurm/plugstack.conf
     state: link
-  notify:
-    - name: Restart slurmd
+  notify: Restart slurmd

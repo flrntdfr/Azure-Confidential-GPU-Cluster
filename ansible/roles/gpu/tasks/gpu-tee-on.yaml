@@ -1,3 +1,4 @@
+---
 - name: Download cGPU onboarding package
   ansible.builtin.get_url:
     url: "https://github.com/Azure/az-cgpu-onboarding/releases/download/{{ cgpu_version }}/cgpu-onboarding-package.tar.gz"
@@ -19,7 +20,7 @@
 
 # ----- BEGIN HACK -----
 
-- name: Prevent unmanaged reboot by commenting the last line of step-0-prepare-kernel.sh
+- name: Prevent unmanaged reboot
   ansible.builtin.shell: |
     sed -i '$ s/^/# /' "/opt/cgpu-onboarding-package/{{ cgpu_version }}/step-0-prepare-kernel.sh"
 
@@ -57,10 +58,10 @@
   register: step_2
   failed_when: step_2.rc != 0
 
-- name: Display log file contents
-  ansible.builtin.shell: cat /opt/cgpu-onboarding-package/{{ cgpu_version }}/logs/all-operation.log
+- name: Get log contents with GPU attestation
+  ansible.builtin.command: cat /opt/cgpu-onboarding-package/{{ cgpu_version }}/logs/all-operation.log
   register: log_contents
 
-- name: Show log contents
+- name: Show log contents with GPU attestation
   ansible.builtin.debug:
     var: log_contents.stdout_lines

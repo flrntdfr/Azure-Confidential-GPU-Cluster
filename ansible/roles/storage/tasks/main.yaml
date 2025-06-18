@@ -1,5 +1,4 @@
 ---
-
 - name: Install NFS client
   ansible.builtin.package:
     name: nfs-common

@@ -2,12 +2,12 @@
 # Equivalent to step-1-install-gpu-driver.sh in cGPU onboarding package (r570 nvidia driver)
 - name: Install build dependencies
   ansible.builtin.apt:
-    name: 
+    name:
       - gcc
       - g++
       - make
     state: present
-    install_recommends: yes
+    install_recommends: true
     dpkg_options: 'force-confdef,force-confold'
     lock_timeout: 300
 
@@ -17,7 +17,7 @@
       - nvidia-driver-570-server-open
       - linux-modules-nvidia-570-server-open-azure
     state: present
-    install_recommends: yes
+    install_recommends: true
     dpkg_options: 'force-confdef,force-confold'
     lock_timeout: 300
 

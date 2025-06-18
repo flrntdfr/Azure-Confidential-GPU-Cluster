@@ -1,4 +1,4 @@
 ---
 slurm_version_string: "23.11.4-1.2ubuntu5"
 storage_account_name: "confclustersharedstorage"
-storage_share_name: "confcluster-shared-storage-volume" 
+storage_share_name: "confcluster-shared-storage-volume"
