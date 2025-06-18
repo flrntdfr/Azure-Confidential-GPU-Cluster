@@ -12,12 +12,11 @@ AZ_LOCATION       := westeurope
 # ----- #
 
 login: ## Login to Azure
-	az login
-	-@echo "# Use \`make login\` to populate this file" > terraform/.env
-	-@echo "export ARM_SUBSCRIPTION_ID=\"$(shell az account show --query id --output tsv)\"" >> terraform/.env
-	-@echo "export ARM_TENANT_ID=\"$(shell az account show --query tenantId --output tsv)\"" >> terraform/.env
-	-@source terraform/.env # FIXME
-	@echo "You can now \`source terraform/.env\` then \`make bootstrap\` to bootstrap environment"
+	@az login
+	@echo "# Use \`make login\` to populate this file" > .env
+	@-echo "export ARM_SUBSCRIPTION_ID=\"$(shell az account show --query id --output tsv)\"" >> .env
+	@-echo "export ARM_TENANT_ID=\"$(shell az account show --query tenantId --output tsv)\"" >> .env
+	@echo -e "You can now:\nsource .env\n\nYou should then: \nmake bootstrap"
 bootstrap: login source ## First time setup Azure backend
 	az storage account create \
 		--name "confclustertfstate" \
@@ -32,28 +31,29 @@ bootstrap: login source ## First time setup Azure backend
 		--auth-mode login \
 		--public-access "off" 
 	@echo "You can now \`make cluster\` to create the cluster"
-
-make unbootstrap: destroy ## Destroy the cluster and bootstrap resources
-	# TODO: Implement unbootstrap
+unbootstrap: destroy ## Unbootstrap Azure backend and destroy the cluster
+	az storage container delete --name "tfstate" --account-name "confclustertfstate"
+	az storage account delete --name "confclustertfstate" --resource-group $(AZ_RESOURCE_GROUP)
 
 # ------- #
 # CLUSTER #
 # ------- #
 
-cluster: cluster-gpu-prof ## Create default cluster with GPUs (eq. gpu-prod)
+cluster: cluster-gpu-prod ## Create default cluster with GPUs (eq. gpu-prod)
 cluster-cpu-dev: ## Create dev cluster with CPUs
 	$(MAKE) -C terraform VAR_FILE=environments/dev-cpu.tfvars all
+	$(MAKE) -C ansible all
 cluster-gpu-dev: ## Create dev cluster with GPUs
 	$(MAKE) -C terraform VAR_FILE=environments/dev-gpu.tfvars all
+	$(MAKE) -C ansible all
 cluster-gpu-prod: ## Create prod cluster with GPUs
 	$(MAKE) -C terraform VAR_FILE=environments/prod-gpu.tfvars all
+	$(MAKE) -C ansible all
 ssh: 	## Connect to the running cluster
 	-$(MAKE) -C terraform ssh
-summary: 	## Get summary resources running in the cloud
+summary: ## Get summary resources running in the cloud
 	az resource list --resource-group confcluster-rg --output table 
 	$(MAKE) -C terraform output
-ansible: ## (Only configure the cluster)
-	$(MAKE) -C ansible all
 destroy: 	## Destroy the cluster
 	$(MAKE) -C terraform destroy
 
@@ -61,5 +61,7 @@ destroy: 	## Destroy the cluster
 # UTILITY #
 # ------- #
 
+ansible:
+	$(MAKE) -C ansible all
 help: 	## Print this help
 	@grep -h -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'

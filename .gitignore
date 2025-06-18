@@ -1,7 +1,6 @@
 # System
 .DS_Store
 .env
-.vscode/
 *.pem
 *.key
 
@@ -19,3 +18,17 @@ facts_cache/
 
 # Crash log files
 crash.log
+
+# IDE
+.vscode/
+.vscode/*
+.vscode-insiders/
+.vscode-insiders/*
+.vscodium/
+.vscodium/*
+.cursor/
+.cursor/*
+.cursor-settings.json
+.cursor-config.json
+.cursorignore
+*.swap
