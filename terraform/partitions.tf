@@ -38,5 +38,5 @@ output "tee_off_node_private_ips" {
 
 output "tee_on_node_private_ips" {
   value = module.tee_on.node_private_ips
-} 
+}
 

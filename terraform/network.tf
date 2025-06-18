@@ -33,7 +33,7 @@ resource "azurerm_private_endpoint" "storage_private_endpoint" {
     name                           = "storage-private-connection"
     private_connection_resource_id = azurerm_storage_account.cluster_storage.id
     is_manual_connection           = false
-    subresource_names             = ["file"]
+    subresource_names              = ["file"]
   }
 }
 

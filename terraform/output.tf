@@ -30,7 +30,7 @@ output "file_share_name" {
 output "storage_account_key" {
   value     = azurerm_storage_account.cluster_storage.primary_access_key
   sensitive = true
-} 
+}
 
 // Output the storage account private IP address
 output "storage_account_private_ip" {
@@ -43,19 +43,19 @@ output "storage_account_private_ip" {
 
 resource "local_file" "ansible_inventory" {
   filename = "${path.root}/../ansible/inventory.yml"
-  content  = yamlencode({
+  content = yamlencode({
     all = {
       vars = {
-        public_login_ip                = azurerm_public_ip.login_pip.ip_address
-        admin_username                 = var.admin_username
-        ansible_ssh_private_key_file   = local_file.private_key_pem.filename
+        public_login_ip              = azurerm_public_ip.login_pip.ip_address
+        admin_username               = var.admin_username
+        ansible_ssh_private_key_file = local_file.private_key_pem.filename
       }
       children = {
         login = {
           hosts = {
             (azurerm_linux_virtual_machine.login_node.name) = {
-              ansible_host = "{{ public_login_ip }}"
-              ansible_user = var.admin_username
+              ansible_host            = "{{ public_login_ip }}"
+              ansible_user            = var.admin_username
               ansible_ssh_common_args = "-o ProxyCommand='ssh -i {{ ansible_ssh_private_key_file }} -W %h:%p {{ admin_username }}@{{ public_login_ip }}'"
             }
           }
