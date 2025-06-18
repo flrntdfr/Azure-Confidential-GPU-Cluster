@@ -7,4 +7,4 @@
 
 - name: Include GPU tasks for tee_on nodes
   ansible.builtin.import_tasks: gpu-tee-on.yaml
-  when: inventory_hostname in groups['tee_on'] # TODO also check that we use the gpu tfvars
+  when: inventory_hostname in groups['tee_on']

@@ -72,7 +72,7 @@ resource "azurerm_network_security_group" "partition_nsg" {
     source_port_range          = "*"
     destination_port_range     = "2049"
     source_address_prefix      = "*"
-    destination_address_prefix = "Storage" # FIXME OK?
+    destination_address_prefix = "Storage"
   }
 
   lifecycle {
@@ -97,7 +97,7 @@ resource "azurerm_network_interface" "partition_nic" {
 
 // Local variables for IP addressing
 locals {
-  ip_base = var.partition_config.name == "tee-off" ? "10.0.2" : "10.0.3" // TODO Improve with address_prefixes     = ["10.0.1.0/24"] in each partition definition
+  ip_base = var.partition_config.name == "tee-off" ? "10.0.2" : "10.0.3"
 }
 
 // Associate the security group with the NICs
@@ -133,10 +133,7 @@ resource "azurerm_linux_virtual_machine" "partition_node" {
     caching              = "ReadWrite"
     storage_account_type = var.partition_config.storage_account_type
     disk_size_gb         = var.partition_config.disk_size_gb
-    security_encryption_type         = var.partition_config.security_encryption_type != "" ? var.partition_config.security_encryption_type : null
-    
-    # TODO VMGuestStateOnly ?
-    # secure_vm_disk_encryption_set_id = # TODO ?
+    security_encryption_type = var.partition_config.security_encryption_type != "" ? var.partition_config.security_encryption_type : null
    }
 
   source_image_reference {

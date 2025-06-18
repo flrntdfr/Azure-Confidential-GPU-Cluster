@@ -34,9 +34,8 @@ tee_on_config = {
 
 storage_quota_gb = 100
 
-// Common tags # TODO
 common_tags = {
-  Environment = "cpu-dev"
-  Project     = "slurm Cluster"
+  Environment = "dev-cpu"
+  Project     = "Confidential GPU Cluster"
   Provisioner = "Terraform"
 }

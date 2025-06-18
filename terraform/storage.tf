@@ -11,7 +11,7 @@ resource "azurerm_storage_account" "cluster_storage" {
   https_traffic_only_enabled = false # https://learn.microsoft.com/en-us/azure/storage/common/storage-require-secure-transfer
   public_network_access_enabled = false
   lifecycle {
-    prevent_destroy = false # FIXME
+    prevent_destroy = true
   }
 }
 
@@ -22,6 +22,6 @@ resource "azurerm_storage_share" "cluster_share" {
   quota              = var.storage_quota_gb
   enabled_protocol   = "NFS"
   lifecycle {
-    prevent_destroy = false # FIXME
+    prevent_destroy = true
   }
 }
