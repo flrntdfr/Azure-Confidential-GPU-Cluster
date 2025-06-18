@@ -1,6 +1,6 @@
 tee_off_config = {
   name                     = "tee-off"
-  node_count               = 1
+  node_count               = 2
   node_size                = "Standard_NC40ads_H100_v5"
   storage_account_type     = "Standard_LRS"
   disk_size_gb             = 30
@@ -17,7 +17,7 @@ tee_off_config = {
 
 tee_on_config = {
   name                     = "tee-on"
-  node_count               = 1
+  node_count               = 2
   node_size                = "Standard_NCC40ads_H100_v5"
   storage_account_type     = "Standard_LRS"
   disk_size_gb             = 30

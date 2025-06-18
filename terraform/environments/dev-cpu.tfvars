@@ -17,7 +17,7 @@ tee_off_config = {
 
 tee_on_config = {
   name                     = "tee-on"
-  node_count               = 0
+  node_count               = 1
   node_size                = "Standard_DC2ads_v5"
   storage_account_type     = "Standard_LRS"
   disk_size_gb             = 30
@@ -25,11 +25,11 @@ tee_on_config = {
   secure_boot_enabled      = true
   vtpm_enabled             = true
   security_encryption_type = "DiskWithVMGuestState"
-  image_publisher = "Canonical"
-  image_offer     = "ubuntu-24_04-lts"
-  image_sku       = "cvm"
-  image_version   = "latest"
-  custom_data     = ""
+  image_publisher          = "Canonical"
+  image_offer              = "ubuntu-24_04-lts"
+  image_sku                = "cvm"
+  image_version            = "latest"
+  custom_data              = ""
 }
 
 storage_quota_gb = 100

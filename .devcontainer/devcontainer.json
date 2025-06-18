@@ -41,9 +41,10 @@
 
 	// Mount GPG directory from host to sign git commits
 	"mounts": [
+		//"source=${localEnv:HOME}/.config/git/,target=/home/vscode/.config/git,type=bind,consistency=cached,readonly", // FIXME
 		"source=${localEnv:HOME}/.gnupg,target=/home/vscode/.gnupg,type=bind,consistency=cached,readonly"
-	]
+	],
 
 	// Uncomment to connect as root instead. More info: https://aka.ms/dev-containers-non-root.
-	//"remoteUser": ""
+	"remoteUser": "vscode"
 }

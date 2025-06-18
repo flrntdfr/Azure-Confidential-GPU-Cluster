@@ -1,7 +1,7 @@
 ---
 # Equivalent to step-1-install-gpu-driver.sh in cGPU onboarding package (r570 nvidia driver)
 - name: Install build dependencies
-  apt:
+  ansible.builtin.apt:
     name: 
       - gcc
       - g++
@@ -12,7 +12,7 @@
     lock_timeout: 300
 
 - name: Install NVIDIA drivers
-  apt:
+  ansible.builtin.apt:
     name:
       - nvidia-driver-570-server-open
       - linux-modules-nvidia-570-server-open-azure
@@ -22,11 +22,11 @@
     lock_timeout: 300
 
 - name: Enable NVIDIA persistence mode
-  shell: nvidia-smi -pm 1
+  ansible.builtin.command: nvidia-smi -pm 1
   changed_when: false
 
 - name: Create rc.local script for NVIDIA persistence
-  copy:
+  ansible.builtin.copy:
     dest: /etc/rc.local
     content: |
       #!/bin/bash

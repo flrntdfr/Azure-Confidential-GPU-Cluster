@@ -40,12 +40,12 @@ make unbootstrap: destroy ## Destroy the cluster and bootstrap resources
 # CLUSTER #
 # ------- #
 
-cluster: cluster-dev-gpu ## Create default cluster with GPU
-cluster-dev-cpu: ## Create dev cluster with CPU
+cluster: cluster-gpu-prof ## Create default cluster with GPUs (eq. gpu-prod)
+cluster-cpu-dev: ## Create dev cluster with CPUs
 	$(MAKE) -C terraform VAR_FILE=environments/dev-cpu.tfvars all
-cluster-dev-gpu: ## Create dev cluster with GPU
+cluster-gpu-dev: ## Create dev cluster with GPUs
 	$(MAKE) -C terraform VAR_FILE=environments/dev-gpu.tfvars all
-cluster-prod-gpu: ## Create prod cluster with GPU
+cluster-gpu-prod: ## Create prod cluster with GPUs
 	$(MAKE) -C terraform VAR_FILE=environments/prod-gpu.tfvars all
 ssh: 	## Connect to the running cluster
 	-$(MAKE) -C terraform ssh
@@ -56,8 +56,6 @@ ansible: ## (Only configure the cluster)
 	$(MAKE) -C ansible all
 destroy: 	## Destroy the cluster
 	$(MAKE) -C terraform destroy
-destroy-prod: ## Destroy the cluser (including in prod)
-	$(MAKE) -C terraform -var="persistent_storage=false" destroy # FIXME?
 
 # ------- #
 # UTILITY #
