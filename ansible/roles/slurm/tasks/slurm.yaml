@@ -23,7 +23,7 @@
 
 - name: Create SLURM configuration file
   ansible.builtin.template:
-    src: slurm.conf.j2
+    src: ./templates/etc/slurm/slurm.conf.j2
     dest: /etc/slurm/slurm.conf
     mode: '0644'
 
@@ -64,7 +64,7 @@
 
 - name: Copy GRES configuration file to compute nodes
   ansible.builtin.copy:
-    src: gres.conf
+    src: etc/slurm/gres.conf
     dest: /etc/slurm/gres.conf
     mode: '0644'
   when: inventory_hostname in groups['compute']

@@ -1,5 +1,5 @@
 ---
-# Handlers for common role
+# Handlers for slurm
 
 - name: Restart munge
   ansible.builtin.service:

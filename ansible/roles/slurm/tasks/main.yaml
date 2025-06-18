@@ -1,0 +1,14 @@
+---
+# Main tasks file for slurm role
+
+- name: Import user management tasks
+  ansible.builtin.import_tasks: users.yaml
+
+- name: Import munge configuration tasks
+  ansible.builtin.import_tasks: munge.yaml
+
+- name: Import slurm configuration tasks
+  ansible.builtin.import_tasks: slurm.yaml
+
+- name: Import Pyxis configuration tasks
+  ansible.builtin.import_tasks: pyxis.yaml
