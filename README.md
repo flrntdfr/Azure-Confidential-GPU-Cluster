@@ -1,6 +1,16 @@
 # Introduction
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin vel leo hendrerit, lobortis lacus vel, faucibus magna. Vivamus vel neque quis ante condimentum molestie ac a augue. In bibendum diam et diam lacinia, quis finibus nibh dictum. Etiam est ipsum, vulputate non placerat id, porttitor at nisi. Nunc pellentesque sem sed massa lobortis lacinia. Donec non urna sed mi semper pulvinar eu et metus. Maecenas sit amet nibh turpis. Aliquam commodo massa sed libero aliquet eleifend. Lorem ipsum dolor sit amet, consectetur adipiscing elit. Proin in placerat nunc. Sed gravida posuere pretium. Vestibulum ante ipsum primis in faucibus orci luctus et ultrices posuere cubilia curae;
+This repository provides Infrastructure as Code (IaC) resources for the deployment and management of a confidential GPU cluster on Microsoft Azure, specifically tailored for research in confidential artificial intelligence.
+
+# Features
+
+- Slurm 23.11 with 2 partitions:
+  - Nvidia H100 in confidential mode
+  - Nvidia H100 in non-confidential mode
+- GPU attestation on cluster creation
+- Enroot support
+- PyTorch multi-node support
+- High-performance shared storage
 
 # How-to
 
@@ -25,26 +35,5 @@ All commands are documented with:
 
 # Requirements
 
-- Azure subscription and a contributor or administrator role to the subscription
-- Quota for the NCC H100 v5 VM SKU
-- Install Azure CLI
-
-# Configuration
-
-## Cloud configuration
-
-- Put your credentials in .env
-
-## Cluster configuration
-
-- Adapt vars.tf
-
-# Citation
-
-```bibtex
-@article{dufour2025confidential,
-  title={Confidential Computing with SLURM},
-  author={Dufour, Florent},
-  journal={arXiv preprint arXiv:2503.07449},
-  year={2025}
-}
+- Azure subscription and a contributor or administrator role to the subscription.
+- Quota for the NCC H100 v5 and NC H100 V5 SKUs.
