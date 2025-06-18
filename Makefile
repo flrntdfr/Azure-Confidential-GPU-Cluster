@@ -41,13 +41,13 @@ unbootstrap: destroy ## Unbootstrap Azure backend and destroy the cluster
 
 cluster: cluster-gpu-prod ## Create default cluster with GPUs (eq. gpu-prod)
 cluster-cpu-dev: ## Create dev cluster with CPUs
-	$(MAKE) -C terraform VAR_FILE=environments/dev-cpu.tfvars all
+	$(MAKE) -C terraform VAR_FILE=environments/cpu-dev.tfvars all
 	$(MAKE) -C ansible all
 cluster-gpu-dev: ## Create dev cluster with GPUs
-	$(MAKE) -C terraform VAR_FILE=environments/dev-gpu.tfvars all
+	$(MAKE) -C terraform VAR_FILE=environments/gpu-dev.tfvars all
 	$(MAKE) -C ansible all
 cluster-gpu-prod: ## Create prod cluster with GPUs
-	$(MAKE) -C terraform VAR_FILE=environments/prod-gpu.tfvars all
+	$(MAKE) -C terraform VAR_FILE=environments/gpu-prod.tfvars all
 	$(MAKE) -C ansible all
 ssh: 	## Connect to the running cluster
 	-$(MAKE) -C terraform ssh
