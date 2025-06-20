@@ -12,10 +12,10 @@ AZ_LOCATION       := westeurope
 # ----- #
 
 login: ## Login to Azure
-	@az login
+	@-az login
 	@echo "# Use \`make login\` to populate this file" > .env
-	@-echo "export ARM_SUBSCRIPTION_ID=\"$(shell az account show --query id --output tsv)\"" >> .env
-	@-echo "export ARM_TENANT_ID=\"$(shell az account show --query tenantId --output tsv)\"" >> .env
+	@echo "export ARM_SUBSCRIPTION_ID=\"$(shell az account show --query id --output tsv)\"" >> .env
+	@echo "export ARM_TENANT_ID=\"$(shell az account show --query tenantId --output tsv)\"" >> .env
 	@echo -e "You can now:\nsource .env\n\nYou should then: \nmake bootstrap"
 bootstrap: login source ## First time setup Azure backend
 	az storage account create \
@@ -49,12 +49,12 @@ cluster-gpu-dev: ## Create dev cluster with GPUs
 cluster-gpu-prod: ## Create prod cluster with GPUs
 	$(MAKE) -C terraform VAR_FILE=environments/gpu-prod.tfvars all
 	$(MAKE) -C ansible all
-ssh: 	## Connect to the running cluster
+ssh: ## Connect to the running cluster
 	-$(MAKE) -C terraform ssh
 summary: ## Get summary resources running in the cloud
 	az resource list --resource-group confcluster-rg --output table 
 	$(MAKE) -C terraform output
-destroy: 	## Destroy the cluster
+destroy: ## Destroy the cluster
 	$(MAKE) -C terraform destroy
 
 # ------- #
