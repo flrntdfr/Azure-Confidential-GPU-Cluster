@@ -5,7 +5,7 @@ SHELL             := /bin/bash
 AZ_RESOURCE_GROUP := confcluster-rg
 AZ_LOCATION       := westeurope
 
-.PHONY: login bootstrap unbootstrap cluster-dev-cpu cluster-dev-gpu ssh summary ansible destroy help
+.PHONY: login bootstrap unbootstrap cluster-cpu-dev cluster-gpu-dev cluster-gpu-prod ssh summary ansible destroy help
 
 # ----- #
 # AZURE #
