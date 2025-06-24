@@ -5,7 +5,7 @@ SHELL             := /bin/bash
 AZ_RESOURCE_GROUP := confcluster-rg
 AZ_LOCATION       := westeurope
 
-.PHONY: login bootstrap unbootstrap cluster-cpu-dev cluster-gpu-dev cluster-gpu-prod ssh summary ansible destroy help
+.PHONY: login bootstrap unbootstrap cluster-login-only cluster-cpu-dev cluster-gpu-dev cluster-gpu-prod ssh summary ansible destroy help
 
 # ----- #
 # AZURE #
@@ -40,6 +40,9 @@ unbootstrap: destroy ## Unbootstrap Azure backend and destroy the cluster
 # ------- #
 
 cluster: cluster-gpu-prod ## Create default cluster with GPUs (eq. gpu-prod)
+cluster-login-only: ## Create login node only cluster
+	$(MAKE) -C terraform VAR_FILE=environments/login-only.tfvars all
+	$(MAKE) -C ansible all
 cluster-cpu-dev: ## Create dev cluster with CPUs
 	$(MAKE) -C terraform VAR_FILE=environments/cpu-dev.tfvars all
 	$(MAKE) -C ansible all
