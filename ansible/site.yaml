@@ -3,6 +3,6 @@
   hosts: all
   roles:
     - role: common  # Common tasks
-    - role: storage # Storage tasks
-    #- role: gpu     # Nvidia drivers need to be installed before slurm
-    #- role: slurm   # SLURM tasks
+    - role: storage # Shared persistent storage
+    - role: gpu     # Nvidia drivers need to be installed before slurm
+    - role: slurm   # Install SLURM components
