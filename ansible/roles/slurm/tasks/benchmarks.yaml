@@ -1,0 +1,9 @@
+---
+
+- name: Git clone benchmarks repository
+  ansible.builtin.git:
+    repo: "https://github.com/flrntdfr/Azure-Confidential-GPU-Cluster.git"
+    dest: "/home/user/Azure-Confidential-GPU-Cluster"
+    version: "main"
+    depth: 1
+    force: true

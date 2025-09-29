@@ -10,11 +10,9 @@ This repository provides Infrastructure as Code (IaC) resources for the deployme
   - Nvidia H100 in confidential mode (flexible node count)
   - Nvidia H100 in non-confidential mode (flexible node count)
 - GPU attestation on cluster creation
-- Full CUDA-toolkit support (CUDA 12.2, NCCL, cuDNN, NVCC) <!--FIXME? -->
 - Enroot support
 - PyTorch multi-node support
-- High-performance shared storage
-- Full end-to-end data encryption
+- Optional NFS shared storage
 
 ## Benchmarks
 

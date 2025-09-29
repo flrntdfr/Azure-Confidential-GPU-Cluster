@@ -10,7 +10,7 @@ finetuning: 	## Run finetuning benchmarks
 inference: 	## Run inference benchmarks
 	@find . -name "inference-*.slurm" -exec sbatch {} \;
 resume-cluster: 	## Resume the cluster
-	scontrol resume all
+	sudo scontrol update NodeName=confcluster-tee-on-1 State=RESUME # FIXME all nodes
 
 
 help: 	## Print this help

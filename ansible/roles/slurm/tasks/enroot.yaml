@@ -1,0 +1,63 @@
+# Enroot for pyxis
+
+- name: Install enroot dependencies
+  ansible.builtin.apt:
+    name:
+      - gcc
+      - make
+      - libcap2-bin
+      - libtool
+      - automake
+      - libmd-dev
+      - curl
+      - gawk
+      - jq
+      - squashfs-tools
+      - parallel
+      - fuse-overlayfs
+      - pigz
+      - squashfuse
+    state: present
+    lock_timeout: 300
+
+- name: Clone enroot repository
+  ansible.builtin.git:
+    repo: "https://github.com/NVIDIA/enroot"
+    version: "v3.5.0" # https://github.com/NVIDIA/enroot/releases/
+    dest: /opt/enroot
+    depth: 1
+    force: true
+
+- name: Compile and install enroot
+  ansible.builtin.make:
+    chdir: /opt/enroot
+    target: install
+
+- name: Set capabilities for enroot
+  ansible.builtin.make:
+    chdir: /opt/enroot
+    target: setcap
+
+- name: Create enroot config folder
+  ansible.builtin.file:
+    path: "/etc/enroot"
+    state: directory
+
+- name: Copy enroot config file
+  ansible.builtin.copy:
+    src: files/etc/enroot/enroot.conf
+    dest: /etc/enroot/enroot.conf
+
+- name: Create enroot hooks.d directory
+  ansible.builtin.file:
+    path: /etc/enroot/hooks.d
+    state: directory
+    mode: '0755'
+
+- name: Add enroot hooks for multi node with PyTorch
+  ansible.builtin.copy:
+    src: etc/enroot/hooks.d/50-slurm-pytorch.sh
+    dest: /etc/enroot/hooks.d/50-slurm-pytorch.sh
+    mode: '0755'
+    owner: root
+    group: root

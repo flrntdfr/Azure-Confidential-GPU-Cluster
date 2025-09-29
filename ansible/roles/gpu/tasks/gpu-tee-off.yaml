@@ -6,6 +6,7 @@
       - gcc
       - g++
       - make
+      - python3-dev
     state: present
     install_recommends: true
     dpkg_options: 'force-confdef,force-confold'

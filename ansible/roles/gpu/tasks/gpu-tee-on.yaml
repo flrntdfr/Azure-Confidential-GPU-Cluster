@@ -21,12 +21,12 @@
 # ----- BEGIN HACK -----
 
 - name: Prevent unmanaged reboot
-  ansible.builtin.shell: |
+  ansible.builtin.command: |
     sed -i '$ s/^/# /' "/opt/cgpu-onboarding-package/{{ cgpu_version }}/step-0-prepare-kernel.sh"
 
 # ----- END HACK -----
 
-- name: Prepare kernel (cGPU onboarding)
+- name: Compile and install kernel (cGPU onboarding)
   ansible.builtin.command:
     cmd: "bash step-0-prepare-kernel.sh --enable-proposed"
     chdir: "/opt/cgpu-onboarding-package/{{ cgpu_version }}"

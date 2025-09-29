@@ -3,6 +3,7 @@
 .env
 *.pem
 *.key
+*.pem.pub
 
 # Terraform
 .terraform/

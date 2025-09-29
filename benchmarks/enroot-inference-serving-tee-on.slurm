@@ -3,6 +3,7 @@
 #SBATCH --partition=TEE-ON
 #SBATCH --container-image="docker://vllm/vllm-openai:v0.9.1"
 #SBATCH --container-mount-home
+#SBATCH --ntasks=40
 #SBATCH --gres=gpu:1
 #SBATCH --time=00:30:00
 #SBATCH --output=logs/vLLM-serving-on-%j.out

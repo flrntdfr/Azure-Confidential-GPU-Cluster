@@ -36,6 +36,14 @@
     group: slurmadmin
     mode: '0600'
 
+- name: Copy public SSH key to slurmadmin's authorized_keys
+  ansible.builtin.copy:
+    src: ../../../slurmadmin.pem.pub
+    dest: /home/slurmadmin/.ssh/authorized_keys
+    owner: slurmadmin
+    group: slurmadmin
+    mode: '0600'
+
 - name: Copy SSH config
   ansible.builtin.copy:
     src: files/ssh_config

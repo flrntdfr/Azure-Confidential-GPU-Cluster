@@ -5,7 +5,7 @@ SHELL             := /bin/bash
 AZ_RESOURCE_GROUP := confcluster-rg
 AZ_LOCATION       := westeurope
 
-.PHONY: login bootstrap unbootstrap cluster-login-only cluster-cpu-dev cluster-gpu-dev cluster-gpu-prod ssh summary ansible destroy help
+.PHONY: login bootstrap unbootstrap cluster-login-only cluster-cpu-dev cluster-gpu-dev cluster-gpu-prod ssh ssh-user ssh-admin summary ansible destroy help
 
 # ----- #
 # AZURE #
@@ -52,7 +52,7 @@ cluster-gpu-dev: ## Create dev cluster with GPUs
 cluster-gpu-prod: ## Create prod cluster with GPUs
 	$(MAKE) -C terraform VAR_FILE=environments/gpu-prod.tfvars all
 	$(MAKE) -C ansible all
-ssh: ## Connect to the running cluster
+ssh: ## Connect to the cluster
 	-$(MAKE) -C terraform ssh
 summary: ## Get summary resources running in the cloud
 	az resource list --resource-group confcluster-rg --output table 

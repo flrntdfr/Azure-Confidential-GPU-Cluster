@@ -10,8 +10,8 @@
   ansible.builtin.apt:
     name:
       - build-essential
-      - git
       - chrony
+      - git
     state: present
   register: package_install
 

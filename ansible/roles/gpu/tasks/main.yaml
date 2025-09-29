@@ -1,6 +1,12 @@
 ---
 # Main tasks file for the gpu role
 
+- name: Install common GPU tools
+  ansible.builtin.apt:
+    name:
+       - nvtop
+    state: present
+
 - name: Include GPU tasks for tee_off nodes
   ansible.builtin.import_tasks: gpu-tee-off.yaml
   when: inventory_hostname in groups['tee_off']

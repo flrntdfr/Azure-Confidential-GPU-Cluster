@@ -5,22 +5,30 @@
     state: present
   become: true
 
-- name: Create shared directory
+- name: Create persistent directory
   ansible.builtin.file:
-    path: "/shared"
+    path: "/persistent"
     state: directory
     mode: '0755'
 
-- name: Mount /shared
+- name: Mount /persistent
   ansible.posix.mount:
-    path: /shared
+    path: /persistent
     src: "{{ storage_account_name }}.file.core.windows.net:/{{ storage_account_name }}/{{ storage_share_name }}"
     fstype: nfs
     opts: vers=4,minorversion=1,sec=sys,defaults
     state: mounted
 
-- name: Add shared storage to fstab for persistent mount
+- name: Mount /tmp as tmpfs with large size limit
+  ansible.posix.mount:
+    path: /tmp
+    src: tmpfs
+    fstype: tmpfs
+    opts: size=100G,nosuid,nodev,noexec,relatime
+    state: mounted
+
+- name: Add /tmp tmpfs mount to fstab for persistence
   ansible.builtin.lineinfile:
     path: /etc/fstab
-    line: "{{ lookup('template', 'fstab.j2') }}"
+    line: 'tmpfs /tmp tmpfs size=100G,nosuid,nodev,noexec,relatime 0 0'
     state: present

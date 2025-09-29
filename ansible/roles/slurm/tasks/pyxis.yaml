@@ -1,74 +1,4 @@
 ---
-# Enroot for pyxis
-
-- name: Install enroot dependencies
-  ansible.builtin.apt:
-    name:
-      - gcc
-      - make
-      - libcap2-bin
-      - libtool
-      - automake
-      - libmd-dev
-      - curl
-      - gawk
-      - jq
-      - squashfs-tools
-      - parallel
-      - fuse-overlayfs
-      - pigz
-      - squashfuse
-    state: present
-    lock_timeout: 300
-
-- name: Clone enroot repository
-  ansible.builtin.git:
-    repo: "https://github.com/NVIDIA/enroot"
-    version: "v3.5.0" # https://github.com/NVIDIA/enroot/releases/
-    dest: /opt/enroot
-    depth: 1
-    force: true
-
-- name: Compile and install enroot
-  ansible.builtin.make:
-    chdir: /opt/enroot
-    target: install
-
-- name: Set capabilities for enroot
-  ansible.builtin.make:
-    chdir: /opt/enroot
-    target: setcap
-
-- name: Create enroot config folder
-  ansible.builtin.file:
-    path: "/etc/enroot"
-    state: directory
-
-- name: Create temporary enroot run folder
-  ansible.builtin.file:
-    path: "/run/enroot"
-    state: directory
-    mode: "0755"
-
-- name: Create enroot config file from template
-  ansible.builtin.template:
-    src: ./templates/etc/enroot/enroot.conf.j2
-    dest: /etc/enroot/enroot.conf
-
-- name: Create enroot hooks.d directory
-  ansible.builtin.file:
-    path: /etc/enroot/hooks.d
-    state: directory
-    mode: '0755'
-
-- name: Add enroot hooks for multi node with PyTorch
-  ansible.builtin.copy:
-    src: etc/enroot/hooks.d/50-slurm-pytorch.sh
-    dest: /etc/enroot/hooks.d/50-slurm-pytorch.sh
-    mode: '0755'
-    owner: root
-    group: root
-
 # Pyxis
 
 - name: Install pyxis dependencies
@@ -91,9 +21,10 @@
     chdir: /opt/pyxis
     target: install
 
-- name: Symlink pyxis.conf to slurm plugstack directory
-  ansible.builtin.file:
-    src: /usr/local/share/pyxis/pyxis.conf
-    dest: /etc/slurm/plugstack.conf
-    state: link
+- name: Add pyxis.conf to slurm plugstack directory
+  ansible.builtin.lineinfile:
+    path: /etc/slurm/plugstack.conf
+    line: "required /usr/local/lib/slurm/spank_pyxis.so runtime_path=/tmp/pyxis execute_entrypoint=0 container_scope=global sbatch_support=1"
+    state: present
+    create: yes
   notify: Restart slurmd
