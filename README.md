@@ -1,6 +1,6 @@
 # Introduction
 
-This repository provides Infrastructure as Code (IaC) resources for the deployment and management of a confidential GPU cluster on Microsoft Azure, specifically tailored for research in confidential artificial intelligence.
+This repository provides Infrastructure as Code (IaC) resources for the deployment and management of a confidential computing GPU cluster on Microsoft Azure, specifically tailored for research in confidential artificial intelligence.
 
 # Features
 
@@ -12,7 +12,8 @@ This repository provides Infrastructure as Code (IaC) resources for the deployme
 - GPU attestation on cluster creation
 - Enroot support
 - PyTorch multi-node support
-- Optional NFS shared storage
+- Persistent shared storage
+- End-to-end data encryption
 
 ## Benchmarks
 
@@ -29,7 +30,7 @@ The main commands include:
 ~$ make cluster   # Create the cluster
 ~$ make ssh       # SSH into the login node
 # ... work in the cluster: sinfo, srun, sbatch, etc. ...
-~$ make destroy   # Destroy the cluster (not shared storage)
+~$ make destroy   # Destroy the cluster
 ~$ make unbootstrap # Destroy the cluster (and shared storage) TODO
 ```
 

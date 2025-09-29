@@ -24,6 +24,15 @@ resource "azurerm_network_interface" "login_nic" {
     private_ip_address            = "10.0.1.1"
     public_ip_address_id          = azurerm_public_ip.login_pip.id
   }
+
+  depends_on = [
+    azurerm_subnet.cluster_subnet,
+    azurerm_public_ip.login_pip
+  ]
+
+  lifecycle {
+    create_before_destroy = true
+  }
 }
 
 // The network security group for the login node
@@ -73,6 +82,15 @@ resource "azurerm_network_security_group" "login_nsg" {
 resource "azurerm_network_interface_security_group_association" "login_nsg_association" {
   network_interface_id      = azurerm_network_interface.login_nic.id
   network_security_group_id = azurerm_network_security_group.login_nsg.id
+
+  depends_on = [
+    azurerm_network_interface.login_nic,
+    azurerm_network_security_group.login_nsg
+  ]
+
+  lifecycle {
+    create_before_destroy = false
+  }
 }
 
 // The login node
@@ -82,6 +100,10 @@ resource "azurerm_linux_virtual_machine" "login_node" {
   location            = var.location
   size                = "Standard_D2s_v3" // 2 vCPUs, 8 GB RAM non burstable
   admin_username      = var.admin_username
+
+  depends_on = [
+    azurerm_network_interface_security_group_association.login_nsg_association
+  ]
 
   admin_ssh_key {
     username   = var.admin_username
@@ -104,6 +126,23 @@ resource "azurerm_linux_virtual_machine" "login_node" {
     offer     = "ubuntu-24_04-lts"
     sku       = "server"
     version   = "latest"
+  }
+
+  tags = merge(
+    var.common_tags,
+    {
+      "node_type"     = "login"
+      "environment"   = lookup(var.common_tags, "environment", "dev")
+      "owner"         = lookup(var.common_tags, "owner", "research-team")
+      "cost-center"   = lookup(var.common_tags, "cost-center", "research")
+    }
+  )
+
+  lifecycle {
+    create_before_destroy = true
+    ignore_changes = [
+      source_image_reference
+    ]
   }
 }
 

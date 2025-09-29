@@ -1,0 +1,13 @@
+---
+- name: Reload systemd daemon
+  ansible.builtin.systemd:
+    daemon_reload: true
+  become: true
+  listen: "Mount updated filesystems"
+
+- name: Mount all filesystems from fstab  # noqa: command-instead-of-module
+  ansible.builtin.command:
+    cmd: mount -a
+  become: true
+  listen: "Mount updated filesystems"
+  changed_when: false

@@ -1,34 +1,111 @@
 ---
-- name: Install NFS client
+- name: Install CIFS client
   ansible.builtin.package:
-    name: nfs-common
+    name: cifs-utils
     state: present
   become: true
 
-- name: Create persistent directory
+- name: Get slurmadmin user information
+  ansible.builtin.getent:
+    database: passwd
+    key: slurmadmin
+  register: storage_slurmadmin_info
+
+- name: Set slurmadmin UID and GID facts
+  ansible.builtin.set_fact:
+    storage_slurmadmin_uid: "{{ storage_slurmadmin_info.ansible_facts.getent_passwd.slurmadmin[1] }}"
+    storage_slurmadmin_gid: "{{ storage_slurmadmin_info.ansible_facts.getent_passwd.slurmadmin[2] }}"
+
+- name: Display slurmadmin UID/GID for debugging
+  ansible.builtin.debug:
+    msg: "slurmadmin UID: {{ storage_slurmadmin_uid }}, GID: {{ storage_slurmadmin_gid }}"
+
+- name: Create mount point directories
   ansible.builtin.file:
-    path: "/persistent"
+    path: "{{ item }}"
     state: directory
     mode: '0755'
+  loop:
+    - "/persistent"
+  become: true
 
-- name: Mount /persistent
+- name: Make /persistent immutable to prevent writes when not mounted
+  ansible.builtin.command:
+    cmd: chattr +i /persistent
+  become: true
+  failed_when: false
+  changed_when: false
+  register: storage_chattr_result
+
+- name: Display chattr result for debugging
+  ansible.builtin.debug:
+    msg: "chattr result: {{ storage_chattr_result.rc }} - {{ storage_chattr_result.stderr | default('success') }}"
+
+- name: Create credentials file for SMB mount
+  ansible.builtin.copy:
+    dest: /etc/cifs-credentials
+    content: |
+      username={{ storage_account_name }}
+      password={{ storage_account_key }}
+      domain=
+    mode: '0600'
+    owner: root
+    group: root
+  become: true
+
+- name: Add SMB mount to fstab
+  ansible.builtin.lineinfile:
+    path: /etc/fstab
+    line: "{{ smb_mount_line }}"
+    state: present
+    backup: true
+  become: true
+  notify: Mount updated filesystems
+  vars:
+    smb_mount_line: >-
+      //{{ storage_account_name }}.file.core.windows.net/{{ storage_share_name }} /persistent cifs credentials=/etc/cifs-credentials,uid={{ storage_slurmadmin_uid }},gid={{ storage_slurmadmin_gid }},iocharset=utf8,file_mode=0755,dir_mode=0755,serverino,nosharesock,actimeo=30 0 0
+
+- name: Update tmpfs mount in fstab for larger size
+  ansible.builtin.lineinfile:
+    path: /etc/fstab
+    regexp: '^tmpfs /tmp tmpfs.*'
+    line: 'tmpfs /tmp tmpfs size=100G,nosuid,nodev,noexec,relatime 0 0'
+    state: present
+    backup: true
+  become: true
+  notify: Mount updated filesystems
+
+- name: Unmount /tmp before remounting with new size
   ansible.posix.mount:
-    path: /persistent
-    src: "{{ storage_account_name }}.file.core.windows.net:/{{ storage_account_name }}/{{ storage_share_name }}"
-    fstype: nfs
-    opts: vers=4,minorversion=1,sec=sys,defaults
-    state: mounted
+    path: /tmp
+    state: unmounted
+  become: true
 
-- name: Mount /tmp as tmpfs with large size limit
+- name: Mount /tmp with larger size
   ansible.posix.mount:
     path: /tmp
     src: tmpfs
     fstype: tmpfs
     opts: size=100G,nosuid,nodev,noexec,relatime
     state: mounted
+  become: true
 
-- name: Add /tmp tmpfs mount to fstab for persistence
-  ansible.builtin.lineinfile:
-    path: /etc/fstab
-    line: 'tmpfs /tmp tmpfs size=100G,nosuid,nodev,noexec,relatime 0 0'
-    state: present
+- name: Mount all filesystems from fstab
+  ansible.builtin.command:
+    cmd: mount -a
+  become: true
+  register: storage_mount_result
+  failed_when: storage_mount_result.rc != 0
+  changed_when: storage_mount_result.rc == 0
+  tags: skip_ansible_lint
+
+- name: Ensure /persistent has proper ownership for slurmadmin after mounting
+  ansible.builtin.file:
+    path: /persistent
+    state: directory
+    owner: slurmadmin
+    group: slurmadmin
+    mode: '0755'
+    recurse: false
+  become: true
+  failed_when: false  # Allow this to fail if mount is not ready yet

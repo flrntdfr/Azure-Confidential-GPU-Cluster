@@ -16,21 +16,21 @@ output "login_node_private_ip" {
 // SHARED STORAGE //
 // -------------- //
 
-# // Output the storage account name for compute nodes
-# output "storage_account_name" {
-#   value = azurerm_storage_account.cluster_storage.name
-# }
+// Output the storage account name for compute nodes
+output "storage_account_name" {
+  value = azurerm_storage_account.cluster_storage.name
+}
 
-# // Output the file share name for compute nodes
-# output "file_share_name" {
-#   value = azurerm_storage_share.cluster_share.name
-# }
+// Output the file share name for compute nodes
+output "file_share_name" {
+  value = azurerm_storage_share.cluster_share.name
+}
 
-# // Output the storage account primary access key (sensitive)
-# output "storage_account_key" {
-#   value     = azurerm_storage_account.cluster_storage.primary_access_key
-#   sensitive = true
-# }
+// Output the storage account primary access key (sensitive)
+output "storage_account_key" {
+  value     = azurerm_storage_account.cluster_storage.primary_access_key
+  sensitive = true
+}
 
 # // Output the storage account private IP address
 # output "storage_account_private_ip" {
@@ -49,6 +49,9 @@ resource "local_file" "ansible_inventory" {
         public_login_ip              = azurerm_public_ip.login_pip.ip_address
         admin_username               = var.admin_username
         ansible_ssh_private_key_file = local_file.private_key_pem.filename
+        storage_account_name         = azurerm_storage_account.cluster_storage.name
+        storage_share_name           = azurerm_storage_share.cluster_share.name
+        storage_account_key          = azurerm_storage_account.cluster_storage.primary_access_key
       }
       children = {
         login = {

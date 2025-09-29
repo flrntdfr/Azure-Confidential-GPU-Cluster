@@ -56,4 +56,16 @@ variable "partition_config" {
     image_version       = string
     custom_data         = string
   })
+}
+
+variable "login_node_private_ip" {
+  description = "Private IP address of the login node"
+  type        = string
+  default     = "10.0.1.1"
+}
+
+variable "cluster_cidr" {
+  description = "CIDR block for the cluster network"
+  type        = string
+  default     = "10.0.0.0/16"
 } 

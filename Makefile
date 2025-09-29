@@ -54,7 +54,7 @@ cluster-gpu-prod: ## Create prod cluster with GPUs
 	$(MAKE) -C ansible all
 ssh: ## Connect to the cluster
 	-$(MAKE) -C terraform ssh
-summary: ## Get summary resources running in the cloud
+status: ## Get summary resources running in the cloud
 	az resource list --resource-group confcluster-rg --output table 
 	$(MAKE) -C terraform output
 destroy: ## Destroy the cluster

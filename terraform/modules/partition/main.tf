@@ -21,11 +21,11 @@ resource "azurerm_network_security_group" "partition_nsg" {
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "22"
-    source_address_prefix      = "10.0.1.1"  // Login node IP
+    source_address_prefix      = var.login_node_private_ip
     destination_address_prefix = "*"
   }
 
-    security_rule {
+  security_rule {
     name                       = "Incoming-to-slurmd"
     priority                   = 1002
     direction                  = "Inbound"
@@ -33,7 +33,7 @@ resource "azurerm_network_security_group" "partition_nsg" {
     protocol                   = "Tcp"
     source_port_range          = "*"
     destination_port_range     = "6818"
-    source_address_prefix      = "10.0.0.0/16"  // All nodes in the cluster
+    source_address_prefix      = var.cluster_cidr
     destination_address_prefix = "*"
   }
 
@@ -46,7 +46,7 @@ resource "azurerm_network_security_group" "partition_nsg" {
     protocol                   = "*"
     source_port_range          = "*"
     destination_port_range     = "*"
-    source_address_prefix      = "10.0.0.0/16"  // All nodes in the cluster
+    source_address_prefix      = var.cluster_cidr
     destination_address_prefix = "*"
   }
 
@@ -60,7 +60,7 @@ resource "azurerm_network_security_group" "partition_nsg" {
     source_port_range          = "*"
     destination_port_range     = "*"
     source_address_prefix      = "*"
-    destination_address_prefix = "10.0.0.0/16"  // All nodes in the cluster
+    destination_address_prefix = var.cluster_cidr
   }
 
   security_rule {
@@ -102,9 +102,14 @@ locals {
 
 // Associate the security group with the NICs
 resource "azurerm_network_interface_security_group_association" "partition_nsg_association" {
-  count                     = var.partition_config.node_count
+  count                     = var.partition_config.node_count > 0 ? var.partition_config.node_count : 0
   network_interface_id      = azurerm_network_interface.partition_nic[count.index].id
   network_security_group_id = azurerm_network_security_group.partition_nsg[0].id
+
+  depends_on = [
+    azurerm_network_interface.partition_nic,
+    azurerm_network_security_group.partition_nsg
+  ]
 
   lifecycle {
     create_before_destroy = false
@@ -119,6 +124,10 @@ resource "azurerm_linux_virtual_machine" "partition_node" {
   location            = var.location
   size                = var.partition_config.node_size
   admin_username      = var.admin_username
+
+  depends_on = [
+    azurerm_network_interface_security_group_association.partition_nsg_association
+  ]
 
   admin_ssh_key {
     username   = var.admin_username
@@ -158,4 +167,11 @@ resource "azurerm_linux_virtual_machine" "partition_node" {
       "slurm_partition" = var.partition_config.name
     }
   )
+
+  lifecycle {
+    create_before_destroy = true
+    ignore_changes = [
+      custom_data
+    ]
+  }
 } 
