@@ -1,5 +1,6 @@
 # System
 .DS_Store
+.gitignore.d
 .env
 *.pem
 *.key
