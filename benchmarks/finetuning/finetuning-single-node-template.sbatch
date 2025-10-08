@@ -3,7 +3,7 @@
 #SBATCH --partition=partition         # Specify partition name
 #SBATCH --nodes=1                     # Single node
 #SBATCH --ntasks-per-node=1           # One task per node
-#SBATCH --gres=gpu:4                  # GPUs per node
+#SBATCH --gres=gpu:1                  # GPUs per node
 #SBATCH --cpus-per-task=40            # CPUs per task
 #SBATCH --mem=0                       # Use entire memory of node
 #SBATCH --exclusive                   # Do not share nodes
