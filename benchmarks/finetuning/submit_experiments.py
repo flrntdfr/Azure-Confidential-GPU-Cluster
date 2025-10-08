@@ -44,9 +44,9 @@ TRAINING_CONFIGS = [
 #    ("fp16", "False", "False", "True", "False", "Full precision FP16"),
     ("bf16", "False", "False", "False", "True", "Full precision BF16"),
 #    ("lora-fp16", "False", "True", "True", "False", "LoRA with FP16"),
-    ("lora-bf16", "False", "True", "False", "True", "LoRA with BF16"),
+    ("lora,bf16", "False", "True", "False", "True", "LoRA with BF16"),
 #    ("lora-fp16-8bit", "True", "True", "True", "False", "LoRA with FP16 and 8-bit quantization"),
-    ("lora-bf16-8bit", "True", "True", "False", "True", "LoRA with BF16 and 8-bit quantization")
+    ("lora,bf16,8bit", "True", "True", "False", "True", "LoRA with BF16 and 8-bit quantization")
 ]
 
 
@@ -102,7 +102,7 @@ def create_modified_sbatch(template_file, partition, config_name, train_8bit,
                                  f'WANDB_RUN_NAME="${{WANDB_RUN_NAME:-{wandb_run_name}}}"')
         content = content.replace('WANDB_TAGS="${WANDB_TAGS:-singlenode}"',
                                  f'WANDB_TAGS="${{WANDB_TAGS:-{partition},{config_name},pbs{per_device_batch_size},run{run_number}}}"')
-        content = content.replace('JOB_PARTITION="${JOB_PARTITION:-$SLURM_PARTITION}"',
+        content = content.replace('JOB_PARTITION="${JOB_PARTITION:-$SLURM_JOB_PARTITION}"',
                                  f'JOB_PARTITION="${{JOB_PARTITION:-{partition}}}"')
         content = content.replace('JOB_SUFFIX="${JOB_SUFFIX:-singlenode}"',
                                  f'JOB_SUFFIX="${{JOB_SUFFIX:-{config_name}-pbs{per_device_batch_size}-run{run_number}}}"')

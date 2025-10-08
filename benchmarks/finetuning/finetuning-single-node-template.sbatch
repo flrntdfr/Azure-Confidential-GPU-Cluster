@@ -20,7 +20,7 @@ echo "SLURM Job Information"
 echo "=========================================="
 echo "Job ID: $SLURM_JOB_ID"
 echo "Job name: $SLURM_JOB_NAME"
-echo "Partition: $SLURM_PARTITION"
+echo "Partition: $SLURM_JOB_PARTITION"
 echo "Node list: $SLURM_NODELIST"
 echo "Number of nodes: $SLURM_JOB_NUM_NODES"
 echo "GPUs per node: $SLURM_GPUS_ON_NODE"
@@ -31,6 +31,9 @@ echo "=========================================="
 
 # Set HuggingFace cache directory (recommended for large models)
 export HF_HOME=$HOME/.cache/huggingface
+
+# PyTorch
+export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 
 # Configure distributed training environment
 export MASTER_PORT="${MASTER_PORT:-29500}"
@@ -52,10 +55,10 @@ GLOBAL_BATCH_SIZE="${GLOBAL_BATCH_SIZE:-256}"
 PER_DEVICE_BATCH_SIZE="${PER_DEVICE_BATCH_SIZE:-4}"
 
 USE_WANDB="${USE_WANDB:-True}"
-WANDB_PROJECT="${WANDB_PROJECT:-medalpaca-genoa}"
+WANDB_PROJECT="${WANDB_PROJECT:-medalpaca}"
 WANDB_RUN_NAME="${WANDB_RUN_NAME:-medAlpaca-singlenode-${SLURM_JOB_ID}}"
 WANDB_TAGS="${WANDB_TAGS:-singlenode}"
-JOB_PARTITION="${JOB_PARTITION:-$SLURM_PARTITION}"
+JOB_PARTITION="${JOB_PARTITION:-$SLURM_JOB_PARTITION}"
 JOB_SUFFIX="${JOB_SUFFIX:-singlenode}"
 
 echo "=========================================="
@@ -66,15 +69,25 @@ echo "Processes per node: $NPROC_PER_NODE"
 echo "Model: $MODEL"
 echo "Data path: $DATA_PATH"
 echo "Output directory: $OUTPUT_DIR"
+echo "Prompt template: $PROMPT_TEMPLATE"
+echo "Train in 8bit: $TRAIN_IN_8BIT"
+echo "Use LoRA: $USE_LORA"
+echo "FP16: $FP16"
+echo "BF16: $BF16"
+echo "Gradient checkpointing: $GRADIENT_CHECKPOINTING"
 echo "Global batch size: $GLOBAL_BATCH_SIZE"
 echo "Per device batch size: $PER_DEVICE_BATCH_SIZE"
+echo "Use WANDB: $USE_WANDB"
+echo "WANDB project: $WANDB_PROJECT"
+echo "WANDB run name: $WANDB_RUN_NAME"
+echo "WANDB tags: $WANDB_TAGS"
 echo "=========================================="
 
 # ========================================
 # Training Execution
 # ========================================
 
-cd $HOME/medAlpaca
+cd $HOME/Azure-Confidential-GPU-Cluster/benchmarks/finetuning/medAlpaca
 mkdir -p /persistent/logs
 source .venv/bin/activate
 
