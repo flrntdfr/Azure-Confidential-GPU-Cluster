@@ -16,10 +16,18 @@ from pathlib import Path
 # ========================================
 
 # Control flags
-DRY_RUN            = True    # If True, only print what would be submitted
+DRY_RUN            = False   # If True, only print what would be submitted
 SUBMIT_SINGLE_NODE = True    # Submit single-node jobs
 SUBMIT_MULTI_NODE  = False   # Submit multi-node jobs
-NUM_RUNS           = 5       # Number of runs per configuration
+NUM_RUNS           = 1       # Number of runs per configuration
+PER_DEVICE_BATCH_SIZES = [4, 8, 16]
+
+# Partitions to test
+PARTITIONS = {
+#    "TEE-ON": "tee-on",
+#    "TEE-OFF": "tee-off"
+    "lrz-hgx-h100-94x4": "lrz-hgx-h100-94x4"
+}
 
 # Output directories
 BASE_LOG_DIR = "./logs"                     # Base directory for logs and results
@@ -27,30 +35,27 @@ TEMP_SBATCH_DIR_PREFIX = "temp_sbatch"      # Prefix for temporary sbatch files 
 JOB_SUBMISSION_LOG = "job_submissions.log"  # Job submission tracking log
 
 # Template files
-SINGLE_NODE_TEMPLATE = "single-node-template.sbatch"
-MULTI_NODE_TEMPLATE = "multi-node-template.sbatch"
-
-# Partitions to test
-PARTITIONS = {
-    "TEE-ON": "tee-on",
-    "TEE-OFF": "tee-off"
-}
+SINGLE_NODE_TEMPLATE = "finetuning-single-node-template.sbatch"
+MULTI_NODE_TEMPLATE = "finetuning-multi-node-template.sbatch"
 
 # Training configurations
 # Format: (config_name, train_8bit, use_lora, fp16, bf16, description)
 TRAINING_CONFIGS = [
-    ("fp16", "False", "False", "True", "False", "Full precision FP16"),
+#    ("fp16", "False", "False", "True", "False", "Full precision FP16"),
     ("bf16", "False", "False", "False", "True", "Full precision BF16"),
-    ("lora-fp16", "False", "True", "True", "False", "LoRA with FP16"),
-    ("lora-fp16-8bit", "True", "True", "True", "False", "LoRA with FP16 and 8-bit quantization"),
+#    ("lora-fp16", "False", "True", "True", "False", "LoRA with FP16"),
+    ("lora-bf16", "False", "True", "False", "True", "LoRA with BF16"),
+#    ("lora-fp16-8bit", "True", "True", "True", "False", "LoRA with FP16 and 8-bit quantization"),
+    ("lora-bf16-8bit", "True", "True", "False", "True", "LoRA with BF16 and 8-bit quantization")
 ]
+
 
 # ========================================
 # HELPER FUNCTIONS
 # ========================================
 
 def create_modified_sbatch(template_file, partition, config_name, train_8bit,
-                          use_lora, fp16, bf16, run_number, output_file):
+                          use_lora, fp16, bf16, per_device_batch_size, run_number, output_file):
     """Create a modified sbatch file from template with given parameters."""
 
     # Read template file
@@ -61,7 +66,7 @@ def create_modified_sbatch(template_file, partition, config_name, train_8bit,
     job_type = "singlenode" if "single-node" in template_file else "multinode"
 
     # Create job name
-    job_name = f"medalpaca-{job_type}-{partition}-{config_name}-run{run_number}"
+    job_name = f"medalpaca-{job_type}-{partition}-{config_name}-pbs{per_device_batch_size}-run{run_number}"
 
     # Replace partition placeholder
     content = content.replace("#SBATCH --partition=partition",
@@ -82,7 +87,7 @@ def create_modified_sbatch(template_file, partition, config_name, train_8bit,
                              f'BF16="${{BF16:-{bf16}}}"')
 
     # Replace output directory
-    output_dir = f"./output-{partition}-{config_name}-run{run_number}-${{SLURM_JOB_ID}}"
+    output_dir = f"./output-{partition}-{config_name}-pbs{per_device_batch_size}-run{run_number}-${{SLURM_JOB_ID}}"
     if "singlenode" in job_type:
         content = content.replace('OUTPUT_DIR="${OUTPUT_DIR:-./lora-alpaca-7b}"',
                                  f'OUTPUT_DIR="${{OUTPUT_DIR:-{output_dir}}}"')
@@ -91,19 +96,23 @@ def create_modified_sbatch(template_file, partition, config_name, train_8bit,
                                  f'OUTPUT_DIR="${{OUTPUT_DIR:-{output_dir}}}"')
 
     # Replace WANDB tags and run name
-    wandb_run_name = f"medAlpaca-{job_type}-{partition}-{config_name}-run{run_number}-${{SLURM_JOB_ID}}"
+    wandb_run_name = f"medAlpaca-{job_type}-{partition}-{config_name}-pbs{per_device_batch_size}-run{run_number}-${{SLURM_JOB_ID}}"
     if "singlenode" in job_type:
         content = content.replace('WANDB_RUN_NAME="${WANDB_RUN_NAME:-medAlpaca-singlenode-${SLURM_JOB_ID}}"',
                                  f'WANDB_RUN_NAME="${{WANDB_RUN_NAME:-{wandb_run_name}}}"')
         content = content.replace('WANDB_TAGS="${WANDB_TAGS:-singlenode}"',
-                                 f'WANDB_TAGS="${{WANDB_TAGS:-{partition},{config_name},run{run_number}}}"')
+                                 f'WANDB_TAGS="${{WANDB_TAGS:-{partition},{config_name},pbs{per_device_batch_size},run{run_number}}}"')
         content = content.replace('JOB_PARTITION="${JOB_PARTITION:-$SLURM_PARTITION}"',
                                  f'JOB_PARTITION="${{JOB_PARTITION:-{partition}}}"')
         content = content.replace('JOB_SUFFIX="${JOB_SUFFIX:-singlenode}"',
-                                 f'JOB_SUFFIX="${{JOB_SUFFIX:-{config_name}-run{run_number}}}"')
+                                 f'JOB_SUFFIX="${{JOB_SUFFIX:-{config_name}-pbs{per_device_batch_size}-run{run_number}}}"')
     else:
         content = content.replace('WANDB_RUN_NAME="${WANDB_RUN_NAME:-medAlpaca-multinode-${SLURM_JOB_ID}}"',
                                  f'WANDB_RUN_NAME="${{WANDB_RUN_NAME:-{wandb_run_name}}}"')
+
+    # Replace per-device batch size
+    content = content.replace('PER_DEVICE_BATCH_SIZE="${PER_DEVICE_BATCH_SIZE:-4}"',
+                             f'PER_DEVICE_BATCH_SIZE="${{PER_DEVICE_BATCH_SIZE:-{per_device_batch_size}}}"')
 
     # Write modified file
     with open(output_file, 'w') as f:
@@ -113,11 +122,11 @@ def create_modified_sbatch(template_file, partition, config_name, train_8bit,
     os.chmod(output_file, 0o755)
 
 
-def submit_job(sbatch_file, partition, config_name, job_type, run_number):
+def submit_job(sbatch_file, partition, config_name, job_type, per_device_batch_size, run_number):
     """Submit a job to SLURM."""
 
     print(f"\n{'='*50}")
-    print(f"Submitting: {job_type} with {config_name} on {partition} (run {run_number}/{NUM_RUNS})")
+    print(f"Submitting: {job_type} with {config_name} on {partition} (batch_size={per_device_batch_size}, run {run_number}/{NUM_RUNS})")
     print(f"File: {sbatch_file}")
 
     if DRY_RUN:
@@ -128,6 +137,7 @@ def submit_job(sbatch_file, partition, config_name, job_type, run_number):
                 if i >= 20:
                     break
                 print(line.rstrip())
+        print(f"[DRY RUN] Modified sbatch file saved to: {sbatch_file}")
         return None
     else:
         try:
@@ -163,6 +173,10 @@ def print_config_table():
     for config_name, train_8bit, use_lora, fp16, bf16, _ in TRAINING_CONFIGS:
         print(f"{config_name:<20} {train_8bit:<6} {use_lora:<6} {fp16:<6} {bf16:<6}")
 
+    print("\nPer-device batch sizes:")
+    print("-" * 40)
+    print(", ".join(str(x) for x in PER_DEVICE_BATCH_SIZES))
+
     print(f"\nRuns per configuration: {NUM_RUNS}")
     print()
 
@@ -191,7 +205,7 @@ def main():
     if not DRY_RUN:
         with open(log_file, 'w') as f:
             f.write(f"# Job submissions log - {datetime.now()}\n")
-            f.write("# JobID|Partition|Config|JobType|Run|SubmissionTime\n")
+            f.write("# JobID|Partition|Config|JobType|PerDeviceBatchSize|Run|SubmissionTime\n")
 
     print("\n" + "="*60)
     print("Starting Experiment Submissions")
@@ -206,12 +220,14 @@ def main():
     # Calculate total expected submissions
     total_configs = len(TRAINING_CONFIGS)
     total_partitions = len(PARTITIONS)
+    total_pbs = len(PER_DEVICE_BATCH_SIZES)
     total_job_types = sum([SUBMIT_SINGLE_NODE, SUBMIT_MULTI_NODE])
-    total_expected = total_configs * total_partitions * total_job_types * NUM_RUNS
+    total_expected = total_configs * total_partitions * total_pbs * total_job_types * NUM_RUNS
 
     print(f"Expected total submissions: {total_expected}")
     print(f"  - Partitions: {total_partitions}")
     print(f"  - Configs: {total_configs}")
+    print(f"  - Per-device batch sizes: {total_pbs}")
     print(f"  - Job types: {total_job_types}")
     print(f"  - Runs per config: {NUM_RUNS}")
     print()
@@ -222,57 +238,60 @@ def main():
     # Iterate over all combinations
     for partition_name, partition_value in PARTITIONS.items():
         for config_name, train_8bit, use_lora, fp16, bf16, description in TRAINING_CONFIGS:
-            for run in range(1, NUM_RUNS + 1):
+            for per_device_batch_size in PER_DEVICE_BATCH_SIZES:
+                for run in range(1, NUM_RUNS + 1):
 
-                # Submit single-node jobs
-                if SUBMIT_SINGLE_NODE and Path(SINGLE_NODE_TEMPLATE).exists():
-                    output_file = temp_dir / f"singlenode-{partition_value}-{config_name}-run{run}.sbatch"
+                    # Submit single-node jobs
+                    if SUBMIT_SINGLE_NODE and Path(SINGLE_NODE_TEMPLATE).exists():
+                        output_file = temp_dir / f"singlenode-{partition_value}-{config_name}-pbs{per_device_batch_size}-run{run}.sbatch"
 
-                    create_modified_sbatch(
-                        SINGLE_NODE_TEMPLATE,
-                        partition_value,
-                        config_name,
-                        train_8bit,
-                        use_lora,
-                        fp16,
-                        bf16,
-                        run,
-                        str(output_file)
-                    )
+                        create_modified_sbatch(
+                            SINGLE_NODE_TEMPLATE,
+                            partition_value,
+                            config_name,
+                            train_8bit,
+                            use_lora,
+                            fp16,
+                            bf16,
+                            per_device_batch_size,
+                            run,
+                            str(output_file)
+                        )
 
-                    job_id = submit_job(str(output_file), partition_value, config_name, "singlenode", run)
+                        job_id = submit_job(str(output_file), partition_value, config_name, "singlenode", per_device_batch_size, run)
 
-                    if job_id and not DRY_RUN:
-                        with open(log_file, 'a') as f:
-                            timestamp = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
-                            f.write(f"{job_id}|{partition_value}|{config_name}|singlenode|run{run}|{timestamp}\n")
+                        if job_id and not DRY_RUN:
+                            with open(log_file, 'a') as f:
+                                timestamp = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
+                                f.write(f"{job_id}|{partition_value}|{config_name}|singlenode|{per_device_batch_size}|run{run}|{timestamp}\n")
 
-                    submission_count += 1
+                        submission_count += 1
 
-                # Submit multi-node jobs
-                if SUBMIT_MULTI_NODE and Path(MULTI_NODE_TEMPLATE).exists():
-                    output_file = temp_dir / f"multinode-{partition_value}-{config_name}-run{run}.sbatch"
+                    # Submit multi-node jobs
+                    if SUBMIT_MULTI_NODE and Path(MULTI_NODE_TEMPLATE).exists():
+                        output_file = temp_dir / f"multinode-{partition_value}-{config_name}-pbs{per_device_batch_size}-run{run}.sbatch"
 
-                    create_modified_sbatch(
-                        MULTI_NODE_TEMPLATE,
-                        partition_value,
-                        config_name,
-                        train_8bit,
-                        use_lora,
-                        fp16,
-                        bf16,
-                        run,
-                        str(output_file)
-                    )
+                        create_modified_sbatch(
+                            MULTI_NODE_TEMPLATE,
+                            partition_value,
+                            config_name,
+                            train_8bit,
+                            use_lora,
+                            fp16,
+                            bf16,
+                            per_device_batch_size,
+                            run,
+                            str(output_file)
+                        )
 
-                    job_id = submit_job(str(output_file), partition_value, config_name, "multinode", run)
+                        job_id = submit_job(str(output_file), partition_value, config_name, "multinode", per_device_batch_size, run)
 
-                    if job_id and not DRY_RUN:
-                        with open(log_file, 'a') as f:
-                            timestamp = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
-                            f.write(f"{job_id}|{partition_value}|{config_name}|multinode|run{run}|{timestamp}\n")
+                        if job_id and not DRY_RUN:
+                            with open(log_file, 'a') as f:
+                                timestamp = datetime.now().strftime("%Y-%m-%d_%H:%M:%S")
+                                f.write(f"{job_id}|{partition_value}|{config_name}|multinode|{per_device_batch_size}|run{run}|{timestamp}\n")
 
-                    submission_count += 1
+                        submission_count += 1
 
     # Print summary
     print("\n" + "="*60)
