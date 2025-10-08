@@ -19,6 +19,7 @@ inventory.yml
 facts_cache/
 
 # Crash log files
+logs/
 crash.log
 
 # IDE
