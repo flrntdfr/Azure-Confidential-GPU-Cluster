@@ -18,8 +18,13 @@
 inventory.yml
 facts_cache/
 
-# Crash log files
+# Benchmarks
+benchmarks/finetuning/medAlpaca/
 logs/
+*.log
+
+
+# Crash log files
 crash.log
 
 # IDE
