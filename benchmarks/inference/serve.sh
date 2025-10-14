@@ -1,12 +1,20 @@
+#!/bin/bash
+
 # vLLM server
+# Uses environment variables set by experiment scripts
 
-source "./settings.sh"
+# Set default values if not provided
+HOST=${HOST:-"127.0.0.1"}
+PORT=${PORT:-"8000"}
+API_KEY=${API_KEY:-"dummy"}
+EXTRA_FLAGS=${EXTRA_FLAGS:-"--enable-chunked-prefill --disable-log-requests"}
 
-HOST="127.0.0.1"
-PORT="8000"
-API_KEY="dummy"
-GPU_MEMORY_UTIL=0.90
-EXTRA_FLAGS="--enable-chunked-prefill --disable-log-requests"
+echo "Starting vLLM server with:"
+echo "  Model: $MODEL"
+echo "  Host: $HOST:$PORT"
+echo "  Max model length: $MAX_MODEL_LEN"
+echo "  Max sequences: $MAX_NUM_SEQS"
+echo "  GPU memory utilization: $GPU_MEMORY_UTIL"
 
 vllm serve $MODEL \
   --tokenizer $TOKENIZER \
