@@ -86,7 +86,7 @@ echo "=========================================="
 # ========================================
 
 cd $HOME/Azure-Confidential-GPU-Cluster/benchmarks/finetuning/medAlpaca
-mkdir -p /persistent/logs
+mkdir -p ./logs
 source .venv/bin/activate
 
 # Launch multi-node training using srun + torchrun
