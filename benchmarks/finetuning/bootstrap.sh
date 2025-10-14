@@ -3,3 +3,5 @@ cd medAlpaca
 uv venv --prompt medAlapaca --python 3.10.8
 source .venv/bin/activate
 uv pip install -r requirements.txt
+
+hf download meta-llama/Llama-2-7b-hf
