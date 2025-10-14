@@ -29,7 +29,7 @@ echo "Working directory: $(pwd)"
 echo "=========================================="
 
 
-# Set HuggingFace cache directory (recommended for large models)
+# Set HuggingFace cache directory
 export HF_HOME=$HOME/.cache/huggingface
 
 # PyTorch
@@ -39,7 +39,7 @@ export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 export MASTER_PORT="${MASTER_PORT:-29500}"
 export NPROC_PER_NODE="${NPROC_PER_NODE:-$SLURM_GPUS_ON_NODE}"
 
-# Training parameters (can be overridden via command line or environment)
+# Training parameters
 MODEL="${MODEL:-meta-llama/Llama-2-7b-hf}"
 DATA_PATH="${DATA_PATH:-./medical_meadow_small.json}"
 OUTPUT_DIR="${OUTPUT_DIR:-./lora-alpaca-7b}"
@@ -91,7 +91,6 @@ cd $HOME/Azure-Confidential-GPU-Cluster/benchmarks/finetuning/medAlpaca
 mkdir -p ./logs
 source .venv/bin/activate
 
-# Set WANDB environment variables
 export WANDB_TAGS="$WANDB_TAGS"
 export WANDB_NOTES="Partition: ${JOB_PARTITION}, Config: ${JOB_SUFFIX}"
 
