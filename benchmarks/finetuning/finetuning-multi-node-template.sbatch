@@ -6,7 +6,6 @@
 #SBATCH --gres=gpu:1                  # GPUs per node
 #SBATCH --cpus-per-task=40            # CPUs per task
 #SBATCH --mem=0                       # Use entire memory of node
-#SBATCH --exclusive                   # Do not share nodes
 #SBATCH --time=2:00:00                # Maximum run time
 #SBATCH --output=logs/medalpaca-%j.out
 #SBATCH --error=logs/medalpaca-%j.err
@@ -38,7 +37,7 @@ export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 # Configure distributed training environment
 export MASTER_ADDR=$(scontrol show hostname $SLURM_NODELIST | head -n 1)
 export MASTER_PORT=29500
-export WORLD_SIZE=$((SLURM_JOB_NUM_NODES * SLURM_GPUS_ON_NODE))
+export WORLD_SIZE=$((SLURM_JOB_NUM_NODES * 1))
 
 # Training parameters
 MODEL="${MODEL:-meta-llama/Llama-2-7b-hf}"
@@ -58,6 +57,9 @@ PER_DEVICE_BATCH_SIZE="${PER_DEVICE_BATCH_SIZE:-4}"
 USE_WANDB="${USE_WANDB:-True}"
 WANDB_PROJECT="${WANDB_PROJECT:-medalpaca}"
 WANDB_RUN_NAME="${WANDB_RUN_NAME:-medAlpaca-multinode-${SLURM_JOB_ID}}"
+WANDB_TAGS="${WANDB_TAGS:-multinode}"
+JOB_PARTITION="${JOB_PARTITION:-$SLURM_JOB_PARTITION}"
+JOB_SUFFIX="${JOB_SUFFIX:-multinode}"
 
 echo "=========================================="
 echo "Training Configuration"
@@ -79,6 +81,7 @@ echo "Per device batch size: $PER_DEVICE_BATCH_SIZE"
 echo "Use WANDB: $USE_WANDB"
 echo "WANDB project: $WANDB_PROJECT"
 echo "WANDB run name: $WANDB_RUN_NAME"
+echo "WANDB tags: $WANDB_TAGS"
 echo "=========================================="
 
 # ========================================
@@ -96,7 +99,7 @@ export WANDB_NOTES="Partition: ${JOB_PARTITION}, Config: ${JOB_SUFFIX}"
 # Each node runs torchrun which spawns multiple GPU processes
 srun torchrun \
     --nnodes=$SLURM_JOB_NUM_NODES \
-    --nproc_per_node=$SLURM_GPUS_ON_NODE \
+    --nproc_per_node=1 \
     --node_rank=$SLURM_NODEID \
     --master_addr=$MASTER_ADDR \
     --master_port=$MASTER_PORT \

@@ -6,7 +6,6 @@
 #SBATCH --gres=gpu:1                  # GPUs per node
 #SBATCH --cpus-per-task=40            # CPUs per task
 #SBATCH --mem=0                       # Use entire memory of node
-#SBATCH --exclusive                   # Do not share nodes
 #SBATCH --time=2:00:00                # Maximum run time
 #SBATCH --output=logs/medalpaca-%j.out
 #SBATCH --error=logs/medalpaca-%j.err
@@ -37,7 +36,7 @@ export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 
 # Configure distributed training environment
 export MASTER_PORT="${MASTER_PORT:-29500}"
-export NPROC_PER_NODE="${NPROC_PER_NODE:-$SLURM_GPUS_ON_NODE}"
+export NPROC_PER_NODE="${NPROC_PER_NODE:-1}"
 
 # Training parameters
 MODEL="${MODEL:-meta-llama/Llama-2-7b-hf}"
