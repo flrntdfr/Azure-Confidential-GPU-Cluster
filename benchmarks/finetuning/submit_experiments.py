@@ -20,7 +20,7 @@ DRY_RUN            = False   # If True, only print what would be submitted
 SUBMIT_SINGLE_NODE = True    # Submit single-node jobs
 SUBMIT_MULTI_NODE  = False   # Submit multi-node jobs
 NUM_RUNS           = 1       # Number of runs per configuration
-PER_DEVICE_BATCH_SIZES = [4, 8, 16]
+PER_DEVICE_BATCH_SIZES = [4, 8, 16, 24]
 
 # Partitions to test
 PARTITIONS = {
