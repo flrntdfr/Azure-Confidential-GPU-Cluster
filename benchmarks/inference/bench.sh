@@ -41,10 +41,15 @@ sleep 60
 wait_for_server
 
 echo "→ Starting power logging..."
-nvidia-smi --query-gpu=timestamp,power.draw,utilization.gpu,utilization.memory \
+nvidia-smi --query-gpu=timestamp,power.draw,utilization.gpu,utilization.memory,clocks.gr,clocks.mem,temperature.gpu \
     --format=csv \
     -l 1 > power_metrics_${EXPERIMENT_NAME}.csv &
 NVIDIA_SMI_PID=$!
+
+# IMPORTANT: For deterministic GPU comparisons, consider locking GPU clocks:
+# sudo nvidia-smi -pm 1  # Enable persistence mode
+# sudo nvidia-smi -lgc <min_clock>,<max_clock>  # Lock graphics clock
+# This prevents GPU Boost and thermal throttling from affecting results
 
 echo "Running benchmark with:"
 echo "  Model: $MODEL"
