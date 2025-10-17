@@ -123,5 +123,4 @@ srun torchrun \
 
 echo "=========================================="
 echo "Training completed successfully!"
-echo "Output saved to: $OUTPUT_DIR"
 echo "=========================================="

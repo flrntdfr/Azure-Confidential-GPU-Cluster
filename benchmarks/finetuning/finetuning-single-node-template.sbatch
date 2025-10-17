@@ -94,7 +94,7 @@ export WANDB_TAGS="$WANDB_TAGS"
 export WANDB_NOTES="Partition: ${JOB_PARTITION}, Config: ${JOB_SUFFIX}"
 
 echo "Starting training..."
-torchrun --nproc_per_node=$NPROC_PER_NODE --master_port=$MASTER_PORT medalpaca/train.py \
+python medalpaca/train.py \
     --model "$MODEL" \
     --data_path "$DATA_PATH" \
     --prompt_template "$PROMPT_TEMPLATE" \
@@ -114,5 +114,4 @@ torchrun --nproc_per_node=$NPROC_PER_NODE --master_port=$MASTER_PORT medalpaca/t
 
 echo "=========================================="
 echo "Training completed successfully!"
-echo "Output saved to: $OUTPUT_DIR"
 echo "=========================================="

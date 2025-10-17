@@ -101,7 +101,7 @@ def create_modified_sbatch(template_file, partition, config_name, train_8bit,
         content = content.replace('WANDB_RUN_NAME="${WANDB_RUN_NAME:-medAlpaca-singlenode-${SLURM_JOB_ID}}"',
                                  f'WANDB_RUN_NAME="${{WANDB_RUN_NAME:-{wandb_run_name}}}"')
         content = content.replace('WANDB_TAGS="${WANDB_TAGS:-singlenode}"',
-                                 f'WANDB_TAGS="${{WANDB_TAGS:-{partition},{config_name},pbs{per_device_batch_size},run{run_number}}}"')
+                                 f'WANDB_TAGS="${{WANDB_TAGS:-singlenode,{partition},{config_name},pbs{per_device_batch_size},run{run_number}}}"')
         content = content.replace('JOB_PARTITION="${JOB_PARTITION:-$SLURM_JOB_PARTITION}"',
                                  f'JOB_PARTITION="${{JOB_PARTITION:-{partition}}}"')
         content = content.replace('JOB_SUFFIX="${JOB_SUFFIX:-singlenode}"',
@@ -110,7 +110,7 @@ def create_modified_sbatch(template_file, partition, config_name, train_8bit,
         content = content.replace('WANDB_RUN_NAME="${WANDB_RUN_NAME:-medAlpaca-multinode-${SLURM_JOB_ID}}"',
                                  f'WANDB_RUN_NAME="${{WANDB_RUN_NAME:-{wandb_run_name}}}"')
         content = content.replace('WANDB_TAGS="${WANDB_TAGS:-multinode}"',
-                                 f'WANDB_TAGS="${{WANDB_TAGS:-{partition},{config_name},pbs{per_device_batch_size},run{run_number}}}"')
+                                 f'WANDB_TAGS="${{WANDB_TAGS:-multinode,{partition},{config_name},pbs{per_device_batch_size},run{run_number}}}"')
         content = content.replace('JOB_PARTITION="${JOB_PARTITION:-$SLURM_JOB_PARTITION}"',
                                  f'JOB_PARTITION="${{JOB_PARTITION:-{partition}}}"')
         content = content.replace('JOB_SUFFIX="${JOB_SUFFIX:-multinode}"',
