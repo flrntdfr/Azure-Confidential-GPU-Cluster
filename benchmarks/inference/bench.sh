@@ -1,4 +1,5 @@
 #!/bin/bash
+# https://docs.vllm.ai/en/latest/cli/bench/serve.html?h=bench#options
 
 # vLLM benchmark
 # Uses environment variables set by experiment scripts
@@ -51,7 +52,7 @@ echo "  Output file: results/$OUTPUT_FILENAME"
 vllm bench serve \
   --backend vllm \
   --base-url http://${HOST}:${PORT} \
-  --endpoint /v1/chat/completions \
+  --endpoint $ENDPOINT \
   --model $MODEL \
   --tokenizer $TOKENIZER \
   --dataset-name $DATASET_NAME \
@@ -62,10 +63,9 @@ vllm bench serve \
   --seed 54940 \
   --temperature $TEMPERATURE \
   --percentile-metrics ttft,tpot,itl,e2el \
-  --metric-percentiles 50,95,99 \
-  --disable-shuffle \
-  --disable-tqdm \
-  --no-enable-log-requests \
+  --metric-percentiles 25,50,75,95,99 \
+  #--disable-shuffle \ # FIXME
+  #--disable-tqdm \ # FIXME
   --no-oversample \
   --save-result \
   --save-detailed \

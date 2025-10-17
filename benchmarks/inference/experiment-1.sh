@@ -26,7 +26,7 @@ export TOKENIZER=google/gemma-3-1b-it
 # SERVER #
 # ------ #
 
-#export GPU_MEMORY_UTIL=0.95
+export GPU_MEMORY_UTIL=0.90 # 90%
 export MAX_MODEL_LEN=8192
 #export MAX_NUM_SEQS=256 # FIXME
 export MAX_NUM_SEQS=16
@@ -42,6 +42,7 @@ export RANDOM_OUTPUT_LEN=128
 export NUM_PROMPTS=1000
 export MAX_CONCURRENCY=1
 export TEMPERATURE=0
+export ENDPOINT=/v1/completions
 
 echo "→ Starting experiment 1: Single request baseline"
 echo "→ MODEL: $MODEL"
@@ -54,7 +55,7 @@ SERVER_PID=$!
 
 # Run benchmark
 echo "→ Running benchmark..."
-for i in {1..$NUM_REPETITIONS}; do
+for i in $(seq 1 $NUM_REPETITIONS); do
     echo "→ Running repetition $i"
     ./bench.sh
 done

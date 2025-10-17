@@ -6,8 +6,8 @@
 # Set default values if not provided
 HOST=${HOST:-"127.0.0.1"}
 PORT=${PORT:-"8000"}
-API_KEY=${API_KEY:-"dummy"}
-EXTRA_FLAGS=${EXTRA_FLAGS:-"--enable-chunked-prefill --disable-log-requests"}
+#API_KEY=${API_KEY:-"dummy"} # FIXME
+EXTRA_FLAGS=${EXTRA_FLAGS:-"--enable-chunked-prefill --no-enable-log-requests"}
 
 echo "Starting vLLM server with:"
 echo "  Model: $MODEL"
@@ -22,5 +22,4 @@ vllm serve $MODEL \
   --max-num-seqs $MAX_NUM_SEQS \
   --gpu-memory-utilization $GPU_MEMORY_UTIL \
   --host $HOST --port $PORT \
-  --api-key $API_KEY \
   $EXTRA_FLAGS
