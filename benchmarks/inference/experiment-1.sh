@@ -2,7 +2,6 @@
 
 source .venv/bin/activate
 
-# Set experiment name for tracking
 export EXPERIMENT_NAME="experiment-1"
 
 # ------ #
@@ -26,7 +25,7 @@ export TOKENIZER=google/gemma-3-1b-it
 # SERVER #
 # ------ #
 
-#export GPU_MEMORY_UTIL=0.95
+export GPU_MEMORY_UTIL=0.95
 export MAX_MODEL_LEN=8192
 #export MAX_NUM_SEQS=256 # FIXME
 export MAX_NUM_SEQS=16
@@ -42,6 +41,7 @@ export RANDOM_OUTPUT_LEN=128
 export NUM_PROMPTS=1000
 export MAX_CONCURRENCY=1
 export TEMPERATURE=0
+export ENDPOINT="/v1/completions"
 
 echo "→ Starting experiment 1: Single request baseline"
 echo "→ MODEL: $MODEL"
