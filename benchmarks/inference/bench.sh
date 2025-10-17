@@ -58,21 +58,12 @@ NVIDIA_SMI_PID=$!
 echo "→ Starting benchmark..."
 vllm bench serve \
   --base-url http://${HOST}:${PORT} \
-  --endpoint /v1/chat/completions \
-  --model $MODEL \
-  --tokenizer $TOKENIZER \
   --dataset-name $DATASET_NAME \
-  --disable-shuffle \
   --endpoint $ENDPOINT \
   --label $EXPERIMENT_NAME \
   --max-concurrency $MAX_CONCURRENCY \
-  --seed 54940 \
-  --temperature $TEMPERATURE \
-  --percentile-metrics ttft,tpot,itl,e2el \
   --metric-percentiles 50,95,99 \
-  --disable-shuffle \
-  --disable-tqdm \
-  --no-enable-log-requests \
+  --model $MODEL \
   --no-oversample \
   --num-prompts $NUM_PROMPTS \
   --percentile-metrics ttft,tpot,itl,e2el \

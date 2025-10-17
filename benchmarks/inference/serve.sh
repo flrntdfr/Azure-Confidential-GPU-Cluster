@@ -14,12 +14,12 @@ echo "  Host: $HOST:$PORT"
 echo "  GPU memory utilization: $GPU_MEMORY_UTIL"
 
 vllm serve $MODEL \
-  --tokenizer $TOKENIZER \
-  --gpu-memory-utilization $GPU_MEMORY_UTIL \
-  --host $HOST --port $PORT \
   --disable-fastapi-docs \
   --enable-server-load-tracking \
+  --gpu-memory-utilization $GPU_MEMORY_UTIL \
+  --host $HOST --port $PORT \
   --seed 54940 \
+  --tokenizer $TOKENIZER \
   $EXTRA_FLAGS
 
 # --max-num-seqs # https://docs.vllm.ai/en/stable/cli/serve.html#-max-num-seqs
