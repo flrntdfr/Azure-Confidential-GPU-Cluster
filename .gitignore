@@ -6,6 +6,12 @@
 *.key
 *.pem.pub
 
+# Benchmarks
+benchmarks/finetuning/medAlpaca/
+logs/
+*.log
+results/
+
 # Terraform
 .terraform/
 *.tfstate
@@ -17,15 +23,6 @@
 .ansible/
 inventory.yml
 facts_cache/
-
-# Benchmarks
-benchmarks/finetuning/medAlpaca/
-logs/
-*.log
-
-
-# Crash log files
-crash.log
 
 # IDE
 .vscode/

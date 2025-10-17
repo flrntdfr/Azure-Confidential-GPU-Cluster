@@ -17,13 +17,13 @@ set -e
 echo "=========================================="
 echo "SLURM Job Information"
 echo "=========================================="
-echo "Job ID: $SLURM_JOB_ID"
-echo "Job name: $SLURM_JOB_NAME"
+echo "Job ID:    $SLURM_JOB_ID"
+echo "Job name:  $SLURM_JOB_NAME"
 echo "Partition: $SLURM_JOB_PARTITION"
 echo "Node list: $SLURM_NODELIST"
 echo "Number of nodes: $SLURM_JOB_NUM_NODES"
-echo "GPUs per node: $SLURM_GPUS_ON_NODE"
-echo "Tasks per node: $SLURM_NTASKS_PER_NODE"
+echo "GPUs per node:   $SLURM_GPUS_ON_NODE"
+echo "Tasks per node:  $SLURM_NTASKS_PER_NODE"
 echo "Working directory: $(pwd)"
 echo "=========================================="
 
@@ -38,21 +38,22 @@ export OMP_NUM_THREADS=$SLURM_CPUS_PER_TASK
 export MASTER_PORT="${MASTER_PORT:-29500}"
 export NPROC_PER_NODE="${NPROC_PER_NODE:-1}"
 
-# Training parameters
+# Data
 MODEL="${MODEL:-meta-llama/Llama-2-7b-hf}"
 DATA_PATH="${DATA_PATH:-./medical_meadow_small.json}"
 OUTPUT_DIR="${OUTPUT_DIR:-./lora-alpaca-7b}"
 PROMPT_TEMPLATE="${PROMPT_TEMPLATE:-./medalpaca/prompt_templates/medalpaca.json}"
 
+# Training parameters
 TRAIN_IN_8BIT="${TRAIN_IN_8BIT:-True}"
 USE_LORA="${USE_LORA:-True}"
 FP16="${FP16:-True}"
 BF16="${BF16:-False}"
-
 GRADIENT_CHECKPOINTING="${GRADIENT_CHECKPOINTING:-False}"
 GLOBAL_BATCH_SIZE="${GLOBAL_BATCH_SIZE:-256}"
 PER_DEVICE_BATCH_SIZE="${PER_DEVICE_BATCH_SIZE:-4}"
 
+# Logging
 USE_WANDB="${USE_WANDB:-True}"
 WANDB_PROJECT="${WANDB_PROJECT:-medalpaca}"
 WANDB_RUN_NAME="${WANDB_RUN_NAME:-medAlpaca-singlenode-${SLURM_JOB_ID}}"

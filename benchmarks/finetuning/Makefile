@@ -3,7 +3,7 @@
 bootstrap: ## Bootstrap environment
 	./bootstrap.sh
 benchmark: ## Run all experiments
-	bash experiment-*
+	./submit_experiments.py
 collect: ## Collect results in a single place
 	mv results /persistent # FIXME
 help: ## Print this help

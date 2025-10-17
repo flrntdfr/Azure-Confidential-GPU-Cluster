@@ -2,7 +2,6 @@
 
 source .venv/bin/activate
 
-# Set experiment name for tracking
 export EXPERIMENT_NAME="experiment-1"
 
 # ------ #
@@ -42,7 +41,7 @@ export RANDOM_OUTPUT_LEN=128
 export NUM_PROMPTS=1000
 export MAX_CONCURRENCY=1
 export TEMPERATURE=0
-export ENDPOINT=/v1/completions
+export ENDPOINT="/v1/completions"
 
 echo "→ Starting experiment 1: Single request baseline"
 echo "→ MODEL: $MODEL"
