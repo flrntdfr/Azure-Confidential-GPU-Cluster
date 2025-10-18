@@ -2,7 +2,6 @@
  * SLURM PARTITION MODULE
  * This module creates defines node configuration for a homogeneous SLURM partition
  * https://github.com/Azure/terraform/blob/master/quickstart/201-confidential-vm/main.tf
- * FIXME hardcoded variables
  */
 
 // Create network security group for partition compute nodes
