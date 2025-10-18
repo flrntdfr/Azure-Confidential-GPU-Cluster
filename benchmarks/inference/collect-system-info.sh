@@ -6,6 +6,8 @@ EXPERIMENT_NAME=${1:-"unknown"}
 TIMESTAMP=$(date +%Y%m%d_%H%M-%S)
 OUTPUT_FILE="results/${TIMESTAMP}_${EXPERIMENT_NAME}_system_info.txt"
 
+mkdir -p results
+
 echo "Collecting system information for: ${EXPERIMENT_NAME}"
 echo "Output file: ${OUTPUT_FILE}"
 
@@ -125,4 +127,3 @@ echo "--------"
 grep "GPU.*:" "$OUTPUT_FILE" || true
 python -c "import vllm; print(f'vLLM: {vllm.__version__}')" 2>/dev/null || echo "vLLM version: N/A"
 python -c "import torch; print(f'PyTorch: {torch.__version__}'); print(f'CUDA: {torch.version.cuda}')" 2>/dev/null || echo "PyTorch version: N/A"
-

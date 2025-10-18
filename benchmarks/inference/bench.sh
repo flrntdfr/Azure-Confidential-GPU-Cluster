@@ -40,6 +40,17 @@ wait_for_server() {
 sleep 60
 wait_for_server
 
+echo "→ Running 10 warmup requests..."
+for i in {1..10}; do
+    curl -s http://${HOST}:${PORT}/v1/completions \
+        -H "Content-Type: application/json" \
+        -d '{
+            "model": "'$MODEL'",
+            "prompt": "Hello",
+            "max_tokens": 10
+        }' > /dev/null
+done
+
 echo "→ Starting power logging..."
 nvidia-smi --query-gpu=timestamp,power.draw,utilization.gpu,utilization.memory,clocks.gr,clocks.mem,temperature.gpu \
     --format=csv \

@@ -16,12 +16,14 @@ export TOKENIZERS_PARALLELISM=false
 # ----- #
 
 MODELS=(
+    "google/gemma-3-1b-it"                      # 1B
     "meta-llama/Llama-3.1-8B-Instruct"          # 8B
     "Qwen/Qwen3-32B"                            # 32B
     "deepseek-ai/DeepSeek-R1-Distill-Llama-70B" # 70B
 )
 
 MAX_NUM_SEQS=( # TODO: check we don't get OOM errors with these values
+    1024
     256
     64
     32

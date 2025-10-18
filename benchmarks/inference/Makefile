@@ -3,7 +3,7 @@
 bootstrap: ## Bootstrap environment
 	./bootstrap.sh
 benchmark: ## Run all experiments
-	bash experiment-* | tee results/`date +%Y%m%d_%H%M-%S`-experiment-log.txt
+	bash experiment-* | tee results/`date +%Y%m%d_%H%M-%S`-experiments-log.txt
 collect: ## Collect results in a single place
 	tar -czvf /persistent/$(date +%Y%m%d_%H%M-%S)-results-inference.tar.gz results
 help: ## Print this help
