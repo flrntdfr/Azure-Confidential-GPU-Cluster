@@ -2,14 +2,14 @@
 
 source .venv/bin/activate
 
-export EXPERIMENT_NAME="experiment-2"
+export EXPERIMENT_NAME="experiment-4"
 
 # ------ #
 # SYSTEM #
 # ------ #
 
 export OMP_NUM_THREADS=32
-export TOKENIZERS_PARALLELISM=false # FIXME ?
+export TOKENIZERS_PARALLELISM=false
 
 # ----- #
 # MODEL #
@@ -38,7 +38,7 @@ export NUM_PROMPTS=1000
 export TEMPERATURE=0
 export TIMEOUT=600
 
-echo "Starting experiment 2: Concurrency scaling"
+echo "Starting experiment 4: Saturation point analysis"
 echo "MODEL: $MODEL"
 
 # Start server in background
@@ -50,13 +50,17 @@ SERVER_PID=$!
 echo "Waiting for server to start..."
 sleep 30
 
-# Run benchmarks with different concurrency levels
-for CONCURRENCY in 1 2 4 8 16 32 64; do
-    echo "MAX_CONCURRENCY: $CONCURRENCY"
-    export MAX_CONCURRENCY=$CONCURRENCY
+# Use Poisson arrival to simulate realistic load
+EXTRA_FLAGS="--poisson"
 
-    ./bench.sh
+# Test increasing request rates
+for QPS_TARGET in 0.5 1 2 4 8 16 32 64; do
+    # Approximate max_concurrency for target QPS # TODO: Sure?
+    MAX_CONCURRENCY=$(echo "$QPS_TARGET * 2" | bc)
+    NUM_PROMPTS=500 # TODO why 500?
     
+    ./bench.sh
+
     # Take a breath
     sleep 5
 done

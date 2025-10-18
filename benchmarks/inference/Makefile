@@ -3,8 +3,8 @@
 bootstrap: ## Bootstrap environment
 	./bootstrap.sh
 benchmark: ## Run all experiments
-	bash experiment-*
+	bash experiment-* | tee results/`date +%Y%m%d_%H%M-%S`-experiment-log.txt
 collect: ## Collect results in a single place
-	mv results /persistent # FIXME
+	tar -czvf /persistent/$(date +%Y%m%d_%H%M-%S)-results-inference.tar.gz results
 help: ## Print this help
 	@grep -h -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | awk 'BEGIN {FS = ":.*?## "}; {printf "\033[36m%-30s\033[0m %s\n", $$1, $$2}'

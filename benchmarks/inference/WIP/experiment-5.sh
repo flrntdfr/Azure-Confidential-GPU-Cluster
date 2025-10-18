@@ -9,7 +9,7 @@ export EXPERIMENT_NAME="experiment-5"
 # ------ #
 
 export OMP_NUM_THREADS=32
-export TOKENIZERS_PARALLELISM=false # FIXME ?
+export TOKENIZERS_PARALLELISM=false
 
 # ----- #
 # MODEL #
@@ -21,12 +21,20 @@ MODELS=(
     "deepseek-ai/DeepSeek-R1-Distill-Llama-70B" # 70B
 )
 
+MAX_NUM_SEQS=( # TODO: check we don't get OOM errors with these values
+    256
+    64
+    32
+)
+
+MAX_MODEL_LEN=8192
+
 # ------ #
 # SERVER #
 # ------ #
 
 export GPU_MEMORY_UTIL=0.90
-export MAX_NUM_SEQS=256 # FIXME?
+
 
 # --------- #
 # BENCHMARK #
@@ -42,8 +50,9 @@ export TIMEOUT=600
 
 echo "Starting experiment 5: model size comparison"
 
-for MODEL in "${MODELS[@]}"; do
-    export MODEL="$MODEL"
+for i in "${!MODELS[@]}"; do
+    export MODEL="${MODELS[$i]}"                # The model to benchmark (this is the model name)
+    export MAX_NUM_SEQS="${MAX_NUM_SEQS[$i]}"   # The appropriate max-num-seqs for the model to use
 
     echo "MODEL: $MODEL"
 

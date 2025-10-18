@@ -3,7 +3,8 @@
 # Run before each benchmark: ./collect-system-info.sh <experiment_name>
 
 EXPERIMENT_NAME=${1:-"unknown"}
-OUTPUT_FILE="system_info_${EXPERIMENT_NAME}.txt"
+TIMESTAMP=$(date +%Y%m%d_%H%M-%S)
+OUTPUT_FILE="results/${TIMESTAMP}_${EXPERIMENT_NAME}_system_info.txt"
 
 echo "Collecting system information for: ${EXPERIMENT_NAME}"
 echo "Output file: ${OUTPUT_FILE}"

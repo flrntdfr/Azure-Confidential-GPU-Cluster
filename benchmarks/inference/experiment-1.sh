@@ -23,11 +23,11 @@ export PYTORCH_CUDA_ALLOC_CONF="expandable_segments:False"  # Consistent memory 
 # MODEL #
 # ----- #
 
-#export MODEL=meta-llama/Llama-3.1-8B-Instruct
-#export TOKENIZER=meta-llama/Llama-3.1-8B-Instruct
+export MODEL=meta-llama/Llama-3.1-8B-Instruct
+export TOKENIZER=meta-llama/Llama-3.1-8B-Instruct
 
-export MODEL=google/gemma-3-1b-it
-export TOKENIZER=google/gemma-3-1b-it
+# export MODEL=google/gemma-3-1b-it
+# export TOKENIZER=google/gemma-3-1b-it
 
 # ------ #
 # SERVER #
@@ -44,7 +44,7 @@ export MAX_NUM_SEQS=256
 # BENCHMARK #
 # --------- #
 
-export NUM_REPETITIONS=5
+export NUM_REPETITIONS=1 # ← FIXME: should be 5
 export DATASET_NAME="random"
 export RANDOM_INPUT_LEN=128
 export RANDOM_OUTPUT_LEN=128
@@ -71,7 +71,8 @@ SERVER_PID=$!
 # Run benchmark
 echo "→ Running benchmark..."
 for i in $(seq 1 $NUM_REPETITIONS); do
-    echo "→ Running repetition $i"
+    export REPETITION=$i
+    echo "→ Running repetition $REPETITION"
     ./bench.sh
 done
 

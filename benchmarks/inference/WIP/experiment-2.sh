@@ -2,14 +2,14 @@
 
 source .venv/bin/activate
 
-export EXPERIMENT_NAME="experiment-3"
+export EXPERIMENT_NAME="experiment-2"
 
 # ------ #
 # SYSTEM #
 # ------ #
 
 export OMP_NUM_THREADS=32
-export TOKENIZERS_PARALLELISM=false # FIXME ?
+export TOKENIZERS_PARALLELISM=false
 
 # ----- #
 # MODEL #
@@ -38,7 +38,7 @@ export NUM_PROMPTS=1000
 export TEMPERATURE=0
 export TIMEOUT=600
 
-echo "Starting experiment 3: Sequence length sensitivity"
+echo "Starting experiment 2: Concurrency scaling"
 echo "MODEL: $MODEL"
 
 # Start server in background
@@ -50,19 +50,15 @@ SERVER_PID=$!
 echo "Waiting for server to start..."
 sleep 30
 
-# Test matrix: input x output lengths
-for INPUT_LEN in 64 128 256 512 1024; do
-    for OUTPUT_LEN in 64 128 256 512 1024; do
-        RANDOM_INPUT_LEN=$INPUT_LEN
-        RANDOM_OUTPUT_LEN=$OUTPUT_LEN
-        NUM_PROMPTS=500
-        MAX_CONCURRENCY=8 # FIXME from prev result?
-        
-        ./bench.sh
+# Run benchmarks with different concurrency levels
+for CONCURRENCY in 1 2 4 8 16 32 64; do
+    echo "MAX_CONCURRENCY: $CONCURRENCY"
+    export MAX_CONCURRENCY=$CONCURRENCY
 
-        # Take a breath
-        sleep 5
-    done
+    ./bench.sh
+    
+    # Take a breath
+    sleep 5
 done
 
 # Stop server

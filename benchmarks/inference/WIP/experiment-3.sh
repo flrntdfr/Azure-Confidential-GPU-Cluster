@@ -2,14 +2,14 @@
 
 source .venv/bin/activate
 
-export EXPERIMENT_NAME="experiment-4"
+export EXPERIMENT_NAME="experiment-3"
 
 # ------ #
 # SYSTEM #
 # ------ #
 
 export OMP_NUM_THREADS=32
-export TOKENIZERS_PARALLELISM=false # FIXME ?
+export TOKENIZERS_PARALLELISM=false
 
 # ----- #
 # MODEL #
@@ -38,7 +38,7 @@ export NUM_PROMPTS=1000
 export TEMPERATURE=0
 export TIMEOUT=600
 
-echo "Starting experiment 4: Saturation point analysis"
+echo "Starting experiment 3: Sequence length sensitivity"
 echo "MODEL: $MODEL"
 
 # Start server in background
@@ -50,19 +50,19 @@ SERVER_PID=$!
 echo "Waiting for server to start..."
 sleep 30
 
-# Use Poisson arrival to simulate realistic load
-EXTRA_FLAGS="--poisson"
+# Test matrix: input x output lengths
+for INPUT_LEN in 64 128 256 512 1024; do
+    for OUTPUT_LEN in 64 128 256 512 1024; do
+        RANDOM_INPUT_LEN=$INPUT_LEN
+        RANDOM_OUTPUT_LEN=$OUTPUT_LEN
+        NUM_PROMPTS=500
+        MAX_CONCURRENCY=8 # TODO: Update from previous experiment?
+        
+        ./bench.sh
 
-# Test increasing request rates
-for QPS_TARGET in 0.5 1 2 4 8 16 32 64; do
-    # Approximate max_concurrency for target QPS # TODO: Sure?
-    MAX_CONCURRENCY=$(echo "$QPS_TARGET * 2" | bc)
-    NUM_PROMPTS=500 # TODO why 500?
-    
-    ./bench.sh
-
-    # Take a breath
-    sleep 5
+        # Take a breath
+        sleep 5
+    done
 done
 
 # Stop server
