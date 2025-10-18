@@ -108,7 +108,7 @@ echo "Output file: ${OUTPUT_FILE}"
     echo ""
     
     echo "=== PYTHON PACKAGES (key libraries) ==="
-    pip list | grep -iE "torch|vllm|transformers|cuda|flash" || echo "Package list not available"
+    uv pip list | grep -iE "torch|vllm|transformers|cuda|flash" || echo "Package list not available"
     echo ""
     
     echo "======================================"

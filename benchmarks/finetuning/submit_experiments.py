@@ -20,7 +20,7 @@ DRY_RUN            = False   # If True, only print what would be submitted
 SUBMIT_SINGLE_NODE = True    # Submit single-node jobs
 SUBMIT_MULTI_NODE  = False   # Submit multi-node jobs
 NUM_RUNS           = 1       # Number of runs per configuration
-PER_DEVICE_BATCH_SIZES = [4, 8, 16, 24]
+PER_DEVICE_BATCH_SIZES = [4, 8, 16, 24, 32, 36, 42, 48, 50]
 
 # Partitions to test
 PARTITIONS = {
@@ -30,7 +30,7 @@ PARTITIONS = {
 }
 
 # Output directories
-BASE_LOG_DIR = "./logs"                     # Base directory for logs and results
+BASE_LOG_DIR = "./results"                     # Base directory for results and results
 TEMP_SBATCH_DIR_PREFIX = "temp_sbatch"      # Prefix for temporary sbatch files directory
 JOB_SUBMISSION_LOG = "job_submissions.log"  # Job submission tracking log
 
@@ -41,7 +41,7 @@ MULTI_NODE_TEMPLATE = "finetuning-multi-node-template.sbatch"
 # Training configurations
 # Format: (config_name, train_8bit, use_lora, fp16, bf16, description)
 TRAINING_CONFIGS = [
-#    ("fp16", "False", "False", "True", "False", "Full precision FP16"),
+    ("fp16", "False", "False", "True", "False", "Full precision FP16"),
     ("bf16", "False", "False", "False", "True", "Full precision BF16"),
 #    ("lora-fp16", "False", "True", "True", "False", "LoRA with FP16"),
     ("lora,bf16", "False", "True", "False", "True", "LoRA with BF16"),

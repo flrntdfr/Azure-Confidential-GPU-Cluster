@@ -7,8 +7,8 @@
 #SBATCH --cpus-per-task=40            # CPUs per task
 #SBATCH --mem=0                       # Use entire memory of node
 #SBATCH --time=2:00:00                # Maximum run time
-#SBATCH --output=logs/medalpaca-%j.out
-#SBATCH --error=logs/medalpaca-%j.err
+#SBATCH --output=results/medalpaca-%j.out
+#SBATCH --error=results/medalpaca-%j.err
 
 # Exit on error
 set -e
@@ -87,7 +87,7 @@ echo "=========================================="
 # ========================================
 
 cd $HOME/Azure-Confidential-GPU-Cluster/benchmarks/finetuning/medAlpaca
-mkdir -p ./logs
+mkdir -p ./results
 source .venv/bin/activate
 
 export WANDB_TAGS="$WANDB_TAGS"
