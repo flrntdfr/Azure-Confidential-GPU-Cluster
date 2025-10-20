@@ -12,6 +12,7 @@ logs/
 *.log
 results/
 *.csv
+.venv
 
 # Terraform
 .terraform/
