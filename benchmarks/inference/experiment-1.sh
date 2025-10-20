@@ -49,7 +49,7 @@ export NUM_PROMPTS=1000
 export MAX_CONCURRENCY=1
 export TEMPERATURE=0
 export ENDPOINT="/v1/completions"
-export NUM_REPETITIONS=5
+export NUM_REPETITIONS=1 # FIXME omnifocus:///task/eVIPoiMjats
 
 echo "→ Starting ${EXPERIMENT_NAME}"
 echo "→ Collecting system information..."

@@ -49,10 +49,10 @@ export NUM_PROMPTS=1000
 export MAX_CONCURRENCY=1
 export TEMPERATURE=0
 export ENDPOINT="/v1/completions"
-export NUM_REPETITIONS=5
+export NUM_REPETITIONS=1 # ← FIXME omnifocus:///task/d8onv99_MHJ
 
-export MAX_CONCURRENCY_VALUES=(1 2 4 16 64 256) # FIXME
-#export MAX_CONCURRENCY_VALUES=(8 12 16 20 24 32 40 48 64)
+#export MAX_CONCURRENCY_VALUES=(1 2 4 16 64 256) # FIXME omnifocus:///task/l_N9IDOG25B
+export MAX_CONCURRENCY_VALUES=(1 2 4 8 12 16 20 24 32 40 48 64 128 256) # omnifocus:///task/d8onv99_MHJ
 
 echo "→ Starting ${EXPERIMENT_NAME}"
 echo "→ Collecting system information..."
