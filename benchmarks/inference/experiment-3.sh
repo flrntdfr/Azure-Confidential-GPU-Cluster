@@ -58,8 +58,8 @@ export TEMPERATURE=0
 export ENDPOINT="/v1/completions"
 export NUM_REPETITIONS=1 # ← FIXME omnifocus:///task/ihyxo8q5fbn
 
-export INPUT_LEN_VALUES=(64 128 256 512 1024)
-export OUTPUT_LEN_VALUES=(64 128 256 512 1024)
+export RANDOM_INPUT_LEN_VALUES=(64 128 256 512 1024)
+export RANDOM_OUTPUT_LEN_VALUES=(64 128 256 512 1024)
 
 echo "→ Starting ${EXPERIMENT_NAME}"
 echo "→ Collecting system information..."
@@ -80,15 +80,14 @@ for i in "${!MODELS[@]}"; do
     echo "→ Starting vLLM server..."
     ./serve.sh &
 
-
     # Bench
-    for INPUT_LEN in ${INPUT_LEN_VALUES[@]}; do
-        echo "INPUT_LEN: $INPUT_LEN"
-        export INPUT_LEN=$INPUT_LEN
+    for RANDOM_INPUT_LEN in ${RANDOM_INPUT_LEN_VALUES[@]}; do
+        echo "RANDOM_INPUT_LEN: $RANDOM_INPUT_LEN"
+        export RANDOM_INPUT_LEN=$RANDOM_INPUT_LEN
 
-        for OUTPUT_LEN in ${OUTPUT_LEN_VALUES[@]}; do
-            echo "OUTPUT_LEN: $OUTPUT_LEN"
-            export OUTPUT_LEN=$OUTPUT_LEN
+        for RANDOM_OUTPUT_LEN in ${RANDOM_OUTPUT_LEN_VALUES[@]}; do
+            echo "RANDOM_OUTPUT_LEN: $RANDOM_OUTPUT_LEN"
+            export RANDOM_OUTPUT_LEN=$RANDOM_OUTPUT_LEN
 
 
             echo "→ Running benchmark..."
@@ -101,7 +100,8 @@ for i in "${!MODELS[@]}"; do
                 # Take a breath
                 sleep 5
             done
-
+        done
+    done
     # Stop server and wait for GPU cleanup
     echo "→ Stopping server..."
     pkill vllm || true
@@ -111,5 +111,5 @@ for i in "${!MODELS[@]}"; do
         echo "→ …Freeing memory"
         sleep 5
     done
-    echo "→ GPU memory freed to go!"
+    echo "→ GPU ready to go!"
 done

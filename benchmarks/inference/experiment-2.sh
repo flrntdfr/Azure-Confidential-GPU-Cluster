@@ -86,7 +86,6 @@ for i in "${!MODELS[@]}"; do
         echo "MAX_CONCURRENCY: $MAX_CONCURRENCY"
         export MAX_CONCURRENCY=$MAX_CONCURRENCY
 
-
         echo "→ Running benchmark..."
         for i in $(seq 1 $NUM_REPETITIONS); do
             export REPETITION=$i
@@ -97,6 +96,7 @@ for i in "${!MODELS[@]}"; do
             # Take a breath
             sleep 5
         done
+    done
 
     # Stop server and wait for GPU cleanup
     echo "→ Stopping server..."
@@ -107,5 +107,5 @@ for i in "${!MODELS[@]}"; do
         echo "→ …Freeing memory"
         sleep 5
     done
-    echo "→ GPU memory freed to go!"
+    echo "→ GPU ready to go!"
 done
