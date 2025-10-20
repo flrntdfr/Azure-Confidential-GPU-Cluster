@@ -1,4 +1,4 @@
-#!/bin/bash
+ #!/bin/bash
 
 source .venv/bin/activate
 
@@ -49,7 +49,7 @@ export DATASET_NAME="sharegpt"
 export DATASET_PATH="./ShareGPT_V3_unfiltered_cleaned_split.json"
 export RANDOM_INPUT_LEN=0  # Disable random
 export RANDOM_OUTPUT_LEN=0 # Disable random
-export NUM_PROMPTS=1000
+export NUM_PROMPTS=10 # ← FIXME (1000)
 export MAX_CONCURRENCY=1
 export TEMPERATURE=0.7
 export ENDPOINT="/v1/chat/completions"
@@ -73,7 +73,6 @@ for i in "${!MODELS[@]}"; do
     # Serve
     echo "→ Starting vLLM server..."
     ./serve.sh &
-    SERVER_PID=$!
 
     # Bench
     echo "→ Running benchmark..."
@@ -87,8 +86,15 @@ for i in "${!MODELS[@]}"; do
         sleep 5
     done
 
-    # Stop server
+    # Stop server and wait for GPU cleanup
+    # Stop server and wait for GPU cleanup
     echo "→ Stopping server..."
-    kill $SERVER_PID 2>/dev/null || true
-    wait $SERVER_PID 2>/dev/null || true
+    pkill vllm || true
+
+    # Wait for GPU memory to be released
+    until nvidia-smi --query-gpu=memory.used --format=csv,noheader,nounits | awk '{exit !($1 < 1000)}'; do
+        echo "→ …Freeing memory"
+        sleep 5
+    done
+    echo "→ GPU memory freed to go!"
 done

@@ -1,5 +1,6 @@
 # Makefile for finetuning benchmarks
 
+all: bootstrap benchmark
 bootstrap: ## Bootstrap environment
 	./bootstrap.sh
 benchmark: ## Run all experiments

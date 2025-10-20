@@ -25,12 +25,14 @@ export MAX_MODEL_LEN=8192
 # --------- #
 
 export MODELS=(
+    "google/gemma-3-1b-it"
     "meta-llama/Llama-3.1-8B-Instruct"
     "Qwen/Qwen3-32B"
     "deepseek-ai/DeepSeek-R1-Distill-Llama-70B"
 )
 
 export TOKENIZERS=(
+    "google/gemma-3-1b-it"
     "meta-llama/Llama-3.1-8B-Instruct"
     "Qwen/Qwen3-32B"
     "deepseek-ai/DeepSeek-R1-Distill-Llama-70B"
@@ -45,7 +47,7 @@ export MAX_NUM_SEQS_VALUES=(
 export DATASET_NAME="random"
 export RANDOM_INPUT_LEN=128
 export RANDOM_OUTPUT_LEN=128
-export NUM_PROMPTS=1000
+export NUM_PROMPTS=10 # ← FIXME (1000)
 export MAX_CONCURRENCY=1
 export TEMPERATURE=0
 export ENDPOINT="/v1/completions"
@@ -72,7 +74,6 @@ for i in "${!MODELS[@]}"; do
     # Serve
     echo "→ Starting vLLM server..."
     ./serve.sh &
-    SERVER_PID=$!
 
 
     # Bench
@@ -96,8 +97,14 @@ for i in "${!MODELS[@]}"; do
                 sleep 5
             done
 
-    # Stop server
+    # Stop server and wait for GPU cleanup
     echo "→ Stopping server..."
-    kill $SERVER_PID 2>/dev/null || true
-    wait $SERVER_PID 2>/dev/null || true
+    pkill vllm || true
+
+    # Wait for GPU memory to be released
+    until nvidia-smi --query-gpu=memory.used --format=csv,noheader,nounits | awk '{exit !($1 < 1000)}'; do
+        echo "→ …Freeing memory"
+        sleep 5
+    done
+    echo "→ GPU memory freed to go!"
 done
