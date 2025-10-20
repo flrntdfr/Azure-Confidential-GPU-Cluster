@@ -9,7 +9,8 @@ uv pip install vllm==0.11.0 huggingface-hub==0.35.3 tqdm==4.67.1
 
 export HF_HOME=$HOME/.cache/huggingface
 
-for model in \
+# FIXME
+for model in \ 
     meta-llama/Llama-3.1-8B-Instruct \
     Qwen/Qwen3-32B \
     deepseek-ai/DeepSeek-R1-Distill-Llama-70B

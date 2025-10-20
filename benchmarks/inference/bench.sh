@@ -14,7 +14,7 @@ echo "→ Waiting for server to be ready..."
 wait_for_server() {
     local host=${HOST:-"127.0.0.1"}
     local port=${PORT:-"8000"}
-    local max_attempts=60
+    local max_attempts=100
     local attempt=1
     
     while [ $attempt -le $max_attempts ]; do
@@ -28,7 +28,7 @@ wait_for_server() {
     done
     
     echo "→ Server failed to start within expected time"
-    return 1
+    exit 1
 }
 
 sleep 60
