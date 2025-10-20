@@ -1,6 +1,7 @@
 #!/bin/bash
 # Start the vLLM server
-# Uses environment variables set by experiment scripts
+# https://docs.vllm.ai/en/latest/cli/serve.html
+
 
 export VLLM_ENABLE_V1_MULTIPROCESSING=0
 
@@ -27,6 +28,3 @@ vllm serve $MODEL \
   --seed 54940 \
   --tokenizer $TOKENIZER \
   $EXTRA_FLAGS
-
-# --max-num-seqs # https://docs.vllm.ai/en/stable/cli/serve.html#-max-num-seqs
-# --max-num-batched-tokens # https://docs.vllm.ai/en/stable/cli/serve.html#-max-num-batched-tokens

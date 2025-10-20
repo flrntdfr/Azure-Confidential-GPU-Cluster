@@ -1,6 +1,6 @@
 #!/bin/bash
-# vLLM benchmark
-# https://docs.vllm.ai/en/latest/cli/bench/serve.html?h=bench#options
+# Run the vLLM benchmark
+# https://docs.vllm.ai/en/latest/cli/bench/serve.html
 
 # Create results directory if it doesn't exist
 mkdir -p results
