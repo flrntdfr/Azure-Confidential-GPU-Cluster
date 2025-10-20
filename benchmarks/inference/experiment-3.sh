@@ -2,7 +2,7 @@
 
 source .venv/bin/activate
 
-export EXPERIMENT_NAME="experiment-2"
+export EXPERIMENT_NAME="experiment-3"
 
 # ------ #
 # SYSTEM #
@@ -46,13 +46,13 @@ export DATASET_NAME="random"
 export RANDOM_INPUT_LEN=128
 export RANDOM_OUTPUT_LEN=128
 export NUM_PROMPTS=1000
-#export MAX_CONCURRENCY=1
+export MAX_CONCURRENCY=1
 export TEMPERATURE=0
 export ENDPOINT="/v1/completions"
-export NUM_REPETITIONS=1 # ← FIXME omnifocus:///task/d8onv99_MHJ
+export NUM_REPETITIONS=1 # ← FIXME omnifocus:///task/ihyxo8q5fbn
 
-#export MAX_CONCURRENCY_VALUES=(1 2 4 16 64 256) # FIXME omnifocus:///task/l_N9IDOG25B
-export MAX_CONCURRENCY_VALUES=(1 2 4 8 12 16 20 24 32 40 48 64 128 256) # omnifocus:///task/d8onv99_MHJ
+export INPUT_LEN_VALUES=(64 128 256 512 1024)
+export OUTPUT_LEN_VALUES=(64 128 256 512 1024)
 
 echo "→ Starting ${EXPERIMENT_NAME}"
 echo "→ Collecting system information..."
@@ -76,21 +76,25 @@ for i in "${!MODELS[@]}"; do
 
 
     # Bench
-    for MAX_CONCURRENCY in ${MAX_CONCURRENCY_VALUES[@]}; do
-        echo "MAX_CONCURRENCY: $MAX_CONCURRENCY"
-        export MAX_CONCURRENCY=$MAX_CONCURRENCY
+    for INPUT_LEN in ${INPUT_LEN_VALUES[@]}; do
+        echo "INPUT_LEN: $INPUT_LEN"
+        export INPUT_LEN=$INPUT_LEN
+
+        for OUTPUT_LEN in ${OUTPUT_LEN_VALUES[@]}; do
+            echo "OUTPUT_LEN: $OUTPUT_LEN"
+            export OUTPUT_LEN=$OUTPUT_LEN
 
 
-        echo "→ Running benchmark..."
-        for i in $(seq 1 $NUM_REPETITIONS); do
-            export REPETITION=$i
-            echo "→ Running repetition $REPETITION"
-            
-            ./bench.sh
-            
-            # Take a breath
-            sleep 5
-        done
+            echo "→ Running benchmark..."
+            for i in $(seq 1 $NUM_REPETITIONS); do
+                export REPETITION=$i
+                echo "→ Running repetition $REPETITION"
+                
+                ./bench.sh
+                
+                # Take a breath
+                sleep 5
+            done
 
     # Stop server
     echo "→ Stopping server..."
