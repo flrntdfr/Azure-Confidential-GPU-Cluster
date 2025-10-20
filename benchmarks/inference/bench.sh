@@ -1,8 +1,7 @@
 #!/bin/bash
+# vLLM benchmark
 # https://docs.vllm.ai/en/latest/cli/bench/serve.html?h=bench#options
 
-# vLLM benchmark
-# Uses environment variables set by experiment scripts
 
 # Server
 HOST=${HOST:-"127.0.0.1"}
@@ -18,8 +17,8 @@ OUTPUT_FILENAME="${TIMESTAMP}_${EXPERIMENT_NAME}_${MODEL##*/}_concurrency_${MAX_
 # Wait for server to be ready
 echo "→ Waiting for server to be ready..."
 wait_for_server() {
-    local host=${HOST:-"127.0.0.1"}
-    local port=${PORT:-"8000"}
+    local host=${HOST}
+    local port=${PORT}
     local max_attempts=60
     local attempt=1
     
