@@ -96,5 +96,5 @@ for i in "${!MODELS[@]}"; do
         echo "→ …Freeing memory"
         sleep 5
     done
-    echo "→ GPU memory freed to go!"
+    echo "→ GPU ready to go!"
 done
