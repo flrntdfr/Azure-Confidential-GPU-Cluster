@@ -19,7 +19,7 @@ source "../env"
 set +a
 
 #export HF_HOME=$HOME/.cache/huggingface FIXME
-export HF_HOME=/dss/dsshome1/lxc00/di67pif/dssfs04/.cache/huggingface
+export HF_HOME=/dss/dssfs04/pn72ka/pn72ka-dss-0000/di67pif/.cache/huggingface
 
 # HuggingFace
 ## For now
