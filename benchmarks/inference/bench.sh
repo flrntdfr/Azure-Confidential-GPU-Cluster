@@ -51,11 +51,6 @@ nvidia-smi --query-gpu=timestamp,power.draw,utilization.gpu,utilization.memory,c
     -l 1 > ./results/${TIMESTAMP}_${EXPERIMENT_NAME}_${MODEL##*/}_max-concurrency_${MAX_CONCURRENCY}_input-len_${RANDOM_INPUT_LEN}_output-len_${RANDOM_OUTPUT_LEN}_repetition_${REPETITION}_power_metrics.csv &
 NVIDIA_SMI_PID=$!
 
-# IMPORTANT: For deterministic GPU comparisons, consider locking GPU clocks:
-# sudo nvidia-smi -pm 1  # Enable persistence mode
-# sudo nvidia-smi -lgc <min_clock>,<max_clock>  # Lock graphics clock
-# This prevents GPU Boost and thermal throttling from affecting results
-
 echo "Running benchmark with:"
 echo "  Model: $MODEL"
 echo "  Server: http://${HOST}:${PORT}"
@@ -89,11 +84,5 @@ vllm bench serve \
   --temperature $TEMPERATURE \
   --tokenizer $TOKENIZER \
   $EXTRA_FLAGS
-
-# https://docs.vllm.ai/en/stable/cli/bench/serve.html
-# --no-stream # Do not load the dataset in streaming mode.
-# --max-concurrency # Maximum number of concurrent requests. This can be used to help simulate an environment where a higher level component is enforcing a maximum number of concurrent requests. While the --request-rate argument controls the rate at which requests are initiated, this argument will control how many are actually allowed to execute at a time. This means that when used in combination, the actual request rate may be lower than specified with --request-rate, if the server is not processing requests fast enough to keep up.
-# --request-rate Number of requests per second. If this is inf, then all the requests are sent at time 0. Otherwise, we use Poisson process or gamma distribution to synthesize the request arrival times.
-# --burstiness Burstiness factor of the request generation. Only take effect when request_rate is not inf. Default value is 1, which follows Poisson process. Otherwise, the request intervals follow a gamma distribution. A lower burstiness value (0 < burstiness < 1) results in more bursty requests. A higher burstiness value (burstiness > 1) results in a more uniform arrival of requests.
 
 kill $NVIDIA_SMI_PID 2>/dev/null || true

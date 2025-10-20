@@ -25,24 +25,28 @@ export MAX_MODEL_LEN=8192
 # --------- #
 
 export MODELS=(
-    # "google/gemma-3-1b-it"
-    # "meta-llama/Llama-3.1-8B-Instruct"
+    "google/gemma-3-1b-it"
+    "meta-llama/Llama-3.1-8B-Instruct"
+    "mistralai/Mistral-Small-24B-Instruct-2501"
     "Qwen/Qwen3-32B"
-    "deepseek-ai/DeepSeek-R1-Distill-Llama-70B"
+    # "deepseek-ai/DeepSeek-R1-Distill-Llama-70B"
 )
 
 export TOKENIZERS=(
-    # "google/gemma-3-1b-it"
-    # "meta-llama/Llama-3.1-8B-Instruct"
+    "google/gemma-3-1b-it"
+    "meta-llama/Llama-3.1-8B-Instruct"
+    "mistralai/Mistral-Small-24B-Instruct-2501"
     "Qwen/Qwen3-32B"
-    "deepseek-ai/DeepSeek-R1-Distill-Llama-70B"
+    # "deepseek-ai/DeepSeek-R1-Distill-Llama-70B"
 )
 
 export MAX_NUM_SEQS_VALUES=(
-    # 1024
-    # 256
+    1024
+    512
+    256
     64
     32
+    # 1
 )
 
 export DATASET_NAME="random"
