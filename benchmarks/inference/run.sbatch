@@ -10,6 +10,8 @@
 #SBATCH --output=results/all-experiments%j.out
 #SBATCH --error=results/all-experiments%j.err
 
+source ./bootstrap.sh
+
 # Run all experiments in parallel
 srun --nodes=1 --ntasks=1 --gres=gpu:1 experiment-1.sh &
 srun --nodes=1 --ntasks=1 --gres=gpu:1 experiment-2.sh &

@@ -7,13 +7,15 @@ if ! command -v uv >/dev/null 2>&1; then
 fi
 
 # vLLM
-uv venv --prompt vllm --python 3.12
+if [ ! -d ".venv" ]; then
+  uv venv --prompt vllm --python 3.12
+fi
 source .venv/bin/activate
 uv pip install vllm==0.11.0 huggingface-hub==0.35.3 tqdm==4.67.1
 
 # Get credentials from .env file
 set -a
-source "../env"
+source "../.env"
 set +a
 
 #export HF_HOME=$HOME/.cache/huggingface FIXME
@@ -28,8 +30,12 @@ hf auth login --token "${HF_TOKEN}"
 for model in \
     google/gemma-3-1b-it \
     meta-llama/Llama-3.1-8B-Instruct \
+    mistralai/Mistral-Small-24B-Instruct-2501 \
     Qwen/Qwen3-32B \
-    deepseek-ai/DeepSeek-R1-Distill-Llama-70B
+    deepseek-ai/DeepSeek-R1-Distill-Qwen-32B \
+    deepseek-ai/DeepSeek-R1-Distill-Qwen-14B \
+    deepseek-ai/DeepSeek-R1-Distill-Qwen-7B \
+    deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B
 do
     hf download "$model"
 done

@@ -2,6 +2,9 @@
 # Run the vLLM benchmark
 # https://docs.vllm.ai/en/latest/cli/bench/serve.html
 
+HOST=${HOST:-"127.0.0.1"}
+PORT=${PORT:-"8000"}
+
 # Create results directory if it doesn't exist
 mkdir -p results
 
@@ -12,8 +15,8 @@ OUTPUT_FILENAME="${TIMESTAMP}_${EXPERIMENT_NAME}_${MODEL##*/}_max-concurrency_${
 # Wait for server to be ready
 echo "→ Waiting for server to be ready..."
 wait_for_server() {
-    local host=${HOST:-"127.0.0.1"}
-    local port=${PORT:-"8000"}
+    local host=${HOST}
+    local port=${PORT}
     local max_attempts=100
     local attempt=1
     
@@ -31,7 +34,7 @@ wait_for_server() {
     exit 1
 }
 
-sleep 60
+sleep 20
 wait_for_server
 
 echo "→ Running 10 warmup requests..."
