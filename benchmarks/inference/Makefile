@@ -4,7 +4,7 @@ all: bootstrap benchmark
 bootstrap: ## Bootstrap environment
 	./bootstrap.sh
 benchmark: ## Run all experiments
-	bash experiment-* | tee results/`date +%Y%m%d_%H%M-%S`-experiments-log.txt
+	sbatch experiment-*
 collect: ## Collect results in a single place
 	tar -czvf /persistent/$(date +%Y%m%d_%H%M-%S)-results-inference.tar.gz results
 help: ## Print this help

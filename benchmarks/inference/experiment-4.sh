@@ -1,6 +1,16 @@
- #!/bin/bash
+#!/bin/bash
+#SBATCH --job-name=vLLM-experiment-4
+#SBATCH --partition=lrz-hgx-h100-94x4 # Specify partition name
+#SBATCH --nodes=1                     # Number of nodes to allocate
+#SBATCH --ntasks-per-node=1           # One task per node
+#SBATCH --gres=gpu:1                  # Total GPUs needed for all experiments
+#SBATCH --cpus-per-task=40            # CPUs per task
+#SBATCH --mem=0                       # Use entire memory of node
+#SBATCH --time=1:00:00                # Maximum run time
+#SBATCH --output=results/experiment-4-%j.out
+#SBATCH --error=results/experiment-4-%j.err
 
-source .venv/bin/activate
+source bootstrap.sh
 
 export EXPERIMENT_NAME="experiment-4"
 
@@ -49,11 +59,11 @@ export DATASET_NAME="sharegpt"
 export DATASET_PATH="./ShareGPT_V3_unfiltered_cleaned_split.json"
 export RANDOM_INPUT_LEN=0  # Disable random
 export RANDOM_OUTPUT_LEN=0 # Disable random
-export NUM_PROMPTS=10 # ← FIXME (1000)
+export NUM_PROMPTS=1000
 export MAX_CONCURRENCY=1
 export TEMPERATURE=0.7
 export ENDPOINT="/v1/chat/completions"
-export NUM_REPETITIONS=1 # ← FIXME omnifocus:///task/mIlki-CJgvQ
+export NUM_REPETITIONS=5 # ← FIXME omnifocus:///task/mIlki-CJgvQ
 
 echo "→ Starting ${EXPERIMENT_NAME}"
 echo "→ Collecting system information..."

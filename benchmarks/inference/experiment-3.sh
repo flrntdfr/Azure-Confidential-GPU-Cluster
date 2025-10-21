@@ -1,6 +1,16 @@
 #!/bin/bash
+#SBATCH --job-name=vLLM-experiment-3
+#SBATCH --partition=lrz-hgx-h100-94x4 # Specify partition name
+#SBATCH --nodes=1                     # Number of nodes to allocate
+#SBATCH --ntasks-per-node=1           # One task per node
+#SBATCH --gres=gpu:1                  # Total GPUs needed for all experiments
+#SBATCH --cpus-per-task=40            # CPUs per task
+#SBATCH --mem=0                       # Use entire memory of node
+#SBATCH --time=1:00:00                # Maximum run time
+#SBATCH --output=results/experiment-3-%j.out
+#SBATCH --error=results/experiment-3-%j.err
 
-source .venv/bin/activate
+source bootstrap.sh
 
 export EXPERIMENT_NAME="experiment-3"
 
@@ -52,11 +62,11 @@ export MAX_NUM_SEQS_VALUES=(
 export DATASET_NAME="random"
 export RANDOM_INPUT_LEN=128
 export RANDOM_OUTPUT_LEN=128
-export NUM_PROMPTS=10 # ← FIXME (1000)
+export NUM_PROMPTS=1000
 export MAX_CONCURRENCY=1
 export TEMPERATURE=0
 export ENDPOINT="/v1/completions"
-export NUM_REPETITIONS=1 # ← FIXME omnifocus:///task/ihyxo8q5fbn
+export NUM_REPETITIONS=5 # ← FIXME omnifocus:///task/ihyxo8q5fbn
 
 export RANDOM_INPUT_LEN_VALUES=(64 128 256 512 1024)
 export RANDOM_OUTPUT_LEN_VALUES=(64 128 256 512 1024)
