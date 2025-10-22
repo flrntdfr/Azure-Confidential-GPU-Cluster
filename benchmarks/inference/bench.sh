@@ -43,7 +43,7 @@ for i in {1..10}; do
         -H "Content-Type: application/json" \
         -d '{
             "model": "'$MODEL'",
-            "prompt": "Hello",
+            "prompt": "Continue the following text: Maître corbeau, sur un arbre perché, tenait ...",
             "max_tokens": 10
         }' > /dev/null
 done
@@ -59,8 +59,8 @@ echo "  Model: $MODEL"
 echo "  Server: http://${HOST}:${PORT}"
 echo "  Concurrency: $MAX_CONCURRENCY"
 echo "  Prompts: $NUM_PROMPTS"
-echo "  Input length: $RANDOM_INPUT_LEN"
-echo "  Output length: $RANDOM_OUTPUT_LEN"
+echo "  Random input length: $RANDOM_INPUT_LEN"
+echo "  Random output length: $RANDOM_OUTPUT_LEN"
 echo "  Output file: results/$OUTPUT_FILENAME"
 
 echo "→ Starting benchmark..."
@@ -68,6 +68,7 @@ vllm bench serve \
   --base-url http://${HOST:-"127.0.0.1"}:${PORT:-"8000"} \
   --burstiness ${BURSTINESS:-"1.0"} \
   --dataset-name $DATASET_NAME \
+  --dataset-path $DATASET_PATH \
   --endpoint $ENDPOINT \
   --label $EXPERIMENT_NAME \
   --max-concurrency $MAX_CONCURRENCY \

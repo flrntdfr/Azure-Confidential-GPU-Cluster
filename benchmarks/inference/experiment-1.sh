@@ -6,7 +6,7 @@
 #SBATCH --gres=gpu:1                  # Total GPUs needed for all experiments
 #SBATCH --cpus-per-task=40            # CPUs per task
 #SBATCH --mem=0                       # Use entire memory of node
-#SBATCH --time=1:00:00                # Maximum run time
+#SBATCH --time=4:00:00                # Maximum run time
 #SBATCH --output=results/experiment-1-%j.out
 #SBATCH --error=results/experiment-1-%j.err
 
@@ -39,34 +39,30 @@ export MODELS=(
     "meta-llama/Llama-3.1-8B-Instruct"
     "mistralai/Mistral-Small-24B-Instruct-2501"
     "Qwen/Qwen3-32B"
-    # "deepseek-ai/DeepSeek-R1-Distill-Llama-70B"
 )
+# TODO: Multi node bigger model
 
 export TOKENIZERS=(
     "google/gemma-3-1b-it"
     "meta-llama/Llama-3.1-8B-Instruct"
     "mistralai/Mistral-Small-24B-Instruct-2501"
     "Qwen/Qwen3-32B"
-    # "deepseek-ai/DeepSeek-R1-Distill-Llama-70B"
 )
 
 export MAX_NUM_SEQS_VALUES=(
-    1024
     512
     256
+    128
     64
-    32
-    # 1
 )
 
-export DATASET_NAME="random"
-export RANDOM_INPUT_LEN=128
-export RANDOM_OUTPUT_LEN=128
+export DATASET_NAME="sharegpt"
+export DATASET_PATH="./ShareGPT_V3_unfiltered_cleaned_split.json"
 export NUM_PROMPTS=1000
 export MAX_CONCURRENCY=1
-export TEMPERATURE=0
-export ENDPOINT="/v1/completions"
-export NUM_REPETITIONS=5 # FIXME omnifocus:///task/eVIPoiMjats
+export TEMPERATURE=0.7
+export ENDPOINT="/v1/chat/completions"
+export NUM_REPETITIONS=5
 
 echo "→ Starting ${EXPERIMENT_NAME}"
 echo "→ Collecting system information..."

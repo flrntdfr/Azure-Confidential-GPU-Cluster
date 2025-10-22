@@ -6,7 +6,7 @@
 #SBATCH --gres=gpu:1                  # Total GPUs needed for all experiments
 #SBATCH --cpus-per-task=40            # CPUs per task
 #SBATCH --mem=0                       # Use entire memory of node
-#SBATCH --time=1:00:00                # Maximum run time
+#SBATCH --time=4:00:00                # Maximum run time
 #SBATCH --output=results/experiment-4-%j.out
 #SBATCH --error=results/experiment-4-%j.err
 
@@ -52,7 +52,7 @@ export MAX_NUM_SEQS_VALUES=(
     32
     64
     256
-    1024
+    512
 )
 
 export DATASET_NAME="sharegpt"
@@ -63,7 +63,7 @@ export NUM_PROMPTS=1000
 export MAX_CONCURRENCY=1
 export TEMPERATURE=0.7
 export ENDPOINT="/v1/chat/completions"
-export NUM_REPETITIONS=5 # ← FIXME omnifocus:///task/mIlki-CJgvQ
+export NUM_REPETITIONS=1 # FIXME
 
 echo "→ Starting ${EXPERIMENT_NAME}"
 echo "→ Collecting system information..."
@@ -96,7 +96,6 @@ for i in "${!MODELS[@]}"; do
         sleep 5
     done
 
-    # Stop server and wait for GPU cleanup
     # Stop server and wait for GPU cleanup
     echo "→ Stopping server..."
     pkill vllm || true
