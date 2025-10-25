@@ -44,7 +44,7 @@ for i in {1..10}; do
         -d '{
             "model": "'$MODEL'",
             "prompt": "Continue the following text: Maître corbeau, sur un arbre perché, tenait ...",
-            "max_tokens": 10
+            "max_tokens": 20
         }' > /dev/null
 done
 
@@ -59,13 +59,11 @@ echo "  Model: $MODEL"
 echo "  Server: http://${HOST}:${PORT}"
 echo "  Concurrency: $MAX_CONCURRENCY"
 echo "  Prompts: $NUM_PROMPTS"
-echo "  Random input length: $RANDOM_INPUT_LEN"
-echo "  Random output length: $RANDOM_OUTPUT_LEN"
 echo "  Output file: results/$OUTPUT_FILENAME"
 
 echo "→ Starting benchmark..."
 vllm bench serve \
-  --base-url http://${HOST:-"127.0.0.1"}:${PORT:-"8000"} \
+  --base-url http://${HOST}:${PORT} \
   --burstiness ${BURSTINESS:-"1.0"} \
   --dataset-name $DATASET_NAME \
   --dataset-path $DATASET_PATH \
@@ -77,8 +75,6 @@ vllm bench serve \
   --no-oversample \
   --num-prompts $NUM_PROMPTS \
   --percentile-metrics ttft,tpot,itl,e2el \
-  --random-input-len $RANDOM_INPUT_LEN \
-  --random-output-len $RANDOM_OUTPUT_LEN \
   --request-rate ${REQUEST_RATE:-"inf"} \
   --result-dir "./results" \
   --result-filename $OUTPUT_FILENAME \
@@ -87,6 +83,6 @@ vllm bench serve \
   --seed 54940 \
   --temperature $TEMPERATURE \
   --tokenizer $TOKENIZER \
-  $EXTRA_FLAGS
+  $EXTRA_FLAGS_BENCH
 
 kill $NVIDIA_SMI_PID 2>/dev/null || true

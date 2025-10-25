@@ -1,12 +1,12 @@
 #!/bin/bash
 #SBATCH --job-name=vLLM-experiment-1
-#SBATCH --partition=lrz-hgx-h100-94x4 # Specify partition name
+#SBATCH --partition=lrz-hgx-h100-94x4,lrz-dgx-a100-80x8,lrz-hgx-a100-80x4 # Specify partition name
 #SBATCH --nodes=1                     # Number of nodes to allocate
 #SBATCH --ntasks-per-node=1           # One task per node
 #SBATCH --gres=gpu:1                  # Total GPUs needed for all experiments
 #SBATCH --cpus-per-task=40            # CPUs per task
 #SBATCH --mem=0                       # Use entire memory of node
-#SBATCH --time=4:00:00                # Maximum run time
+#SBATCH --time=3:00:00                # Maximum run time
 #SBATCH --output=results/experiment-1-%j.out
 #SBATCH --error=results/experiment-1-%j.err
 
@@ -40,7 +40,7 @@ export MODELS=(
     "mistralai/Mistral-Small-24B-Instruct-2501"
     "Qwen/Qwen3-32B"
 )
-# TODO: Multi node bigger model
+# TODO: Multi-node bigger model
 
 export TOKENIZERS=(
     "google/gemma-3-1b-it"

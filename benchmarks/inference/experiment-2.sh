@@ -50,6 +50,8 @@ export MAX_CONCURRENCY_VALUES=(1 2 4 8 12 16 20 24 32 40 48 64 128 256 512 1024)
 
 export DATASET_NAME="sharegpt"
 export DATASET_PATH="./ShareGPT_V3_unfiltered_cleaned_split.json"
+export RANDOM_INPUT_LEN=0  # Disable random
+export RANDOM_OUTPUT_LEN=0 # Disable random
 export NUM_PROMPTS=1000
 export TEMPERATURE=0.7
 export ENDPOINT="/v1/chat/completions"

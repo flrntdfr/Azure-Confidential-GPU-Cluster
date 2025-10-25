@@ -47,6 +47,7 @@ export MAX_NUM_SEQS_VALUES=(
 )
 
 export DATASET_NAME="random"
+export DATASET_PATH="" # FIXME ?
 export RANDOM_INPUT_LEN_VALUES=(64 128 256 512 1024)
 export RANDOM_OUTPUT_LEN_VALUES=(64 128 256 512 1024)
 
@@ -78,12 +79,10 @@ for i in "${!MODELS[@]}"; do
     # Bench
     for RANDOM_INPUT_LEN in ${RANDOM_INPUT_LEN_VALUES[@]}; do
         echo "RANDOM_INPUT_LEN: $RANDOM_INPUT_LEN"
-        export RANDOM_INPUT_LEN=$RANDOM_INPUT_LEN
 
         for RANDOM_OUTPUT_LEN in ${RANDOM_OUTPUT_LEN_VALUES[@]}; do
             echo "RANDOM_OUTPUT_LEN: $RANDOM_OUTPUT_LEN"
-            export RANDOM_OUTPUT_LEN=$RANDOM_OUTPUT_LEN
-
+            export EXTRA_FLAGS_BENCH="--random-input-len $RANDOM_INPUT_LEN --random-output-len $RANDOM_OUTPUT_LEN"
 
             echo "→ Running benchmark..."
             for i in $(seq 1 $NUM_REPETITIONS); do

@@ -25,4 +25,4 @@ vllm serve $MODEL \
   --max-num-seqs $MAX_NUM_SEQS \
   --seed 54940 \
   --tokenizer $TOKENIZER \
-  $EXTRA_FLAGS
+  $EXTRA_FLAGS_SERVE
