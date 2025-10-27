@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=vLLM-experiment-2
-#SBATCH --partition=lrz-hgx-h100-94x4 # Specify partition name
+#SBATCH --partition=lrz-hgx-h100-94x4 # Partition
 #SBATCH --nodes=1                     # Number of nodes to allocate
 #SBATCH --ntasks-per-node=1           # One task per node
 #SBATCH --gres=gpu:1                  # Total GPUs needed for all experiments
@@ -13,6 +13,7 @@
 source bootstrap.sh
 
 export EXPERIMENT_NAME="experiment-2"
+export TIMESTAMP=$(date +%Y%m%d_%H%M-%S)
 
 # ------ #
 # SYSTEM #
@@ -50,12 +51,10 @@ export MAX_CONCURRENCY_VALUES=(1 2 4 8 12 16 20 24 32 40 48 64 128 256 512 1024)
 
 export DATASET_NAME="sharegpt"
 export DATASET_PATH="./ShareGPT_V3_unfiltered_cleaned_split.json"
-export RANDOM_INPUT_LEN=0  # Disable random
-export RANDOM_OUTPUT_LEN=0 # Disable random
 export NUM_PROMPTS=1000
 export TEMPERATURE=0.7
 export ENDPOINT="/v1/chat/completions"
-export NUM_REPETITIONS=1 # FIXME
+export NUM_REPETITIONS=5
 
 echo "→ Starting ${EXPERIMENT_NAME}"
 echo "→ Collecting system information..."
@@ -84,9 +83,11 @@ for i in "${!MODELS[@]}"; do
 
         echo "→ Running benchmark..."
         for i in $(seq 1 $NUM_REPETITIONS); do
-            export REPETITION=$i
-            echo "→ Running repetition $REPETITION"
             
+            echo "→ Running repetition $REPETITION"
+            export REPETITION=$i
+            export OUTPUT_FILENAME="${TIMESTAMP}_${EXPERIMENT_NAME}_${MODEL##*/}_max_concurrency_${MAX_CONCURRENCY}_repetition_${REPETITION}.json"
+
             ./bench.sh
             
             # Take a breath

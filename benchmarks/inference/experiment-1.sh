@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=vLLM-experiment-1
-#SBATCH --partition=lrz-hgx-h100-94x4,lrz-dgx-a100-80x8,lrz-hgx-a100-80x4 # Specify partition name
+#SBATCH --partition=lrz-hgx-h100-94x4 # Partition
 #SBATCH --nodes=1                     # Number of nodes to allocate
 #SBATCH --ntasks-per-node=1           # One task per node
 #SBATCH --gres=gpu:1                  # Total GPUs needed for all experiments
@@ -13,6 +13,7 @@
 source bootstrap.sh
 
 export EXPERIMENT_NAME="experiment-1"
+export TIMESTAMP=$(date +%Y%m%d_%H%M-%S)
 
 # ------ #
 # SYSTEM #
@@ -74,6 +75,7 @@ for i in "${!MODELS[@]}"; do
     export MODEL="${MODELS[$i]}"
     export TOKENIZER="${TOKENIZERS[$i]}"
     export MAX_NUM_SEQS="${MAX_NUM_SEQS_VALUES[$i]}"
+    
 
     echo "MODEL: $MODEL"
     echo "TOKENIZER: $TOKENIZER"
@@ -86,8 +88,10 @@ for i in "${!MODELS[@]}"; do
     # Bench
     echo "→ Running benchmark..."
     for i in $(seq 1 $NUM_REPETITIONS); do
-        export REPETITION=$i
+        
         echo "→ Running repetition $REPETITION"
+        export REPETITION=$i
+        export OUTPUT_FILENAME="${TIMESTAMP}_${EXPERIMENT_NAME}_${MODEL##*/}_repetition_${REPETITION}.json"
         
         ./bench.sh
         

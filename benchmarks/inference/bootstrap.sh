@@ -1,6 +1,8 @@
 #!/bin/bash
 # Bootstrap environment for inference benchmarks
 
+mkdir -p results
+
 # uv
 if ! command -v uv >/dev/null 2>&1; then
   curl -LsSf https://astral.sh/uv/install.sh | sh > /dev/null 2>&1
@@ -27,6 +29,7 @@ export HF_TOKEN="${HF_TOKEN}"
 ## For later
 hf auth login --token "${HF_TOKEN}"
 
+# Models used in the benchmarks
 for model in \
     google/gemma-3-1b-it \
     meta-llama/Llama-3.1-8B-Instruct \
@@ -39,3 +42,8 @@ for model in \
 do
     hf download "$model"
 done
+
+# ShareGPT_V3_unfiltered_cleaned_split.json
+if [ ! -f ShareGPT_V3_unfiltered_cleaned_split.json ]; then
+    wget https://huggingface.co/datasets/anon8231489123/ShareGPT_Vicuna_unfiltered/resolve/main/ShareGPT_V3_unfiltered_cleaned_split.json -O ShareGPT_V3_unfiltered_cleaned_split.json
+fi

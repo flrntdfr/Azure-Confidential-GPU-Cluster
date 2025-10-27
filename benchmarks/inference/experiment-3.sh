@@ -1,6 +1,6 @@
 #!/bin/bash
 #SBATCH --job-name=vLLM-experiment-3
-#SBATCH --partition=lrz-hgx-h100-94x4 # Specify partition name
+#SBATCH --partition=lrz-hgx-h100-94x4 # Partition
 #SBATCH --nodes=1                     # Number of nodes to allocate
 #SBATCH --ntasks-per-node=1           # One task per node
 #SBATCH --gres=gpu:1                  # Total GPUs needed for all experiments
@@ -13,6 +13,7 @@
 source bootstrap.sh
 
 export EXPERIMENT_NAME="experiment-3"
+export TIMESTAMP=$(date +%Y%m%d_%H%M-%S)
 
 # ------ #
 # SYSTEM #
@@ -47,15 +48,14 @@ export MAX_NUM_SEQS_VALUES=(
 )
 
 export DATASET_NAME="random"
-export DATASET_PATH="" # FIXME ?
 export RANDOM_INPUT_LEN_VALUES=(64 128 256 512 1024)
 export RANDOM_OUTPUT_LEN_VALUES=(64 128 256 512 1024)
 
 export NUM_PROMPTS=1000
 export MAX_CONCURRENCY=1
 export TEMPERATURE=0
-export ENDPOINT="/v1/completions"
-export NUM_REPETITIONS=1 # FIXME
+export ENDPOINT="/v1/chat/completions"
+export NUM_REPETITIONS=5
 
 echo "→ Starting ${EXPERIMENT_NAME}"
 echo "→ Collecting system information..."
@@ -82,12 +82,16 @@ for i in "${!MODELS[@]}"; do
 
         for RANDOM_OUTPUT_LEN in ${RANDOM_OUTPUT_LEN_VALUES[@]}; do
             echo "RANDOM_OUTPUT_LEN: $RANDOM_OUTPUT_LEN"
-            export EXTRA_FLAGS_BENCH="--random-input-len $RANDOM_INPUT_LEN --random-output-len $RANDOM_OUTPUT_LEN"
+            
+            export RANDOM_INPUT_LEN=$RANDOM_INPUT_LEN
+            export RANDOM_OUTPUT_LEN=$RANDOM_OUTPUT_LEN
 
             echo "→ Running benchmark..."
             for i in $(seq 1 $NUM_REPETITIONS); do
-                export REPETITION=$i
+                
                 echo "→ Running repetition $REPETITION"
+                export REPETITION=$i
+                export OUTPUT_FILENAME="${TIMESTAMP}_${EXPERIMENT_NAME}_${MODEL##*/}_random_input_len_${RANDOM_INPUT_LEN}_random_output_len_${RANDOM_OUTPUT_LEN}_repetition_${REPETITION}.json"
                 
                 ./bench.sh
                 

@@ -5,13 +5,6 @@
 HOST=${HOST:-"127.0.0.1"}
 PORT=${PORT:-"8000"}
 
-# Create results directory if it doesn't exist
-mkdir -p results
-
-# Generate output filename based on current configuration
-TIMESTAMP=$(date +%Y%m%d_%H%M-%S)
-OUTPUT_FILENAME="${TIMESTAMP}_${EXPERIMENT_NAME}_${MODEL##*/}_max-concurrency_${MAX_CONCURRENCY}_input-len_${RANDOM_INPUT_LEN}_output-len_${RANDOM_OUTPUT_LEN}_repetition_${REPETITION}.json"
-
 # Wait for server to be ready
 echo "→ Waiting for server to be ready..."
 wait_for_server() {
@@ -39,11 +32,11 @@ wait_for_server
 
 echo "→ Running 10 warmup requests..."
 for i in {1..10}; do
-    curl -s http://${HOST:-"127.0.0.1"}:${PORT:-"8000"}/v1/completions \
+    curl -s http://${HOST:-"127.0.0.1"}:${PORT:-"8000"}/v1/chat/completions \
         -H "Content-Type: application/json" \
         -d '{
             "model": "'$MODEL'",
-            "prompt": "Continue the following text: Maître corbeau, sur un arbre perché, tenait ...",
+            "messages": [{"role": "user", "content": "Continue the following text: Maître corbeau, sur un arbre perché, tenait ..."}],
             "max_tokens": 20
         }' > /dev/null
 done
@@ -51,10 +44,11 @@ done
 echo "→ Starting power logging..."
 nvidia-smi --query-gpu=timestamp,power.draw,utilization.gpu,utilization.memory,clocks.gr,clocks.mem,temperature.gpu \
     --format=csv \
-    -l 1 > ./results/${TIMESTAMP}_${EXPERIMENT_NAME}_${MODEL##*/}_max-concurrency_${MAX_CONCURRENCY}_input-len_${RANDOM_INPUT_LEN}_output-len_${RANDOM_OUTPUT_LEN}_repetition_${REPETITION}_power_metrics.csv &
+    -l 1 > ./results/${OUTPUT_FILENAME}_power_metrics.csv &
 NVIDIA_SMI_PID=$!
 
 echo "Running benchmark with:"
+echo "  Scripts: $(git rev-parse HEAD) ($(git rev-list --count HEAD))"
 echo "  Model: $MODEL"
 echo "  Server: http://${HOST}:${PORT}"
 echo "  Concurrency: $MAX_CONCURRENCY"
@@ -63,10 +57,13 @@ echo "  Output file: results/$OUTPUT_FILENAME"
 
 echo "→ Starting benchmark..."
 vllm bench serve \
+  --backend openai-chat \
   --base-url http://${HOST}:${PORT} \
   --burstiness ${BURSTINESS:-"1.0"} \
   --dataset-name $DATASET_NAME \
-  --dataset-path $DATASET_PATH \
+  $([ "$DATASET_NAME" != "random" ] && echo "--dataset-path $DATASET_PATH") \
+  $([ "$DATASET_NAME" = "random" ] && echo "--random-input-len $RANDOM_INPUT_LEN") \
+  $([ "$DATASET_NAME" = "random" ] && echo "--random-output-len $RANDOM_OUTPUT_LEN") \
   --endpoint $ENDPOINT \
   --label $EXPERIMENT_NAME \
   --max-concurrency $MAX_CONCURRENCY \
