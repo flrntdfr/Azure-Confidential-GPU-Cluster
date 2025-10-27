@@ -3,8 +3,8 @@
 all: bootstrap benchmark
 bootstrap: ## Bootstrap environment
 	./bootstrap.sh
-benchmark: ## Run all experiments
-	sbatch experiment-*
+bench: ## Run all experiments
+	-@find . -name "experiment-*.sh" -exec sbatch {} \;
 collect: ## Collect results in a single place
 	tar -czvf /persistent/$(date +%Y%m%d_%H%M-%S)-results-inference.tar.gz results
 help: ## Print this help
