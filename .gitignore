@@ -10,8 +10,11 @@
 benchmarks/finetuning/medAlpaca/
 logs/
 *.log
-results/
 *.csv
+*.err
+*.out
+*.txt
+*.json
 .venv
 
 # Terraform
