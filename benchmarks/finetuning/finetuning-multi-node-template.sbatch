@@ -84,10 +84,6 @@ echo "WANDB run name: $WANDB_RUN_NAME"
 echo "WANDB tags: $WANDB_TAGS"
 echo "=========================================="
 
-# ========================================
-# Training Execution
-# ========================================
-
 cd $HOME/Azure-Confidential-GPU-Cluster/benchmarks/finetuning/medAlpaca
 mkdir -p ./results
 source .venv/bin/activate
