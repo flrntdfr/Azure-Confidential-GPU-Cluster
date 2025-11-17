@@ -5,7 +5,13 @@
 HOST=${HOST:-"127.0.0.1"}
 PORT=${PORT:-"8000"}
 
-# Wait for server to be ready
+# Create output directory
+mkdir -p ./results/"$(dirname "$OUTPUT_FILENAME")"
+
+# --------------------------- #
+# Wait for server to be ready #
+# --------------------------- #
+
 echo "→ Waiting for server to be ready..."
 wait_for_server() {
     local host=${HOST}
@@ -30,6 +36,10 @@ wait_for_server() {
 sleep 20
 wait_for_server
 
+# --------------- #
+# Warmup requests #
+# --------------- #
+
 echo "→ Running 10 warmup requests..."
 for i in {1..10}; do
     curl -s http://${HOST:-"127.0.0.1"}:${PORT:-"8000"}/v1/chat/completions \
@@ -41,11 +51,51 @@ for i in {1..10}; do
         }' > /dev/null
 done
 
-echo "→ Starting power logging..."
+# ---------------------- #
+# Start power monitoring #
+# ---------------------- #
+
+# GPU
+
+echo "→ Starting GPU power logging..."
+echo "Output file: ./results/${OUTPUT_FILENAME%.*}_power_metrics_GPU.csv"
 nvidia-smi --query-gpu=timestamp,power.draw,utilization.gpu,utilization.memory,clocks.gr,clocks.mem,temperature.gpu \
     --format=csv \
-    -l 1 > ./results/${OUTPUT_FILENAME}_power_metrics.csv &
+    -l 1 > ./results/${OUTPUT_FILENAME%.*}_power_metrics_GPU.csv &
 NVIDIA_SMI_PID=$!
+
+# CPU
+
+echo "→ Starting CPU power logging..."
+echo "Output file: ./results/${OUTPUT_FILENAME%.*}_power_metrics_CPU.csv"
+if [ -d "/sys/class/powercap/amd-rapl" ]; then
+    {
+        echo "timestamp,package_power_watts"
+        RAPL_DIR=$(ls -d /sys/class/powercap/amd-rapl*/*:0 2>/dev/null | head -1)
+        ENERGY_FILE="${RAPL_DIR}/energy_uj"
+        
+        PREV_ENERGY=$(cat "$ENERGY_FILE" 2>/dev/null || echo 0)
+        PREV_TIME=$(date +%s%N)
+        
+        while sleep 1; do
+            CURR_ENERGY=$(cat "$ENERGY_FILE" 2>/dev/null || echo 0)
+            CURR_TIME=$(date +%s%N)
+            TIME_DIFF=$(awk "BEGIN {printf \"%.9f\", ($CURR_TIME - $PREV_TIME) / 1000000000}")
+            ENERGY_DIFF=$((CURR_ENERGY - PREV_ENERGY))
+            POWER=$(awk "BEGIN {printf \"%.2f\", ($ENERGY_DIFF / 1000000) / $TIME_DIFF}")
+            echo "$(date +%Y-%m-%d\ %H:%M:%S),$POWER"
+            PREV_ENERGY=$CURR_ENERGY
+            PREV_TIME=$CURR_TIME
+        done
+    } > ./results/${OUTPUT_FILENAME%.*}_power_metrics_CPU.csv &
+    CPU_MONITOR_PID=$!
+else
+    echo "→ AMD RAPL interface not found, CPU power monitoring disabled"
+fi
+
+# --------------- #
+# Start benchmark #
+# --------------- #
 
 echo "Running benchmark with:"
 echo "  Scripts: $(git rev-parse HEAD) ($(git rev-list --count HEAD))"
@@ -83,3 +133,4 @@ vllm bench serve \
   $EXTRA_FLAGS_BENCH
 
 kill $NVIDIA_SMI_PID 2>/dev/null || true
+[ -n "$CPU_MONITOR_PID" ] && kill $CPU_MONITOR_PID 2>/dev/null || true
