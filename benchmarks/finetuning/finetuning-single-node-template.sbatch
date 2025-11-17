@@ -46,8 +46,8 @@ PROMPT_TEMPLATE="${PROMPT_TEMPLATE:-./medalpaca/prompt_templates/medalpaca.json}
 
 TRAIN_IN_8BIT="${TRAIN_IN_8BIT:-True}"
 USE_LORA="${USE_LORA:-True}"
-FP16="${FP16:-True}"
-BF16="${BF16:-False}"
+FP16="${FP16:-False}"
+BF16="${BF16:-True}"
 
 GRADIENT_CHECKPOINTING="${GRADIENT_CHECKPOINTING:-False}"
 GLOBAL_BATCH_SIZE="${GLOBAL_BATCH_SIZE:-256}"

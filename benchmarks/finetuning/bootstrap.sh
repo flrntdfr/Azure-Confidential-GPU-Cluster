@@ -7,19 +7,28 @@ if ! command -v uv >/dev/null 2>&1; then
 fi
 
 # medAlpaca
-git clone --depth=1 --branch reproducible https://github.com/flrntdfr/medAlpaca.git
-cd medAlpaca
-uv venv --prompt medAlapaca --python 3.10.8
+if [ -d "medAlpaca" ]; then
+  cd medAlpaca
+  git fetch && git pull
+else
+  # git clone --depth=1 --branch reproducible https://github.com/flrntdfr/medAlpaca.git
+  git clone --depth=1 --branch fastDP https://github.com/flrntdfr/medAlpaca.git # FIXME
+  cd medAlpaca
+  uv venv --prompt medAlapaca --python 3.10.8
+fi
+
 source .venv/bin/activate
 uv pip install -r requirements.txt
+cd ..
 
 # Get credentials from .env file
+pwd
 set -a
-source "../env"
+source "../.env"
 set +a
 
-#export HF_HOME=$HOME/.cache/huggingface FIXME
-export HF_HOME=/dss/dssfs04/pn72ka/pn72ka-dss-0000/di67pif/.cache/huggingface
+#export HF_HOME=$HOME/.cache/huggingface
+export HF_HOME=/dss/dssfs04/pn72ka/pn72ka-dss-0000/di67pif/.cache/huggingface # FIXME
 
 # HuggingFace
 ## For now
@@ -31,6 +40,7 @@ hf auth login --token "${HF_TOKEN}"
 ## For now
 export WANDB_API_KEY="${WANDB_API_KEY}"
 ## For later
-echo "${WANDB_TOKEN}" | wandb login --relogin
+wandb login "${WANDB_API_KEY}"
 
+# Let's already download the model we will use in the benchmarks
 hf download meta-llama/Llama-2-7b-hf
