@@ -8,6 +8,7 @@
 
 # Benchmarks
 benchmarks/finetuning/medAlpaca/
+results/
 logs/
 *.log
 *.csv
