@@ -1,6 +1,6 @@
 # Introduction
 
-This repository provides Infrastructure as Code (IaC) resources for the deployment and management of a confidential computing GPU cluster on Microsoft Azure, specifically tailored for research in confidential artificial intelligence. LLM finetuning and inference benchmarks are provided.
+This repository provides Infrastructure as Code (IaC) resources for the deployment and management of a confidential computing GPU cluster on Microsoft Azure, specifically tailored for research in confidential artificial intelligence. LLM finetuning and inference benchmarks are provided too.
 
 # Features
 
@@ -13,11 +13,6 @@ This repository provides Infrastructure as Code (IaC) resources for the deployme
 - PyTorch multi-node support
 - Persistent shared storage
 - End-to-end data encryption
-
-## Benchmarks
-
-- Finetuning medAlpaca
-- Inference with vLLM
 
 # How-to
 
@@ -40,6 +35,13 @@ All commands are documented with:
 ```
 
 **Note**: a [Dev Container](.devcontainer) is provided for convenience.
+
+## Benchmarks
+
+Finetuning benchmarks and inference benchmarks are located in the [benchmarks](benchmarks) directory.
+
+- Finetuning medAlpaca, single node and multi-node, with and without differential privacy.
+- Inference with Gemma3 1B, Llama3.1 8B, Mistral Small 24B, Qwen3 32B, single node and multi-node.
 
 # Requirements
 
