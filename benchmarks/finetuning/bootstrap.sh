@@ -7,19 +7,11 @@ if ! command -v uv >/dev/null 2>&1; then
 fi
 
 # medAlpaca
-if [ -d "medAlpaca" ]; then
-  cd medAlpaca
-  git fetch && git pull
-else
-  # git clone --depth=1 --branch reproducible https://github.com/flrntdfr/medAlpaca.git
-  git clone --depth=1 --branch fastDP https://github.com/flrntdfr/medAlpaca.git # FIXME
-  cd medAlpaca
-  uv venv --prompt medAlapaca --python 3.10.8
+if [ ! -d ".venv" ]; then
+  uv venv --prompt finetuning --python 3.10.8
 fi
-
 source .venv/bin/activate
-uv pip install -r requirements.txt
-cd ..
+uv pip install -r src/requirements.txt
 
 # Get credentials from .env file
 pwd
@@ -43,4 +35,4 @@ export WANDB_API_KEY="${WANDB_API_KEY}"
 wandb login "${WANDB_API_KEY}"
 
 # Let's already download the model we will use in the benchmarks
-hf download meta-llama/Llama-2-7b-hf
+#hf download meta-llama/Llama-2-7b-hf
