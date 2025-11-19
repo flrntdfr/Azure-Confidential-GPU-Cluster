@@ -1,10 +1,12 @@
-# System
 .DS_Store
-.gitignore.d
+gitignore.d
 .env
 *.pem
 *.key
 *.pem.pub
+__pycache__
+*.pyc
+wandb
 
 # Benchmarks
 benchmarks/finetuning/medAlpaca/
@@ -15,7 +17,6 @@ logs/
 *.err
 *.out
 *.txt
-*.json
 .venv
 
 # Terraform

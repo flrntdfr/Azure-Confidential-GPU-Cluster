@@ -1,18 +1,18 @@
 #!/bin/bash
-#SBATCH --job-name=vLLM-experiment-1
+#SBATCH --job-name=vLLM-experiment-4
 #SBATCH --partition=lrz-hgx-h100-94x4 # Partition
 #SBATCH --nodes=1                     # Number of nodes to allocate
 #SBATCH --ntasks-per-node=1           # One task per node
 #SBATCH --gres=gpu:1                  # Total GPUs needed for all experiments
 #SBATCH --cpus-per-task=40            # CPUs per task
 #SBATCH --mem=0                       # Use entire memory of node
-#SBATCH --time=3:00:00                # Maximum run time
-#SBATCH --output=results/experiment-1-%j.out
-#SBATCH --error=results/experiment-1-%j.err
+#SBATCH --time=10:00:00                # Maximum run time
+#SBATCH --output=results/experiment-4-%j.out
+#SBATCH --error=results/experiment-4-%j.err
 
 source bootstrap.sh
 
-export EXPERIMENT_NAME="experiment-1"
+export EXPERIMENT_NAME="experiment-4"
 export TIMESTAMP=$(date +%Y%m%d_%H%M-%S)
 
 # ------ #
@@ -36,25 +36,24 @@ export MAX_MODEL_LEN=8192
 # --------- #
 
 export MODELS=(
-    "google/gemma-3-1b-it"
-    "meta-llama/Llama-3.1-8B-Instruct"
-    "mistralai/Mistral-Small-24B-Instruct-2501"
-    "Qwen/Qwen3-32B"
+    # "deepseek-ai/DeepSeek-R1-Distill-Qwen-32B"
+    # "deepseek-ai/DeepSeek-R1-Distill-Qwen-14B"
+    # "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B"
+    "deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B"
 )
-# TODO: Multi-node bigger model
 
 export TOKENIZERS=(
-    "google/gemma-3-1b-it"
-    "meta-llama/Llama-3.1-8B-Instruct"
-    "mistralai/Mistral-Small-24B-Instruct-2501"
-    "Qwen/Qwen3-32B"
+    # "deepseek-ai/DeepSeek-R1-Distill-Qwen-32B"
+    # "deepseek-ai/DeepSeek-R1-Distill-Qwen-14B"
+    # "deepseek-ai/DeepSeek-R1-Distill-Qwen-7B"
+    "deepseek-ai/DeepSeek-R1-Distill-Qwen-1.5B"
 )
 
 export MAX_NUM_SEQS_VALUES=(
+    # 32
+    # 64
+    # 256
     512
-    256
-    128
-    64
 )
 
 export DATASET_NAME="sharegpt"
@@ -63,7 +62,7 @@ export NUM_PROMPTS=1000
 export MAX_CONCURRENCY=1
 export TEMPERATURE=0.7
 export ENDPOINT="/v1/chat/completions"
-export NUM_REPETITIONS=5
+export NUM_REPETITIONS=1 # FIXME
 
 echo "→ Starting ${EXPERIMENT_NAME}"
 echo "→ Collecting system information..."
@@ -75,7 +74,6 @@ for i in "${!MODELS[@]}"; do
     export MODEL="${MODELS[$i]}"
     export TOKENIZER="${TOKENIZERS[$i]}"
     export MAX_NUM_SEQS="${MAX_NUM_SEQS_VALUES[$i]}"
-    
 
     echo "MODEL: $MODEL"
     echo "TOKENIZER: $TOKENIZER"
@@ -91,8 +89,8 @@ for i in "${!MODELS[@]}"; do
         
         echo "→ Running repetition $REPETITION"
         export REPETITION=$i
-        export OUTPUT_FILENAME="${TIMESTAMP}_${EXPERIMENT_NAME}_${MODEL##*/}_repetition_${REPETITION}.json"
-        
+        export OUTPUT_FILENAME="${EXPERIMENT_NAME}/${MODEL##*/}/${TIMESTAMP}_repetition_${REPETITION}.json"
+
         ./bench.sh
         
         # Take a breath

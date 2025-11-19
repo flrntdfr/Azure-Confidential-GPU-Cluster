@@ -6,7 +6,7 @@
 #SBATCH --gres=gpu:1                  # Total GPUs needed for all experiments
 #SBATCH --cpus-per-task=40            # CPUs per task
 #SBATCH --mem=0                       # Use entire memory of node
-#SBATCH --time=4:00:00                # Maximum run time
+#SBATCH --time=10:00:00               # Maximum run time
 #SBATCH --output=results/experiment-3-%j.out
 #SBATCH --error=results/experiment-3-%j.err
 
@@ -51,11 +51,11 @@ export DATASET_NAME="random"
 export RANDOM_INPUT_LEN_VALUES=(64 128 256 512 1024)
 export RANDOM_OUTPUT_LEN_VALUES=(64 128 256 512 1024)
 
-export NUM_PROMPTS=1000
+export NUM_PROMPTS=5 # FIXME? 5 here instead of 5 repetitions?
 export MAX_CONCURRENCY=1
 export TEMPERATURE=0
 export ENDPOINT="/v1/chat/completions"
-export NUM_REPETITIONS=5
+export NUM_REPETITIONS=1 # FIXME
 
 echo "→ Starting ${EXPERIMENT_NAME}"
 echo "→ Collecting system information..."
@@ -91,7 +91,7 @@ for i in "${!MODELS[@]}"; do
                 
                 echo "→ Running repetition $REPETITION"
                 export REPETITION=$i
-                export OUTPUT_FILENAME="${TIMESTAMP}_${EXPERIMENT_NAME}_${MODEL##*/}_random_input_len_${RANDOM_INPUT_LEN}_random_output_len_${RANDOM_OUTPUT_LEN}_repetition_${REPETITION}.json"
+                export OUTPUT_FILENAME="${EXPERIMENT_NAME}/${MODEL##*/}/${TIMESTAMP}_random_input_len_${RANDOM_INPUT_LEN}_random_output_len_${RANDOM_OUTPUT_LEN}_repetition_${REPETITION}.json"
                 
                 ./bench.sh
                 

@@ -1,18 +1,18 @@
 #!/bin/bash
-#SBATCH --job-name=vLLM-experiment-2
+#SBATCH --job-name=vLLM-experiment-1
 #SBATCH --partition=lrz-hgx-h100-94x4 # Partition
 #SBATCH --nodes=1                     # Number of nodes to allocate
 #SBATCH --ntasks-per-node=1           # One task per node
 #SBATCH --gres=gpu:1                  # Total GPUs needed for all experiments
 #SBATCH --cpus-per-task=40            # CPUs per task
 #SBATCH --mem=0                       # Use entire memory of node
-#SBATCH --time=4:00:00                # Maximum run time
-#SBATCH --output=results/experiment-2-%j.out
-#SBATCH --error=results/experiment-2-%j.err
+#SBATCH --time=3:00:00                # Maximum run time
+#SBATCH --output=results/experiment-1-%j.out
+#SBATCH --error=results/experiment-1-%j.err
 
 source bootstrap.sh
 
-export EXPERIMENT_NAME="experiment-2"
+export EXPERIMENT_NAME="experiment-1"
 export TIMESTAMP=$(date +%Y%m%d_%H%M-%S)
 
 # ------ #
@@ -36,25 +36,34 @@ export MAX_MODEL_LEN=8192
 # --------- #
 
 export MODELS=(
+    "google/gemma-3-1b-it"
+    # "meta-llama/Llama-3.1-8B-Instruct"
+    "mistralai/Mistral-Small-24B-Instruct-2501"
     "Qwen/Qwen3-32B"
 )
+# TODO: Multi-node bigger model
 
 export TOKENIZERS=(
+    "google/gemma-3-1b-it"
+    # "meta-llama/Llama-3.1-8B-Instruct"
+    "mistralai/Mistral-Small-24B-Instruct-2501"
     "Qwen/Qwen3-32B"
 )
 
 export MAX_NUM_SEQS_VALUES=(
-    64
+    1024
+    # 256
+    32
+    16
 )
-
-export MAX_CONCURRENCY_VALUES=(1 2 4 8 12 16 20 24 32 40 48 64 128 256 512 1024)
 
 export DATASET_NAME="sharegpt"
 export DATASET_PATH="./ShareGPT_V3_unfiltered_cleaned_split.json"
-export NUM_PROMPTS=1000
+export NUM_PROMPTS=100
+export MAX_CONCURRENCY=1
 export TEMPERATURE=0.7
 export ENDPOINT="/v1/chat/completions"
-export NUM_REPETITIONS=5
+export NUM_REPETITIONS=2
 
 echo "→ Starting ${EXPERIMENT_NAME}"
 echo "→ Collecting system information..."
@@ -66,6 +75,7 @@ for i in "${!MODELS[@]}"; do
     export MODEL="${MODELS[$i]}"
     export TOKENIZER="${TOKENIZERS[$i]}"
     export MAX_NUM_SEQS="${MAX_NUM_SEQS_VALUES[$i]}"
+    
 
     echo "MODEL: $MODEL"
     echo "TOKENIZER: $TOKENIZER"
@@ -75,24 +85,17 @@ for i in "${!MODELS[@]}"; do
     echo "→ Starting vLLM server..."
     ./serve.sh &
 
-
     # Bench
-    for MAX_CONCURRENCY in ${MAX_CONCURRENCY_VALUES[@]}; do
-        echo "MAX_CONCURRENCY: $MAX_CONCURRENCY"
-        export MAX_CONCURRENCY=$MAX_CONCURRENCY
-
-        echo "→ Running benchmark..."
-        for i in $(seq 1 $NUM_REPETITIONS); do
-            
-            echo "→ Running repetition $REPETITION"
-            export REPETITION=$i
-            export OUTPUT_FILENAME="${TIMESTAMP}_${EXPERIMENT_NAME}_${MODEL##*/}_max_concurrency_${MAX_CONCURRENCY}_repetition_${REPETITION}.json"
-
-            ./bench.sh
-            
-            # Take a breath
-            sleep 5
-        done
+    echo "→ Running benchmark..."
+    for i in $(seq 1 $NUM_REPETITIONS); do
+        
+        echo "→ Running repetition $REPETITION"
+        export REPETITION=$i
+        export OUTPUT_FILENAME="${EXPERIMENT_NAME}/${MODEL##*/}/${TIMESTAMP}_repetition_${REPETITION}.json"
+        ./bench.sh
+        
+        # Take a breath
+        sleep 5
     done
 
     # Stop server and wait for GPU cleanup
