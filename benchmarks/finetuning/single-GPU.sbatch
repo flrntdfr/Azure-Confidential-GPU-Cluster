@@ -1,28 +1,31 @@
 #!/bin/bash
-#SBATCH --job-name=medalpaca-singlenode
-#SBATCH --partition=test-v100x2 # Specify partition name
-#SBATCH --qos=testing
+#SBATCH --job-name=medalpaca-single-gpu
+#SBATCH --partition=lrz-v100x2 # Specify partition name
+##SBATCH --qos=testing
 #SBATCH --nodes=1                     # Single node
 #SBATCH --ntasks-per-node=1           # One task per node
 #SBATCH --gres=gpu:1                  # GPUs per node
-#SBATCH --cpus-per-task=16            # CPUs per task
+##SBATCH --cpus-per-task=16            # CPUs per task
 #SBATCH --mem=0                       # Use entire memory of node
-#SBATCH --time=1:00:00                # Maximum run time
-#SBATCH --output=results/medalpaca-singlenode-%j.out
-#SBATCH --error=results/medalpaca-singlenode-%j.err
+#SBATCH --time=2:00:00                # Maximum run time
+#SBATCH --output=results/medalpaca-single-gpu-%j.out
+#SBATCH --error=results/medalpaca-single-gpu-%j.err
 
 set -aeux
 
 MODEL=Qwen/Qwen2.5-0.5B
-USE_LORA=False
-LOAD_IN_4BIT=True
-LOAD_IN_8BIT=False
-PER_DEVICE_TRAIN_BATCH_SIZE=1
+PER_DEVICE_TRAIN_BATCH_SIZE=3
 MAX_SEQ_LENGTH=128
+
+USE_LORA=True
+LOAD_IN_4BIT=False
+LOAD_IN_8BIT=True
+
+
 USE_WANDB=True
 WANDB_PROJECT=medalpaca-du4-calibration
-WANDB_RUN_NAME="medAlpaca-singlenode-${SLURM_JOB_ID}"
-TAGS="singlenode,$SLURM_JOB_PARTITION"
+WANDB_RUN_NAME="medAlpaca-single-gpu-${SLURM_JOB_ID}"
+TAGS="single-gpu,$SLURM_JOB_PARTITION"
 
 echo -e "\n=========================================="
 echo "SLURM Job Information"
