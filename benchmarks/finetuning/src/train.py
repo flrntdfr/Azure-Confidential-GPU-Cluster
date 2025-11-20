@@ -14,7 +14,11 @@ from arguments import (
     WandbArguments,
 )
 from datasets import load_dataset
-from peft import LoraConfig, get_peft_model, prepare_model_for_kbit_training
+from peft import (
+    LoraConfig,
+    get_peft_model,
+    prepare_model_for_kbit_training,
+)
 from transformers import (
     AutoModelForCausalLM,
     AutoTokenizer,
@@ -121,10 +125,15 @@ def get_model(model_args, adapter_args, training_args):
 
     # Model
     logger.info(f"Loading {model_args.model}")
+    # Disable device_map="auto" when DeepSpeed is used, as it conflicts with DeepSpeed's device placement
+    device_map = "auto"
+    if os.environ.get("LOCAL_RANK") or training_args.deepspeed:
+        device_map = None
+
     model = AutoModelForCausalLM.from_pretrained(
         model_args.model,
         quantization_config=bnb_config,
-        device_map="auto" if not os.environ.get("LOCAL_RANK") else None,
+        device_map=device_map,
         attn_implementation="flash_attention_2" if model_args.use_flash_attn else None,
         dtype=dtype,
     )

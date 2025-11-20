@@ -5,6 +5,7 @@ fastDP @ git+https://github.com/awslabs/fast-differential-privacy.git@v2.1
 hf==1.1.0
 peft==0.18.0
 scipy==1.15.3
+setuptools==80.9.0
 torch==2.9.1
 transformers==4.57.1
 trl==0.25.1

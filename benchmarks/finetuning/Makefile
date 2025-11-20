@@ -7,7 +7,7 @@ all: bootstrap benchmark
 bootstrap: ## Bootstrap environment
 	./bootstrap.sh
 benchmark: ## Run all experiments
-	-@find . -name "*.sbatch" -exec sbatch {} \;
+	-@find . -name "src/*.sbatch" -exec sbatch {} \;
 zip: ## Collect results in a single place
 	tar -cJvf /persistent/$(date +%Y%m%d_%H%M-%S)-results-finetuning.txz results
 help: ## Print this help
