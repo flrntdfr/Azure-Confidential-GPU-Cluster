@@ -17,7 +17,6 @@ logs/
 *.csv
 *.err
 *.out
-*.txt
 .venv
 
 # Terraform
