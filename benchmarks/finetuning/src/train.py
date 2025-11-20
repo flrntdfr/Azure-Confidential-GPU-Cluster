@@ -26,6 +26,7 @@ from trl import SFTTrainer
 
 logger = logging.getLogger(__name__)
 
+
 def setup_logging(adapter_args, privacy_args, training_args, wandb_args):
     logging.basicConfig(
         format="%(asctime)s %(levelname)s - %(name)s: %(message)s",
@@ -61,6 +62,7 @@ def setup_logging(adapter_args, privacy_args, training_args, wandb_args):
         if privacy_args.enable_dp:
             tags_list.append("BitFit")
             tags_list.append("ε-" + str(privacy_args.target_epsilon))
+            tags_list.append("δ-" + str(privacy_args.target_delta))
             notes += "DP settings:"
             notes += f"epsilon: {privacy_args.target_epsilon}"
             notes += f"delta: {privacy_args.target_delta}"
@@ -76,7 +78,7 @@ def setup_logging(adapter_args, privacy_args, training_args, wandb_args):
             tags_list.extend([str(tag) for tag in wandb_args.wandb_tags.split(",")])
         if wandb_args.wandb_notes:
             notes += wandb_args.wandb_notes
-        
+
         wandb.init(
             project=wandb_args.wandb_project,
             name=wandb_args.wandb_run_name,
@@ -152,7 +154,9 @@ class DPTrainer(SFTTrainer):
     def __init__(self, privacy_args, *args, **kwargs):
         super().__init__(*args, **kwargs)
         self.privacy_args = privacy_args
-        assert self.privacy_args.target_delta < 1 / len(self.train_dataset), "Target privacy budget δ, should be smaller than 1/sample_size."
+        assert self.privacy_args.target_delta < 1 / len(self.train_dataset), (
+            "Target privacy budget δ, should be smaller than 1/sample_size."
+        )
 
     def create_optimizer(self):
         """Wrap the optimizer with the PrivacyEngine"""
@@ -162,7 +166,8 @@ class DPTrainer(SFTTrainer):
         logger.info("Wrapping optimizer with fastDP PrivacyEngine")
         self.privacy_engine = PrivacyEngine(
             self.model,
-            batch_size=self.args.per_device_train_batch_size * self.args.gradient_accumulation_steps,
+            batch_size=self.args.per_device_train_batch_size
+            * self.args.gradient_accumulation_steps,
             sample_size=len(self.train_dataset),
             epochs=self.args.num_train_epochs,
             target_epsilon=self.privacy_args.target_epsilon,
@@ -180,11 +185,12 @@ class DPTrainer(SFTTrainer):
 
         # ----- BEGIN HACK ---- #
         import types
+
         original_step = optimizer.step
 
         def step_with_positional_closure(_self, closure=None, **kwargs):
             return original_step(closure=closure, **kwargs)
-        
+
         optimizer.step = types.MethodType(step_with_positional_closure, optimizer)
         # ----- END HACK -----#
 
