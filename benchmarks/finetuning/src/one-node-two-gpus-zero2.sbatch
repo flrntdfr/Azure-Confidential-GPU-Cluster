@@ -1,17 +1,14 @@
 #!/bin/bash
 #SBATCH --job-name=medalpaca-1node-2gpu-zero2
-#SBATCH --partition=test-v100x2
-#SBATCH --qos=testing
+#SBATCH --partition=lrz-hgx-h100-94x4
 #SBATCH --nodes=1
 #SBATCH --ntasks-per-node=1
 #SBATCH --gres=gpu:2
-#SBATCH --cpus-per-task=18
-#SBATCH --mem=0
 #SBATCH --time=2:00:00
 #SBATCH --output=../results/medalpaca-1node-2gpu-zero2-%j.out
 #SBATCH --error=../results/medalpaca-1node-2gpu-zero2-%j.err
 
-set -ex
+set -eaux
 
 MODEL=Qwen/Qwen2.5-0.5B
 PER_DEVICE_TRAIN_BATCH_SIZE=1

@@ -1,21 +1,14 @@
 #!/bin/bash
 #SBATCH --job-name=medalpaca-1node-1gpu
-#SBATCH --partition=test-v100x2 # Specify partition name
-#SBATCH --qos=testing
+#SBATCH --partition=lrz-hgx-h100-94x4
 #SBATCH --nodes=1                     # Single node
 #SBATCH --ntasks-per-node=1           # One task per node
 #SBATCH --gres=gpu:1                  # GPUs per node
-#SBATCH --cpus-per-task=9            # CPUs per task
-#SBATCH --mem=0                       # Use entire memory of node
 #SBATCH --time=2:00:00                # Maximum run time
 #SBATCH --output=../results/medalpaca-1node-1gpu-%j.out
 #SBATCH --error=../results/medalpaca-1node-1gpu-%j.err
 
-set -aeux
-# export CUDA_HOME=$HOME/bin/cuda-12.2
-# export PATH=$CUDA_HOME/bin:$PATH
-# export LD_LIBRARY_PATH=$CUDA_HOME/lib64:$LD_LIBRARY_PATH
-# export PATH=$PATH:$CUDA_HOME/bin
+set -eaux
 
 MODEL=Qwen/Qwen2.5-0.5B
 PER_DEVICE_TRAIN_BATCH_SIZE=1
